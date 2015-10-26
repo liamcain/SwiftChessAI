@@ -1,0 +1,504 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0C27767B1BDE80EE004B15CD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C27767A1BDE80EE004B15CD /* AppDelegate.swift */; };
+		0C27767D1BDE80EE004B15CD /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C27767C1BDE80EE004B15CD /* GameScene.swift */; };
+		0C27767F1BDE80EE004B15CD /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 0C27767E1BDE80EE004B15CD /* GameScene.sks */; };
+		0C2776811BDE80EE004B15CD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0C2776801BDE80EE004B15CD /* Assets.xcassets */; };
+		0C2776841BDE80EE004B15CD /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0C2776821BDE80EE004B15CD /* MainMenu.xib */; };
+		0C27768F1BDE80EE004B15CD /* ChessAITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C27768E1BDE80EE004B15CD /* ChessAITests.swift */; };
+		0C27769A1BDE80EE004B15CD /* ChessAIUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C2776991BDE80EE004B15CD /* ChessAIUITests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		0C27768B1BDE80EE004B15CD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0C27766F1BDE80EE004B15CD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0C2776761BDE80EE004B15CD;
+			remoteInfo = ChessAI;
+		};
+		0C2776961BDE80EE004B15CD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0C27766F1BDE80EE004B15CD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0C2776761BDE80EE004B15CD;
+			remoteInfo = ChessAI;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		0C2776771BDE80EE004B15CD /* ChessAI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChessAI.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0C27767A1BDE80EE004B15CD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		0C27767C1BDE80EE004B15CD /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
+		0C27767E1BDE80EE004B15CD /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
+		0C2776801BDE80EE004B15CD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		0C2776831BDE80EE004B15CD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		0C2776851BDE80EE004B15CD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0C27768A1BDE80EE004B15CD /* ChessAITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChessAITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		0C27768E1BDE80EE004B15CD /* ChessAITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChessAITests.swift; sourceTree = "<group>"; };
+		0C2776901BDE80EE004B15CD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0C2776951BDE80EE004B15CD /* ChessAIUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChessAIUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		0C2776991BDE80EE004B15CD /* ChessAIUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChessAIUITests.swift; sourceTree = "<group>"; };
+		0C27769B1BDE80EE004B15CD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		0C2776741BDE80EE004B15CD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0C2776871BDE80EE004B15CD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0C2776921BDE80EE004B15CD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0C27766E1BDE80EE004B15CD = {
+			isa = PBXGroup;
+			children = (
+				0C2776791BDE80EE004B15CD /* ChessAI */,
+				0C27768D1BDE80EE004B15CD /* ChessAITests */,
+				0C2776981BDE80EE004B15CD /* ChessAIUITests */,
+				0C2776781BDE80EE004B15CD /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		0C2776781BDE80EE004B15CD /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0C2776771BDE80EE004B15CD /* ChessAI.app */,
+				0C27768A1BDE80EE004B15CD /* ChessAITests.xctest */,
+				0C2776951BDE80EE004B15CD /* ChessAIUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0C2776791BDE80EE004B15CD /* ChessAI */ = {
+			isa = PBXGroup;
+			children = (
+				0C27767A1BDE80EE004B15CD /* AppDelegate.swift */,
+				0C27767C1BDE80EE004B15CD /* GameScene.swift */,
+				0C27767E1BDE80EE004B15CD /* GameScene.sks */,
+				0C2776801BDE80EE004B15CD /* Assets.xcassets */,
+				0C2776821BDE80EE004B15CD /* MainMenu.xib */,
+				0C2776851BDE80EE004B15CD /* Info.plist */,
+			);
+			path = ChessAI;
+			sourceTree = "<group>";
+		};
+		0C27768D1BDE80EE004B15CD /* ChessAITests */ = {
+			isa = PBXGroup;
+			children = (
+				0C27768E1BDE80EE004B15CD /* ChessAITests.swift */,
+				0C2776901BDE80EE004B15CD /* Info.plist */,
+			);
+			path = ChessAITests;
+			sourceTree = "<group>";
+		};
+		0C2776981BDE80EE004B15CD /* ChessAIUITests */ = {
+			isa = PBXGroup;
+			children = (
+				0C2776991BDE80EE004B15CD /* ChessAIUITests.swift */,
+				0C27769B1BDE80EE004B15CD /* Info.plist */,
+			);
+			path = ChessAIUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		0C2776761BDE80EE004B15CD /* ChessAI */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0C27769E1BDE80EE004B15CD /* Build configuration list for PBXNativeTarget "ChessAI" */;
+			buildPhases = (
+				0C2776731BDE80EE004B15CD /* Sources */,
+				0C2776741BDE80EE004B15CD /* Frameworks */,
+				0C2776751BDE80EE004B15CD /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ChessAI;
+			productName = ChessAI;
+			productReference = 0C2776771BDE80EE004B15CD /* ChessAI.app */;
+			productType = "com.apple.product-type.application";
+		};
+		0C2776891BDE80EE004B15CD /* ChessAITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0C2776A11BDE80EE004B15CD /* Build configuration list for PBXNativeTarget "ChessAITests" */;
+			buildPhases = (
+				0C2776861BDE80EE004B15CD /* Sources */,
+				0C2776871BDE80EE004B15CD /* Frameworks */,
+				0C2776881BDE80EE004B15CD /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				0C27768C1BDE80EE004B15CD /* PBXTargetDependency */,
+			);
+			name = ChessAITests;
+			productName = ChessAITests;
+			productReference = 0C27768A1BDE80EE004B15CD /* ChessAITests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		0C2776941BDE80EE004B15CD /* ChessAIUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0C2776A41BDE80EE004B15CD /* Build configuration list for PBXNativeTarget "ChessAIUITests" */;
+			buildPhases = (
+				0C2776911BDE80EE004B15CD /* Sources */,
+				0C2776921BDE80EE004B15CD /* Frameworks */,
+				0C2776931BDE80EE004B15CD /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				0C2776971BDE80EE004B15CD /* PBXTargetDependency */,
+			);
+			name = ChessAIUITests;
+			productName = ChessAIUITests;
+			productReference = 0C2776951BDE80EE004B15CD /* ChessAIUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0C27766F1BDE80EE004B15CD /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0710;
+				LastUpgradeCheck = 0710;
+				ORGANIZATIONNAME = "Pillowfort Architects";
+				TargetAttributes = {
+					0C2776761BDE80EE004B15CD = {
+						CreatedOnToolsVersion = 7.1;
+					};
+					0C2776891BDE80EE004B15CD = {
+						CreatedOnToolsVersion = 7.1;
+						TestTargetID = 0C2776761BDE80EE004B15CD;
+					};
+					0C2776941BDE80EE004B15CD = {
+						CreatedOnToolsVersion = 7.1;
+						TestTargetID = 0C2776761BDE80EE004B15CD;
+					};
+				};
+			};
+			buildConfigurationList = 0C2776721BDE80EE004B15CD /* Build configuration list for PBXProject "ChessAI" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 0C27766E1BDE80EE004B15CD;
+			productRefGroup = 0C2776781BDE80EE004B15CD /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				0C2776761BDE80EE004B15CD /* ChessAI */,
+				0C2776891BDE80EE004B15CD /* ChessAITests */,
+				0C2776941BDE80EE004B15CD /* ChessAIUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		0C2776751BDE80EE004B15CD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0C2776811BDE80EE004B15CD /* Assets.xcassets in Resources */,
+				0C27767F1BDE80EE004B15CD /* GameScene.sks in Resources */,
+				0C2776841BDE80EE004B15CD /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0C2776881BDE80EE004B15CD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0C2776931BDE80EE004B15CD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		0C2776731BDE80EE004B15CD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0C27767D1BDE80EE004B15CD /* GameScene.swift in Sources */,
+				0C27767B1BDE80EE004B15CD /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0C2776861BDE80EE004B15CD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0C27768F1BDE80EE004B15CD /* ChessAITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0C2776911BDE80EE004B15CD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0C27769A1BDE80EE004B15CD /* ChessAIUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		0C27768C1BDE80EE004B15CD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0C2776761BDE80EE004B15CD /* ChessAI */;
+			targetProxy = 0C27768B1BDE80EE004B15CD /* PBXContainerItemProxy */;
+		};
+		0C2776971BDE80EE004B15CD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0C2776761BDE80EE004B15CD /* ChessAI */;
+			targetProxy = 0C2776961BDE80EE004B15CD /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		0C2776821BDE80EE004B15CD /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0C2776831BDE80EE004B15CD /* Base */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		0C27769C1BDE80EE004B15CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		0C27769D1BDE80EE004B15CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		0C27769F1BDE80EE004B15CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = ChessAI/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.pillowfortarchitects.ChessAI;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		0C2776A01BDE80EE004B15CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = ChessAI/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.pillowfortarchitects.ChessAI;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		0C2776A21BDE80EE004B15CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				INFOPLIST_FILE = ChessAITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.pillowfortarchitects.ChessAITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ChessAI.app/Contents/MacOS/ChessAI";
+			};
+			name = Debug;
+		};
+		0C2776A31BDE80EE004B15CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = ChessAITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.pillowfortarchitects.ChessAITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ChessAI.app/Contents/MacOS/ChessAI";
+			};
+			name = Release;
+		};
+		0C2776A51BDE80EE004B15CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				INFOPLIST_FILE = ChessAIUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.pillowfortarchitects.ChessAIUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = ChessAI;
+				USES_XCTRUNNER = YES;
+			};
+			name = Debug;
+		};
+		0C2776A61BDE80EE004B15CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = ChessAIUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.pillowfortarchitects.ChessAIUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = ChessAI;
+				USES_XCTRUNNER = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0C2776721BDE80EE004B15CD /* Build configuration list for PBXProject "ChessAI" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0C27769C1BDE80EE004B15CD /* Debug */,
+				0C27769D1BDE80EE004B15CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0C27769E1BDE80EE004B15CD /* Build configuration list for PBXNativeTarget "ChessAI" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0C27769F1BDE80EE004B15CD /* Debug */,
+				0C2776A01BDE80EE004B15CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		0C2776A11BDE80EE004B15CD /* Build configuration list for PBXNativeTarget "ChessAITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0C2776A21BDE80EE004B15CD /* Debug */,
+				0C2776A31BDE80EE004B15CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		0C2776A41BDE80EE004B15CD /* Build configuration list for PBXNativeTarget "ChessAIUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0C2776A51BDE80EE004B15CD /* Debug */,
+				0C2776A61BDE80EE004B15CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0C27766F1BDE80EE004B15CD /* Project object */;
+}
