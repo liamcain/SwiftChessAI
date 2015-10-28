@@ -2,7 +2,7 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "Spaceship.png",
+      "filename" : "board-piece.png",
       "scale" : "1x"
     },
     {

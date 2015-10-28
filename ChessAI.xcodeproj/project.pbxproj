@@ -14,6 +14,10 @@
 		0C2776841BDE80EE004B15CD /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0C2776821BDE80EE004B15CD /* MainMenu.xib */; };
 		0C27768F1BDE80EE004B15CD /* ChessAITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C27768E1BDE80EE004B15CD /* ChessAITests.swift */; };
 		0C27769A1BDE80EE004B15CD /* ChessAIUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C2776991BDE80EE004B15CD /* ChessAIUITests.swift */; };
+		0CAC4AF51BE0227500CBCB2B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CAC4AF41BE0227500CBCB2B /* Constants.swift */; };
+		0CBAB73C1BDEE503009BD21B /* Board.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CBAB73B1BDEE503009BD21B /* Board.swift */; };
+		0CBAB73E1BDEE6DD009BD21B /* Piece.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CBAB73D1BDEE6DD009BD21B /* Piece.swift */; };
+		0CC3FEFF1BDFCC6600E73196 /* Pawn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CC3FEFE1BDFCC6600E73196 /* Pawn.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +51,10 @@
 		0C2776951BDE80EE004B15CD /* ChessAIUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChessAIUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C2776991BDE80EE004B15CD /* ChessAIUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChessAIUITests.swift; sourceTree = "<group>"; };
 		0C27769B1BDE80EE004B15CD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0CAC4AF41BE0227500CBCB2B /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		0CBAB73B1BDEE503009BD21B /* Board.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Board.swift; sourceTree = "<group>"; };
+		0CBAB73D1BDEE6DD009BD21B /* Piece.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Piece.swift; sourceTree = "<group>"; };
+		0CC3FEFE1BDFCC6600E73196 /* Pawn.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Pawn.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +107,9 @@
 			children = (
 				0C27767A1BDE80EE004B15CD /* AppDelegate.swift */,
 				0C27767C1BDE80EE004B15CD /* GameScene.swift */,
+				0CAC4AF41BE0227500CBCB2B /* Constants.swift */,
+				0CC3FEFD1BDFCC5000E73196 /* Pieces */,
+				0CBAB73B1BDEE503009BD21B /* Board.swift */,
 				0C27767E1BDE80EE004B15CD /* GameScene.sks */,
 				0C2776801BDE80EE004B15CD /* Assets.xcassets */,
 				0C2776821BDE80EE004B15CD /* MainMenu.xib */,
@@ -123,6 +134,15 @@
 				0C27769B1BDE80EE004B15CD /* Info.plist */,
 			);
 			path = ChessAIUITests;
+			sourceTree = "<group>";
+		};
+		0CC3FEFD1BDFCC5000E73196 /* Pieces */ = {
+			isa = PBXGroup;
+			children = (
+				0CBAB73D1BDEE6DD009BD21B /* Piece.swift */,
+				0CC3FEFE1BDFCC6600E73196 /* Pawn.swift */,
+			);
+			name = Pieces;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -256,8 +276,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0CBAB73E1BDEE6DD009BD21B /* Piece.swift in Sources */,
 				0C27767D1BDE80EE004B15CD /* GameScene.swift in Sources */,
 				0C27767B1BDE80EE004B15CD /* AppDelegate.swift in Sources */,
+				0CC3FEFF1BDFCC6600E73196 /* Pawn.swift in Sources */,
+				0CBAB73C1BDEE503009BD21B /* Board.swift in Sources */,
+				0CAC4AF51BE0227500CBCB2B /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -481,6 +505,7 @@
 				0C2776A01BDE80EE004B15CD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		0C2776A11BDE80EE004B15CD /* Build configuration list for PBXNativeTarget "ChessAITests" */ = {
 			isa = XCConfigurationList;
@@ -489,6 +514,7 @@
 				0C2776A31BDE80EE004B15CD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		0C2776A41BDE80EE004B15CD /* Build configuration list for PBXNativeTarget "ChessAIUITests" */ = {
 			isa = XCConfigurationList;
@@ -497,6 +523,7 @@
 				0C2776A61BDE80EE004B15CD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
