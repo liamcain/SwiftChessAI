@@ -14,10 +14,8 @@ class GameScene: SKScene {
     var activePiece: Piece?
     
     override func didMoveToView(view: SKView) {
-        /* Setup your scene here */
         board = Board()
         self.addChild(board!)
-        
     }
 
     override func mouseDown(theEvent: NSEvent) {
@@ -32,14 +30,14 @@ class GameScene: SKScene {
             }
         }
     }
+    
     override func mouseDragged(theEvent: NSEvent) {
         let location = theEvent.locationInNode(self)
         activePiece?.position = location
     }
     
     override func mouseUp(theEvent: NSEvent) {
-        // snap to closest position
-        // snap back
+        // Todo: snap back
         if activePiece != nil {
             board?.snapToSpace(activePiece!)
             activePiece?.zPosition = ZPOSITION_INACTIVE_PIECE
