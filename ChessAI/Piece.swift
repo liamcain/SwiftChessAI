@@ -32,6 +32,7 @@ class Piece: SKSpriteNode {
         self.type = type
         
         super.init(texture: texture, color: SKColor.clearColor(), size: texture.size())
+        self.zPosition = ZPOSITION_INACTIVE_PIECE
     }
 
     required init?(coder aDecoder: NSCoder) {

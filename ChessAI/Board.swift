@@ -26,7 +26,7 @@ class Board: SKNode {
                     space.color = SKColor.redColor()
                     space.zPosition = ZPOSITION_BOARD_SPACE
                 }
-                addChild(space);
+                addChild(space)
             }
             pieces.append(row)
         }
@@ -61,42 +61,8 @@ class Board: SKNode {
     }
     
     func reset() {
-        self.clearBoard();
-       /*
-        // White Pawns
-        for i in 0...7 {
-            let p = Pawn(side: Piece.Side.WHITE)
-            p.position = positionOnBoard(i, y: 1)
-            p.zPosition = ZPOSITION_INACTIVE_PIECE
-            pieces[i][1] = p
-            addChild(p)
-        }
-        
-        // Black Pawns
-        for i in 0...7 {
-            let p = Pawn(side: Piece.Side.BLACK)
-            p.position = positionOnBoard(i, y: 6)
-            p.zPosition = ZPOSITION_INACTIVE_PIECE
-            pieces[i][6] = p
-            addChild(p)
-        }
-        
-        // Rooks
-        let r1 = Rook(side: Piece.Side.WHITE)
-        r1.position = positionOnBoard(7, y: 0)
-        addChild(r1)
-        let r2 = Rook(side: Piece.Side.WHITE)
-        r2.position = positionOnBoard(0, y: 0)
-        addChild(r2)
-        let r3 = Rook(side: Piece.Side.BLACK)
-        r3.position = positionOnBoard(7, y: 7)
-        addChild(r3)
-        let r4 = Rook(side: Piece.Side.BLACK)
-        r4.position = positionOnBoard(0, y: 7)
-        addChild(r4)
-*/
+        self.clearBoard()
         self.updateFromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
-        // self.updateFromFEN("r3r3/pp1k2pp/3pb3/5p2/3Np3/5P2/PPP3PP/3RR1K1 w - - 30 16")
     }
     
     func pointToSpace(pt: CGPoint) -> (Int, Int) {
@@ -113,10 +79,10 @@ class Board: SKNode {
         // 0 - describes the board position by rank
         let fenParameters = fenString.componentsSeparatedByString(" ")
         let ranks = fenParameters[0].componentsSeparatedByString("/")
-        var i = 0;
-        var j = 7;
+        var i = 0
+        var j = 7
         for rank in ranks {
-            for c in rank{
+            for c in rank.characters {
                 switch c {
                 case "p":
                     self.pieces[i++][j] = Pawn(side: Piece.Side.BLACK)
@@ -124,35 +90,35 @@ class Board: SKNode {
                     self.pieces[i++][j] = Pawn(side: Piece.Side.WHITE)
                 case "r":
                     self.pieces[i++][j] = Rook(side: Piece.Side.BLACK)
-                case "n":
-                    self.pieces[i++][j] = Knight(side: Piece.Side.BLACK)
-                case "b":
-                    self.pieces[i++][j] = Bishop(side: Piece.Side.BLACK)
-                case "k":
-                    self.pieces[i++][j] = King(side: Piece.Side.BLACK)
-                case "q":
-                    self.pieces[i++][j] = Queen(side: Piece.Side.BLACK)
                 case "R":
                     self.pieces[i++][j] = Rook(side: Piece.Side.WHITE)
+                case "n":
+                    self.pieces[i++][j] = Knight(side: Piece.Side.BLACK)
                 case "N":
                     self.pieces[i++][j] = Knight(side: Piece.Side.WHITE)
+                case "b":
+                    self.pieces[i++][j] = Bishop(side: Piece.Side.BLACK)
                 case "B":
                     self.pieces[i++][j] = Bishop(side: Piece.Side.WHITE)
+                case "k":
+                    self.pieces[i++][j] = King(side: Piece.Side.BLACK)
                 case "K":
                     self.pieces[i++][j] = King(side: Piece.Side.WHITE)
+                case "q":
+                    self.pieces[i++][j] = Queen(side: Piece.Side.BLACK)
                 case "Q":
                     self.pieces[i++][j] = Queen(side: Piece.Side.WHITE)
                 default:
                     let tempString = String(c)
-                    if let numOfBlankSpaces = tempString.toInt(){
+                    if let numOfBlankSpaces = Int(tempString) {
                         for _ in 1...numOfBlankSpaces {
                             self.pieces[i++][j] = nil
                         }
                     }
                 }
                 if(i == 8){
-                    j--;
-                    i = 0;
+                    j--
+                    i = 0
                 }
             }
         }
@@ -167,9 +133,9 @@ class Board: SKNode {
         self.clearBoard()
         for i in 0...7 {
             for j in 0...7 {
-                if let piece = pieces[i][j]{
-                    piece.position = positionOnBoard(i,y: j)
-                    addChild(piece);
+                if let piece = pieces[i][j] {
+                    piece.position = positionOnBoard(i, y: j)
+                    addChild(piece)
                 }
             }
             
@@ -181,8 +147,8 @@ class Board: SKNode {
     }
     
     func pgnMove(moveString: String){
-        let move = moveString.componentsSeparatedByString("-")
-        let startString = move[0]
-        let endString = move[1]
+//        let move = moveString.componentsSeparatedByString("-")
+//        let startString = move[0]
+//        let endString = move[1]
     }
 }
