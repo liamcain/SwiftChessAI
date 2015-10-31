@@ -9,7 +9,7 @@
 import SpriteKit
 
 class Board: SKNode {
-   
+    
     var pieces: [[Piece?]] = [[Piece?]]()
     
     override init() {
@@ -42,7 +42,7 @@ class Board: SKNode {
         
         let pt = CGPoint(x: roundedX, y: roundedY)
         let space = pointToSpace(pt)
-       
+        
         let pieceAtSpace = pieces[space.0][space.1]
         if pieceAtSpace != nil && pieceAtSpace != piece {
             pieceAtSpace?.removeFromParent()
@@ -52,15 +52,17 @@ class Board: SKNode {
         piece.position = pt
     }
     
-    
-    func reset() {
-        // Delete all pieces
+    func clearBoard(){
         for row in pieces {
             for piece in row {
                 piece?.removeFromParent()
             }
         }
-        
+    }
+    
+    func reset() {
+        self.clearBoard();
+       /*
         // White Pawns
         for i in 0...7 {
             let p = Pawn(side: Piece.Side.WHITE)
@@ -92,6 +94,9 @@ class Board: SKNode {
         let r4 = Rook(side: Piece.Side.BLACK)
         r4.position = positionOnBoard(0, y: 7)
         addChild(r4)
+*/
+        self.updateFromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+        // self.updateFromFEN("r3r3/pp1k2pp/3pb3/5p2/3Np3/5P2/PPP3PP/3RR1K1 w - - 30 16")
     }
     
     func pointToSpace(pt: CGPoint) -> (Int, Int) {
@@ -103,9 +108,81 @@ class Board: SKNode {
     func positionOnBoard(x: Int, y: Int) -> CGPoint {
         return CGPoint(x: x * 100 + 50, y: y * 100 + 50)
     }
-
+    
+    func loadPositionFromFEN(fenString: String){
+        // 0 - describes the board position by rank
+        let fenParameters = fenString.componentsSeparatedByString(" ")
+        let ranks = fenParameters[0].componentsSeparatedByString("/")
+        var i = 0;
+        var j = 7;
+        for rank in ranks {
+            for c in rank{
+                switch c {
+                case "p":
+                    self.pieces[i++][j] = Pawn(side: Piece.Side.BLACK)
+                case "P":
+                    self.pieces[i++][j] = Pawn(side: Piece.Side.WHITE)
+                case "r":
+                    self.pieces[i++][j] = Rook(side: Piece.Side.BLACK)
+                case "n":
+                    self.pieces[i++][j] = Knight(side: Piece.Side.BLACK)
+                case "b":
+                    self.pieces[i++][j] = Bishop(side: Piece.Side.BLACK)
+                case "k":
+                    self.pieces[i++][j] = King(side: Piece.Side.BLACK)
+                case "q":
+                    self.pieces[i++][j] = Queen(side: Piece.Side.BLACK)
+                case "R":
+                    self.pieces[i++][j] = Rook(side: Piece.Side.WHITE)
+                case "N":
+                    self.pieces[i++][j] = Knight(side: Piece.Side.WHITE)
+                case "B":
+                    self.pieces[i++][j] = Bishop(side: Piece.Side.WHITE)
+                case "K":
+                    self.pieces[i++][j] = King(side: Piece.Side.WHITE)
+                case "Q":
+                    self.pieces[i++][j] = Queen(side: Piece.Side.WHITE)
+                default:
+                    let tempString = String(c)
+                    if let numOfBlankSpaces = tempString.toInt(){
+                        for _ in 1...numOfBlankSpaces {
+                            self.pieces[i++][j] = nil
+                        }
+                    }
+                }
+                if(i == 8){
+                    j--;
+                    i = 0;
+                }
+            }
+        }
+    }
+    
+    func updateFromFEN(fenString: String){
+        self.loadPositionFromFEN(fenString)
+        self.syncDisplay()
+    }
+    
+    func syncDisplay(){
+        self.clearBoard()
+        for i in 0...7 {
+            for j in 0...7 {
+                if let piece = pieces[i][j]{
+                    piece.position = positionOnBoard(i,y: j)
+                    addChild(piece);
+                }
+            }
+            
+        }
+    }
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func pgnMove(moveString: String){
+        let move = moveString.componentsSeparatedByString("-")
+        let startString = move[0]
+        let endString = move[1]
+    }
 }
