@@ -122,17 +122,17 @@ class Game {
     
     
     func update_setup(fen: String) {
-        if history.length > 0 {
+        if history.count > 0 {
             return
         }
         
-        if fen !== DEFAULT_POSITION {
-            header["SetUp"] = "1"
-            header["FEN"] = fen
-        } else {
-            delete header["SetUp"]
-            delete header["FEN"]
-        }
+//        if fen !== DEFAULT_POSITION {
+//            header["SetUp"] = "1"
+//            header["FEN"] = fen
+//        } else {
+//            delete header["SetUp"]
+//            delete header["FEN"]
+//        }
     }
     
     func build_move(board: [Int], from: Int, to: Int, flags: Int, promotion: Int) -> Dictionary<String, AnyObject> {
@@ -174,7 +174,7 @@ class Game {
         return c == WHITE ? BLACK : WHITE
     }
     
-    func generate_moves(options: Array<String>) -> Array<Int> {
+    func generate_moves(options: Dictionary<String>) -> Array<Int> {
         func add_move(board: Array<Int>, moves: Array<Int>, from: Int, to: Int, flags: Int) {
             /* if pawn promotion */
             if (board[from]["type"] == PAWN &&
@@ -198,11 +198,11 @@ class Game {
         var single_square = false
         
         /* do we want legal moves? */
-        let legal = (typeof options !== "undefined" && "legal" in options) ? options.legal : true;
+        let legal = contains(options, "legal") ? options["legal"] : true;
         
         /* are we generating moves for a single square? */
-        if typeof options !== "undefined" && "square" in options {
-            if options.square in SQUARES {
+        if contains(options, "legal") {
+            if contains(SQUARES, options["square"]) {
                 first_sq = last_sq = SQUARES[options["square"]]
                 single_square = true
             } else {
@@ -211,22 +211,22 @@ class Game {
             }
         }
         
-        for var i = first_sq; i <= last_sq; i++ {
+        for var i = first_sq!; i <= last_sq!; i++ {
             /* did we run off the end of the board */
             if i & 0x88 {
-                i += 7;
-                continue;
+                i += 7
+                continue
             }
             
-            let piece = board[i];
-            if piece == null || piece.color !== us {
-                continue;
+            let piece = board[i]
+            if piece["color"] !== us {
+                continue
             }
             
-            if (piece.type === PAWN) {
+            if (piece["type"] === PAWN) {
                 /* single square, non-capturing */
-                let square = i + PAWN_OFFSETS[us][0];
-                if (board[square] == null) {
+                let square = i + PAWN_OFFSETS[us][0]
+                if (board[square] == nil) {
                     add_move(board, moves, i, square, BITS.NORMAL);
                     
                     /* double square */
@@ -237,17 +237,17 @@ class Game {
                 }
                 
                 /* pawn captures */
-                for j = 2; j < 4; j++ {
-                    let square = i + PAWN_OFFSETS[us][j];
+                for var j = 2; j < 4; j++ {
+                    let square = i + PAWN_OFFSETS[us][j]
                     if square & 0x88 {
                         continue
                     }
                     
-                    if (board[square] != null &&
+                    if (board[square] != nil &&
                         board[square].color === them) {
                             add_move(board, moves, i, square, BITS.CAPTURE);
                     } else if (square === ep_square) {
-                        add_move(board, moves, i, ep_square, BITS.EP_CAPTURE);
+                        add_move(board, moves as! Array<Int>, i, ep_square, BITS.EP_CAPTURE);
                     }
                 }
             } else {
@@ -282,35 +282,24 @@ class Game {
         /* check for castling if: a) we're generating all moves, or b) we're doing
         * single square move generation on the king's square
         */
-        if ((!single_square) || last_sq === kings[us]) {
+        if !single_square || last_sq == kings[us] {
             /* king-side castling */
-            if (castling[us] & BITS.KSIDE_CASTLE) {
-                let castling_from = kings[us];
-                let castling_to = castling_from + 2;
+            if (castling[us]! & BITS.KSIDE_CASTLE.rawValue) {
+                let castling_from = kings[us]
+                let castling_to = castling_from! + 2
                 
-                if (board[castling_from + 1] == null &&
-                    board[castling_to]       == null &&
-                    !attacked(them, kings[us]) &&
-                    !attacked(them, castling_from + 1) &&
-                    !attacked(them, castling_to)) {
-                        add_move(board, moves, kings[us] , castling_to,
-                            BITS.KSIDE_CASTLE);
+                if (board[castling_from + 1] == nil && board[castling_to] == nil && !attacked(them, kings[us]) && !attacked(them, castling_from + 1) && !attacked(them, castling_to)) {
+                        add_move(board, moves: moves as! Array<Int>, from: kings[us]! , to: castling_to, flags: BITS.KSIDE_CASTLE.rawValue)
                 }
             }
             
             /* queen-side castling */
-            if (castling[us] & BITS.QSIDE_CASTLE) {
+            if (castling[us]! & BITS.QSIDE_CASTLE.rawValue) {
                 let castling_from = kings[us];
-                let castling_to = castling_from - 2;
+                let castling_to = castling_from! - 2
                 
-                if (board[castling_from - 1] == null &&
-                    board[castling_from - 2] == null &&
-                    board[castling_from - 3] == null &&
-                    !attacked(them, kings[us]) &&
-                    !attacked(them, castling_from - 1) &&
-                    !attacked(them, castling_to)) {
-                        add_move(board, moves, kings[us], castling_to,
-                            BITS.QSIDE_CASTLE);
+                if (board[castling_from - 1] == nil && board[castling_from - 2] == nil && board[castling_from - 3] == nil && !attacked(them, kings[us]) && !attacked(them, castling_from - 1) && !attacked(them, castling_to)) {
+                        add_move(board, moves: moves as! Array<Int>, from: kings[us]!, to: castling_to, flags: BITS.QSIDE_CASTLE.rawValue)
                 }
             }
         }
@@ -319,20 +308,20 @@ class Game {
         * to be captured)
         */
         if (!legal) {
-            return moves;
+            return moves as! Array<Int>
         }
         
         /* filter out illegal moves */
-        let legal_moves = [];
-        for (let i = 0, len = moves.length; i < len; i++) {
-            make_move(moves[i]);
-            if (!king_attacked(us)) {
-                legal_moves.push(moves[i]);
+        let legal_moves = []
+        for var i = 0, len = moves.count; i < len; i++ {
+            make_move(moves[i])
+            if !king_attacked(us) {
+                legal_moves.push(moves[i])
             }
-            undo_move();
+            undo_move()
         }
         
-        return legal_moves;
+        return legal_moves as! Array<Int>
     }
     
 }
