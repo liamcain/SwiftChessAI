@@ -60,10 +60,10 @@ class Game {
         turn = (turn == GamePiece.Side.WHITE) ? GamePiece.Side.BLACK : GamePiece.Side.WHITE
     }
     
-    func loadFromFen(fen: String) {
+    func loadFromFen(fen: String) -> Bool {
         let tokens = fen.componentsSeparatedByString(" ")
-        let position = tokens[0]
-        let square = 0
+        var position = Array(arrayLiteral: tokens[0])
+        var square = 0
         
         //        if !validate_fen(fen).valid {
         //            return false
@@ -71,38 +71,43 @@ class Game {
         
         clear()
         
-        for let i = 0; i < position.length; i++ {
-            let piece = position.charAt(i);
+        for var i = 0; i < position.count; i++ {
+            let piece = position[i]
             
             if piece == "/" {
-                square += 8;
-            } else if is_digit(piece) {
-                square += parseInt(piece, 10);
+                square += 8
+            } else if let pieceValue = Int(piece) {
+                square += pieceValue
             } else {
-                let color = (piece < "a") ? WHITE : BLACK;
-                put(["type": piece.toLowerCase(), "color": color], algebraic(square));
-                square++;
+//                let color = (piece < "a") ? GamePiece.Side.WHITE : GamePiece.Side.BLACK
+//                put(["type": piece.toLowerCase(), "color": color], algebraic(square))
+                square++
             }
         }
         
-        turn = tokens[1]
+        turn = tokens[1] == "w" ? GamePiece.Side.WHITE : GamePiece.Side.BLACK
+
         
-        if tokens[2].indexOf("K") > -1 {
-            castling["b"]! |= BITS.KSIDE_CASTLE.rawValue;
+        if tokens[2].rangeOfString("K") != nil {
+            castling["b"]! |= BITS.KSIDE_CASTLE.rawValue
         }
-        if tokens[2].indexOf("Q") > -1 {
-            castling["w"]! |= BITS.QSIDE_CASTLE.rawValue;
+        if tokens[2].rangeOfString("Q") != nil {
+            castling["w"]! |= BITS.QSIDE_CASTLE.rawValue
         }
-        if tokens[2].indexOf("k") > -1 {
-            castling["b"]! |= BITS.KSIDE_CASTLE.rawValue;
+        if tokens[2].rangeOfString("k") != nil {
+            castling["b"]! |= BITS.KSIDE_CASTLE.rawValue
         }
-        if tokens[2].indexOf("q") > -1 {
-            castling["b"]! |= BITS.QSIDE_CASTLE.rawValue;
+        if tokens[2].rangeOfString("q") != nil {
+            castling["b"]! |= BITS.QSIDE_CASTLE.rawValue
         }
         
-        ep_square = (tokens[3] == "-") ? EMPTY : SQUARES[tokens[3]]
-        half_moves = Int(tokens[4])
-        move_number = Int(tokens[5])
+        if tokens[3] == "-" {
+            ep_square = EMPTY
+        } else {
+            ep_square = board.SQUARES[tokens[3]]!
+        }
+        half_moves = Int(tokens[4])!
+        move_number = Int(tokens[5])!
         
         update_setup(generate_fen())
         
@@ -125,14 +130,14 @@ class Game {
         //        }
     }
     
-    func build_move(from: Int, to: Int, flag: GameMove.Flag, promotionPiece: GamePiece) -> Dictionary<String, AnyObject> {
-        var move = GameMove(side: turn, fromIndex: from, toIndex: to, flag: flag, promotionPiece: promotionPiece)
+    func build_move(from: Int, to: Int, flag: GameMove.Flag, promotionPiece: GamePiece) -> GameMove {
+//        var move = GameMove(side: turn, fromIndex: from, toIndex: to, flag: flag, promotionPiece: promotionPiece)
         
-        if board[to] > -1 {
-            move.captured = board[to].type;
-        } else if flags & BITS.EP_CAPTURE.rawValue {
-            move.captured = PAWN;
-        }
+//        if board[to] > -1 {
+//            move.captured = board[to].type
+//        } else if flags & BITS.EP_CAPTURE.rawValue {
+//            move.captured = GamePiece.Type.PAWN
+//        }
         return move
     }
     
@@ -149,22 +154,21 @@ class Game {
         return "abcdefgh".substringWithRange(NSRange(location: f, length: 1)) + "87654321".substringWithRange(NSRange(location: r, length: 1))
     }
     
-    func swap_color(c: String) -> String {
-        return c == WHITE ? BLACK : WHITE
+    func swap_color(c: GamePiece.Side) -> GamePiece.Side {
+        return c == GamePiece.Side.WHITE ? GamePiece.Side.BLACK : GamePiece.Side.WHITE
     }
     
-    func generate_moves(options: Dictionary<String, String>) -> Array<Int> {
+    func generate_moves(options: Dictionary<String, AnyObject>) -> Array<Int> {
         func add_move(board: Dictionary<Int, GamePiece>, moves: Array<Int>, from: Int, to: Int, flags: Int) {
             /* if pawn promotion */
-            if (board[from]!.type == PAWN &&
-                (rank(to) == RANK_8 || rank(to) == RANK_1)) {
-                    let pieces = [QUEEN, ROOK, BISHOP, KNIGHT]
-                    for var i = 0; len = pieces.length; i < len; i++ {
-                        moves.push(build_move(board, from, to, flags, pieces[i]));
-                    }
-            } else {
-                moves.push(build_move(board, from, to, flags))
-            }
+//            if board[from]!.type == GamePiece.Type.PAWN && (rank(to) == RANK_8 || rank(to) == RANK_1) {
+//                    let pieces = [GamePiece.Type.QUEEN, GamePiece.Type.ROOK, GamePiece.Type.BISHOP, GamePiece.Type.KNIGHT]
+//                    for var i = 0; len = pieces.length; i < len; i++ {
+//                        moves.push(build_move(board, from, to, flags, pieces[i]));
+//                    }
+//            } else {
+//                moves.add(build_move(board, from, to, flags))
+//            }
         }
         
         let moves = []
@@ -172,17 +176,20 @@ class Game {
         let them = swap_color(us)
         let second_rank = ["b": RANK_7, "w": RANK_2]
         
-        var first_sq = SQUARES["a8"]
-        var last_sq = SQUARES["h1"]
+        var first_sq = board.SQUARES["a8"]
+        var last_sq = board.SQUARES["h1"]
         var single_square = false
         
         /* do we want legal moves? */
-        let legal = contains(options, "legal") ? options["legal"] : true;
+        var legal = true
+        if options["legal"] != nil {
+            legal = options["legal"]
+        }
         
         /* are we generating moves for a single square? */
-        if contains(options, "legal") {
-            if contains(SQUARES, options["square"]) {
-                first_sq = last_sq = SQUARES[options["square"]]
+        if options["legal"] != nil {
+            if options["square"] != nil {
+                first_sq = last_sq = board.SQUARES[options["square"]! as! String]
                 single_square = true
             } else {
                 /* invalid square */
