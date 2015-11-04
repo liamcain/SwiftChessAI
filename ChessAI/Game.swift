@@ -7,7 +7,7 @@ class Game {
     
     let EMPTY = -1
     
-    // TODO change to type enum
+    // TODO change to type enum from GamePiece
     let PAWN = "p"
     let KNIGHT = "n"
     let BISHOP = "b"
@@ -86,7 +86,7 @@ class Game {
         for let i = 0; i < position.length; i++ {
             let piece = position.charAt(i);
             
-            if piece === "/" {
+            if piece == "/" {
                 square += 8;
             } else if is_digit(piece) {
                 square += parseInt(piece, 10);
@@ -112,7 +112,7 @@ class Game {
             castling["b"]! |= BITS.QSIDE_CASTLE.rawValue;
         }
         
-        ep_square = (tokens[3] === "-") ? EMPTY : SQUARES[tokens[3]]
+        ep_square = (tokens[3] == "-") ? EMPTY : SQUARES[tokens[3]]
         half_moves = Int(tokens[4])
         move_number = Int(tokens[5])
         
@@ -127,7 +127,7 @@ class Game {
             return
         }
         
-//        if fen !== DEFAULT_POSITION {
+//        if fen != DEFAULT_POSITION {
 //            header["SetUp"] = "1"
 //            header["FEN"] = fen
 //        } else {
@@ -136,13 +136,13 @@ class Game {
 //        }
     }
     
-    func build_move(board: [Int], from: Int, to: Int, flags: Int, promotion: Int) -> Dictionary<String, AnyObject> {
+    func build_move(board: Dictionary<Int, Piece>, from: Int, to: Int, flags: Int, promotion: Int) -> Dictionary<String, AnyObject> {
         var move = [
             "color": turn,
             "from": from,
             "to": to,
             "flags": flags,
-            "piece": board[from]["type"]
+            "piece": board[from]!.type
         ]
     
         if promotion > -1{
@@ -220,11 +220,11 @@ class Game {
             }
             
             let piece = board[i]
-            if piece["color"] !== us {
+            if piece["color"] != us {
                 continue
             }
             
-            if (piece["type"] === PAWN) {
+            if (piece["type"] == PAWN) {
                 /* single square, non-capturing */
                 let square = i + PAWN_OFFSETS[us][0]
                 if (board[square] == nil) {
@@ -232,7 +232,7 @@ class Game {
                     
                     /* double square */
                     let square = i + PAWN_OFFSETS[us][1];
-                    if (second_rank[us] === rank(i) && board[square] == nil) {
+                    if (second_rank[us] == rank(i) && board[square] == nil) {
                         add_move(board, moves, i, square, BITS.BIG_PAWN);
                     }
                 }
@@ -245,9 +245,9 @@ class Game {
                     }
                     
                     if (board[square] != nil &&
-                        board[square].color === them) {
+                        board[square].color == them) {
                             add_move(board, moves, i, square, BITS.CAPTURE);
-                    } else if (square === ep_square) {
+                    } else if (square == ep_square) {
                         add_move(board, moves as! Array<Int>, i, ep_square, BITS.EP_CAPTURE);
                     }
                 }
@@ -264,7 +264,7 @@ class Game {
                         if (board[square] == nil) {
                             add_move(board, moves, i, square, BITS.NORMAL)
                         } else {
-                            if (board[square].color === us) {
+                            if (board[square].color == us) {
                                 break
                             }
                             add_move(board, moves, i, square, BITS.CAPTURE)
@@ -272,7 +272,7 @@ class Game {
                         }
                         
                         /* break, if knight or king */
-                        if (piece.type === "n" || piece.type === "k") {
+                        if (piece.type == "n" || piece.type === "k") {
                              break
                         }
                     }

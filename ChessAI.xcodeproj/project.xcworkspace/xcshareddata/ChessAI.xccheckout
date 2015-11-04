@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>8848D5A2-44E5-414C-A8E8-85C4F3362AAB</string>
+	<key>IDESourceControlProjectName</key>
+	<string>ChessAI</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>BB7F011CB0CDC33C2B281853F366B75C9D5861CE</key>
+		<string>https://github.com/BoundInCode/SwiftChessAI.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>ChessAI.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>BB7F011CB0CDC33C2B281853F366B75C9D5861CE</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/BoundInCode/SwiftChessAI.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>BB7F011CB0CDC33C2B281853F366B75C9D5861CE</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>BB7F011CB0CDC33C2B281853F366B75C9D5861CE</string>
+			<key>IDESourceControlWCCName</key>
+			<string>SwiftChessAI</string>
+		</dict>
+	</array>
+</dict>
+</plist>
