@@ -10,6 +10,8 @@ import SpriteKit
 
 class Board: SKNode {
     
+    var DEFAULT_POSITION = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+    
     var pieces: [[Piece?]] = [[Piece?]]()
     
     override init() {
@@ -62,7 +64,7 @@ class Board: SKNode {
     
     func reset() {
         self.clearBoard()
-        self.updateFromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+        self.updateFromFEN(DEFAULT_POSITION)
     }
     
     func pointToSpace(pt: CGPoint) -> (Int, Int) {

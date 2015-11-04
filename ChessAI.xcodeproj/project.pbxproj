@@ -24,6 +24,8 @@
 		0CFCA5431BE29FB7008A3025 /* Bishop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CFCA5421BE29FB7008A3025 /* Bishop.swift */; };
 		0CFCA5451BE29FC2008A3025 /* Knight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CFCA5441BE29FC2008A3025 /* Knight.swift */; };
 		43E1446D1BEA798A008B9EC8 /* GamePiece.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E1446C1BEA798A008B9EC8 /* GamePiece.swift */; };
+		43E1446F1BEAA44D008B9EC8 /* GameBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E1446E1BEAA44D008B9EC8 /* GameBoard.swift */; };
+		43E144711BEAAC7F008B9EC8 /* GameMove.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E144701BEAAC7F008B9EC8 /* GameMove.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,6 +69,8 @@
 		0CFCA5421BE29FB7008A3025 /* Bishop.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bishop.swift; sourceTree = "<group>"; };
 		0CFCA5441BE29FC2008A3025 /* Knight.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Knight.swift; sourceTree = "<group>"; };
 		43E1446C1BEA798A008B9EC8 /* GamePiece.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GamePiece.swift; sourceTree = "<group>"; };
+		43E1446E1BEAA44D008B9EC8 /* GameBoard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameBoard.swift; sourceTree = "<group>"; };
+		43E144701BEAAC7F008B9EC8 /* GameMove.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameMove.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -161,6 +165,8 @@
 			children = (
 				0CAB2F2E1BE1780500315BD9 /* Game.swift */,
 				43E1446C1BEA798A008B9EC8 /* GamePiece.swift */,
+				43E1446E1BEAA44D008B9EC8 /* GameBoard.swift */,
+				43E144701BEAAC7F008B9EC8 /* GameMove.swift */,
 			);
 			name = "Game Logic";
 			sourceTree = "<group>";
@@ -319,6 +325,7 @@
 			files = (
 				0CFCA53D1BE29FA0008A3025 /* Rook.swift in Sources */,
 				43E1446D1BEA798A008B9EC8 /* GamePiece.swift in Sources */,
+				43E144711BEAAC7F008B9EC8 /* GameMove.swift in Sources */,
 				0CBAB73E1BDEE6DD009BD21B /* Piece.swift in Sources */,
 				0C27767D1BDE80EE004B15CD /* GameScene.swift in Sources */,
 				0CFCA5431BE29FB7008A3025 /* Bishop.swift in Sources */,
@@ -327,6 +334,7 @@
 				0CFCA5411BE29FB0008A3025 /* King.swift in Sources */,
 				0CAB2F2F1BE1780500315BD9 /* Game.swift in Sources */,
 				0C27767B1BDE80EE004B15CD /* AppDelegate.swift in Sources */,
+				43E1446F1BEAA44D008B9EC8 /* GameBoard.swift in Sources */,
 				0CC3FEFF1BDFCC6600E73196 /* Pawn.swift in Sources */,
 				0CBAB73C1BDEE503009BD21B /* Board.swift in Sources */,
 				0CAC4AF51BE0227500CBCB2B /* Constants.swift in Sources */,

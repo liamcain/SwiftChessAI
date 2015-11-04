@@ -1,32 +1,22 @@
 import Foundation
-import GamePiece
 
 class Game {
     
-    let BLACK = "b"
-    let WHITE = "w"
     
     let EMPTY = -1
     
-    // TODO change to type enum from GamePiece
-    let PAWN = "p"
-    let KNIGHT = "n"
-    let BISHOP = "b"
-    let ROOK = "r"
-    let QUEEN = "q"
-    let KING = "k"
-    
-    // TODO init board:
-    var board = Dictionary<Int, GamePiece>
+    var board = GameBoard();
     
     var kings = ["w": -1, "b": -1]
-    var turn = "w"
+    var turn = GamePiece.Side.WHITE
     var castling = ["w": 0, "b": 0]
     var ep_square = -1
     var half_moves = 0
     var move_number = 1
     var history = []
     var header = {}
+    
+    let DEFAULT_POSITION = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
     
     enum BITS: Int {
         case NORMAL = 1
@@ -38,16 +28,7 @@ class Game {
         case QSIDE_CASTLE = 64
     };
     
-    let SQUARES = [
-        "a8":   0, "b8":   1, "c8":   2, "d8":   3, "e8":   4, "f8":   5, "g8":   6, "h8":   7,
-        "a7":  16, "b7":  17, "c7":  18, "d7":  19, "e7":  20, "f7":  21, "g7":  22, "h7":  23,
-        "a6":  32, "b6":  33, "c6":  34, "d6":  35, "e6":  36, "f6":  37, "g6":  38, "h6":  39,
-        "a5":  48, "b5":  49, "c5":  50, "d5":  51, "e5":  52, "f5":  53, "g5":  54, "h5":  55,
-        "a4":  64, "b4":  65, "c4":  66, "d4":  67, "e4":  68, "f4":  69, "g4":  70, "h4":  71,
-        "a3":  80, "b3":  81, "c3":  82, "d3":  83, "e3":  84, "f3":  85, "g3":  86, "h3":  87,
-        "a2":  96, "b2":  97, "c2":  98, "d2":  99, "e2": 100, "f2": 101, "g2": 102, "h2": 103,
-        "a1": 112, "b1": 113, "c1": 114, "d1": 115, "e1": 116, "f1": 117, "g1": 118, "h1": 119
-    ]
+    
     
     let RANK_1 = 7
     let RANK_2 = 6
@@ -59,30 +40,34 @@ class Game {
     let RANK_8 = 0
     
     func clear() {
-        board = Array(arrayLiteral: 128)
+        board = GameBoard();
         kings = ["w": EMPTY, "b": EMPTY]
-        turn = "w"
+        turn = GamePiece.Side.WHITE
         castling = ["w": 0, "b": 0]
         ep_square = EMPTY
         half_moves = 0
         move_number = 1
         history = []
-//        header = []
+        //        header = []
         update_setup(generate_fen())
     }
     
     func reset() {
-        load(DEFAULT_POSITION)
+        loadFromFen(DEFAULT_POSITION)
     }
-
-    func load(fen: String) -> bool {
+    
+    func endTurn() {
+        turn = (turn == GamePiece.Side.WHITE) ? GamePiece.Side.BLACK : GamePiece.Side.WHITE
+    }
+    
+    func loadFromFen(fen: String) {
         let tokens = fen.componentsSeparatedByString(" ")
         let position = tokens[0]
         let square = 0
         
-//        if !validate_fen(fen).valid {
-//            return false
-//        }
+        //        if !validate_fen(fen).valid {
+        //            return false
+        //        }
         
         clear()
         
@@ -124,51 +109,6 @@ class Game {
         return true
     }
     
-    func generate_fen() -> String {
-        var empty = 0
-        var fen = ""
-        
-        for var i = SQUARES["a8"]!; i <= SQUARES["h1"]!; i++ {
-            if (board[i] == nil) {
-                empty++
-            } else {
-                if (empty > 0) {
-                    fen += empty
-                    empty = 0
-                }
-                var color = board[i].color
-                var piece = board[i].type
-                
-                fen += (color === WHITE) ?
-                    piece.toUpperCase() : piece.toLowerCase()
-            }
-            
-            if (i + 1) & 0x88 {
-                if empty > 0 {
-                    fen += empty
-                }
-                
-                if (i !== SQUARES["h1"]) {
-                    fen += "/"
-                }
-                
-                empty = 0
-                i += 8
-            }
-        }
-        
-        var cflags = ""
-        if (castling[WHITE]! & BITS.KSIDE_CASTLE.rawValue) { cflags += "K" }
-        if (castling[WHITE]! & BITS.QSIDE_CASTLE.rawValue) { cflags += "Q" }
-        if (castling[BLACK]! & BITS.KSIDE_CASTLE.rawValue) { cflags += "k" }
-        if (castling[BLACK]! & BITS.QSIDE_CASTLE.rawValue) { cflags += "q" }
-        
-        /* do we have an empty castling flag? */
-        cflags = cflags || "-"
-        var epflags = (ep_square == EMPTY) ? "-" : algebraic(ep_square)
-        
-        return [fen, turn, cflags, epflags, half_moves, move_number].componentsJoinedByString(" ")
-    }
     
     
     func update_setup(fen: String) {
@@ -176,28 +116,17 @@ class Game {
             return
         }
         
-//        if fen != DEFAULT_POSITION {
-//            header["SetUp"] = "1"
-//            header["FEN"] = fen
-//        } else {
-//            delete header["SetUp"]
-//            delete header["FEN"]
-//        }
+        //        if fen != DEFAULT_POSITION {
+        //            header["SetUp"] = "1"
+        //            header["FEN"] = fen
+        //        } else {
+        //            delete header["SetUp"]
+        //            delete header["FEN"]
+        //        }
     }
     
-    func build_move(board: Dictionary<Int, GamePiece>, from: Int, to: Int, flags: Int, promotion: Int) -> Dictionary<String, AnyObject> {
-        var move = [
-            "color": turn,
-            "from": from,
-            "to": to,
-            "flags": flags,
-            "piece": board[from]!.type
-        ]
-    
-        if promotion > -1{
-            move.flags |= BITS.PROMOTION
-            move.promotion = promotion
-        }
+    func build_move(from: Int, to: Int, flag: GameMove.Flag, promotionPiece: GamePiece) -> Dictionary<String, AnyObject> {
+        var move = GameMove(side: turn, fromIndex: from, toIndex: to, flag: flag, promotionPiece: promotionPiece)
         
         if board[to] > -1 {
             move.captured = board[to].type;
@@ -275,7 +204,7 @@ class Game {
             }
             
             
-            if (piece.type == PAWN) {
+            if (piece.type == GamePiece.Type.PAWN) {
                 /* single square, non-capturing */
                 let square = i + offsetArray[us][0]
                 
@@ -324,8 +253,8 @@ class Game {
                         }
                         
                         /* break, if knight or king */
-                        if (piece.type == Type.KNIGHT || piece.type === Type.KING) {
-                             break
+                        if (piece.type == GamePiece.Type.KNIGHT || piece.type == GamePiece.Type.KING) {
+                            break
                         }
                     }
                 }
@@ -342,7 +271,7 @@ class Game {
                 let castling_to = castling_from! + 2
                 
                 if (board[castling_from + 1] == nil && board[castling_to] == nil && !attacked(them, kings[us]) && !attacked(them, castling_from + 1) && !attacked(them, castling_to)) {
-                        add_move(board, moves: moves as! Array<Int>, from: kings[us]! , to: castling_to, flags: BITS.KSIDE_CASTLE.rawValue)
+                    add_move(board, moves: moves as! Array<Int>, from: kings[us]! , to: castling_to, flags: BITS.KSIDE_CASTLE.rawValue)
                 }
             }
             
@@ -352,7 +281,7 @@ class Game {
                 let castling_to = castling_from! - 2
                 
                 if (board[castling_from - 1] == nil && board[castling_from - 2] == nil && board[castling_from - 3] == nil && !attacked(them, kings[us]) && !attacked(them, castling_from - 1) && !attacked(them, castling_to)) {
-                        add_move(board, moves: moves as! Array<Int>, from: kings[us]!, to: castling_to, flags: BITS.QSIDE_CASTLE.rawValue)
+                    add_move(board, moves: moves as! Array<Int>, from: kings[us]!, to: castling_to, flags: BITS.QSIDE_CASTLE.rawValue)
                 }
             }
         }
@@ -375,6 +304,54 @@ class Game {
         }
         
         return legal_moves as! Array<Int>
+    }
+    
+    
+    
+    func generate_fen() -> String {
+        var empty = 0
+        var fen = ""
+        
+        for var i = SQUARES["a8"]!; i <= SQUARES["h1"]!; i++ {
+            if (board[i] == nil) {
+                empty++
+            } else {
+                if (empty > 0) {
+                    fen += String(empty)
+                    empty = 0
+                }
+                var color = board[i].color
+                var piece = board[i].type
+                
+                fen += (color == WHITE) ?
+                    piece.toUpperCase() : piece.toLowerCase()
+            }
+            
+            if (i + 1) & 0x88 {
+                if empty > 0 {
+                    fen += String(empty)
+                }
+                
+                if (i != SQUARES["h1"]) {
+                    fen += "/"
+                }
+                
+                empty = 0
+                i += 8
+            }
+        }
+        
+        var cflags = ""
+        if (castling[WHITE]! & BITS.KSIDE_CASTLE.rawValue) { cflags += "K" }
+        if (castling[WHITE]! & BITS.QSIDE_CASTLE.rawValue) { cflags += "Q" }
+        if (castling[BLACK]! & BITS.KSIDE_CASTLE.rawValue) { cflags += "k" }
+        if (castling[BLACK]! & BITS.QSIDE_CASTLE.rawValue) { cflags += "q" }
+        
+        /* do we have an empty castling flag? */
+        cflags = cflags || "-"
+        var epflags = (ep_square == EMPTY) ? "-" : algebraic(ep_square)
+        
+        return [fen, turn, cflags, epflags, half_moves, move_number].componentsJoinedByString(" ")
     }
     
 }
