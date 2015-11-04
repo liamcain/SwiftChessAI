@@ -7,6 +7,7 @@ class Game {
     
     let EMPTY = -1
     
+    // TODO change to type enum
     let PAWN = "p"
     let KNIGHT = "n"
     let BISHOP = "b"
@@ -174,10 +175,10 @@ class Game {
         return c == WHITE ? BLACK : WHITE
     }
     
-    func generate_moves(options: Dictionary<String>) -> Array<Int> {
-        func add_move(board: Array<Int>, moves: Array<Int>, from: Int, to: Int, flags: Int) {
+    func generate_moves(options: Dictionary<String, String>) -> Array<Int> {
+        func add_move(board: Dictionary<Int, Piece>, moves: Array<Int>, from: Int, to: Int, flags: Int) {
             /* if pawn promotion */
-            if (board[from]["type"] == PAWN &&
+            if (board[from]!.type == PAWN &&
                 (rank(to) == RANK_8 || rank(to) == RANK_1)) {
                     let pieces = [QUEEN, ROOK, BISHOP, KNIGHT]
                     for var i = 0; len = pieces.length; i < len; i++ {
@@ -231,7 +232,7 @@ class Game {
                     
                     /* double square */
                     let square = i + PAWN_OFFSETS[us][1];
-                    if (second_rank[us] === rank(i) && board[square] == null) {
+                    if (second_rank[us] === rank(i) && board[square] == nil) {
                         add_move(board, moves, i, square, BITS.BIG_PAWN);
                     }
                 }
@@ -260,7 +261,7 @@ class Game {
                         if square & 0x88 {
                             break
                         }
-                        if (board[square] == null) {
+                        if (board[square] == nil) {
                             add_move(board, moves, i, square, BITS.NORMAL)
                         } else {
                             if (board[square].color === us) {
