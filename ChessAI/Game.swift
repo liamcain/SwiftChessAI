@@ -1,4 +1,5 @@
 import Foundation
+import GamePiece
 
 class Game {
     
@@ -15,7 +16,9 @@ class Game {
     let QUEEN = "q"
     let KING = "k"
     
-    var board = Array<Int>(arrayLiteral: 128)
+    // TODO init board:
+    var board = Dictionary<Int, GamePiece>
+    
     var kings = ["w": -1, "b": -1]
     var turn = "w"
     var castling = ["w": 0, "b": 0]
@@ -182,7 +185,7 @@ class Game {
 //        }
     }
     
-    func build_move(board: Dictionary<Int, Piece>, from: Int, to: Int, flags: Int, promotion: Int) -> Dictionary<String, AnyObject> {
+    func build_move(board: Dictionary<Int, GamePiece>, from: Int, to: Int, flags: Int, promotion: Int) -> Dictionary<String, AnyObject> {
         var move = [
             "color": turn,
             "from": from,
@@ -222,7 +225,7 @@ class Game {
     }
     
     func generate_moves(options: Dictionary<String, String>) -> Array<Int> {
-        func add_move(board: Dictionary<Int, Piece>, moves: Array<Int>, from: Int, to: Int, flags: Int) {
+        func add_move(board: Dictionary<Int, GamePiece>, moves: Array<Int>, from: Int, to: Int, flags: Int) {
             /* if pawn promotion */
             if (board[from]!.type == PAWN &&
                 (rank(to) == RANK_8 || rank(to) == RANK_1)) {
@@ -265,19 +268,22 @@ class Game {
                 continue
             }
             
-            let piece = board[i]
-            if piece["color"] != us {
+            let piece: GamePiece = board[i]
+            let offsetArray = piece.getOffsetArray();
+            if piece.side != us {
                 continue
             }
             
-            if (piece["type"] == PAWN) {
+            
+            if (piece.type == PAWN) {
                 /* single square, non-capturing */
-                let square = i + PAWN_OFFSETS[us][0]
+                let square = i + offsetArray[us][0]
+                
                 if (board[square] == nil) {
                     add_move(board, moves, i, square, BITS.NORMAL);
                     
                     /* double square */
-                    let square = i + PAWN_OFFSETS[us][1];
+                    let square = i + offsetArray[us][1];
                     if (second_rank[us] == rank(i) && board[square] == nil) {
                         add_move(board, moves, i, square, BITS.BIG_PAWN);
                     }
@@ -285,7 +291,7 @@ class Game {
                 
                 /* pawn captures */
                 for var j = 2; j < 4; j++ {
-                    let square = i + PAWN_OFFSETS[us][j]
+                    let square = i + offsetArray[us][j]
                     if square & 0x88 {
                         continue
                     }
@@ -298,8 +304,8 @@ class Game {
                     }
                 }
             } else {
-                for var j = 0, len = PIECE_OFFSETS[piece.type].length; j < len; j++ {
-                    let offset = PIECE_OFFSETS[piece.type][j];
+                for var j = 0, len = offsetArray[piece.type].length; j < len; j++ {
+                    let offset = offsetArray[piece.type][j];
                     let square = i;
                     
                     while (true) {
@@ -318,7 +324,7 @@ class Game {
                         }
                         
                         /* break, if knight or king */
-                        if (piece.type == "n" || piece.type === "k") {
+                        if (piece.type == Type.KNIGHT || piece.type === Type.KING) {
                              break
                         }
                     }
