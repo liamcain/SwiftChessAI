@@ -13,6 +13,7 @@
 		0C2776841BDE80EE004B15CD /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0C2776821BDE80EE004B15CD /* MainMenu.xib */; };
 		0C27768F1BDE80EE004B15CD /* ChessAITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C27768E1BDE80EE004B15CD /* ChessAITests.swift */; };
 		0C27769A1BDE80EE004B15CD /* ChessAIUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C2776991BDE80EE004B15CD /* ChessAIUITests.swift */; };
+		0C8783691BEBF407007F69DC /* GameOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C8783681BEBF407007F69DC /* GameOptions.swift */; };
 		0CAB2F2F1BE1780500315BD9 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CAB2F2E1BE1780500315BD9 /* Game.swift */; };
 		0CAC4AF51BE0227500CBCB2B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CAC4AF41BE0227500CBCB2B /* Constants.swift */; };
 		0CBAB73C1BDEE503009BD21B /* Board.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CBAB73B1BDEE503009BD21B /* Board.swift */; };
@@ -58,6 +59,7 @@
 		0C2776951BDE80EE004B15CD /* ChessAIUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChessAIUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C2776991BDE80EE004B15CD /* ChessAIUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChessAIUITests.swift; sourceTree = "<group>"; };
 		0C27769B1BDE80EE004B15CD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0C8783681BEBF407007F69DC /* GameOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameOptions.swift; sourceTree = "<group>"; };
 		0CAB2F2E1BE1780500315BD9 /* Game.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
 		0CAC4AF41BE0227500CBCB2B /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		0CBAB73B1BDEE503009BD21B /* Board.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Board.swift; sourceTree = "<group>"; };
@@ -167,6 +169,7 @@
 				43E1446C1BEA798A008B9EC8 /* GamePiece.swift */,
 				43E1446E1BEAA44D008B9EC8 /* GameBoard.swift */,
 				43E144701BEAAC7F008B9EC8 /* GameMove.swift */,
+				0C8783681BEBF407007F69DC /* GameOptions.swift */,
 			);
 			name = "Game Logic";
 			sourceTree = "<group>";
@@ -325,6 +328,7 @@
 			files = (
 				0CFCA53D1BE29FA0008A3025 /* Rook.swift in Sources */,
 				43E1446D1BEA798A008B9EC8 /* GamePiece.swift in Sources */,
+				0C8783691BEBF407007F69DC /* GameOptions.swift in Sources */,
 				43E144711BEAAC7F008B9EC8 /* GameMove.swift in Sources */,
 				0CBAB73E1BDEE6DD009BD21B /* Piece.swift in Sources */,
 				0C27767D1BDE80EE004B15CD /* GameScene.swift in Sources */,

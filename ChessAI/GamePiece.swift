@@ -31,14 +31,13 @@ class GamePiece {
         self.type = type
     }
     
-    func getOffsetArray(direction: Int) -> [Int]{
+    func getOffsetArray() -> [Int]{
         switch self.type {
             case Type.PAWN:
                 if self.side == Side.WHITE {
                     return [-16, -32, -17, -15]
                 } else {
                     return [16, 32, 17, 15]
-                    
                 }
             case Type.KNIGHT:
                 return [-18, -33, -31, -14,  18, 33, 31,  14]

@@ -5,7 +5,7 @@ class Game {
     
     let EMPTY = -1
     
-    var board = GameBoard();
+    var board = GameBoard()
     
     var kings = ["w": -1, "b": -1]
     var turn = GamePiece.Side.WHITE
@@ -16,7 +16,7 @@ class Game {
     var history = []
     var header = {}
     
-    let DEFAULT_POSITION = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+    let DEFAULT_POSITION = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
     
     enum BITS: Int {
         case NORMAL = 1
@@ -26,7 +26,7 @@ class Game {
         case PROMOTION = 16
         case KSIDE_CASTLE = 32
         case QSIDE_CASTLE = 64
-    };
+    }
     
     
     
@@ -40,7 +40,7 @@ class Game {
     let RANK_8 = 0
     
     func clear() {
-        board = GameBoard();
+        board = GameBoard()
         kings = ["w": EMPTY, "b": EMPTY]
         turn = GamePiece.Side.WHITE
         castling = ["w": 0, "b": 0]
@@ -185,8 +185,8 @@ class Game {
         return c == GamePiece.Side.WHITE ? GamePiece.Side.BLACK : GamePiece.Side.WHITE
     }
     
-    func generate_moves(options: Dictionary<String, AnyObject>) -> Array<Int> {
-        func add_move(board: Dictionary<Int, GamePiece>, moves: Array<Int>, from: Int, to: Int, flags: Int) {
+    func generate_moves(options: GameOptions) -> Array<Int> {
+        func add_move(board: GameBoard, moves: Array<Int>, from: Int, to: Int, flags: Int) {
             /* if pawn promotion */
 //            if board[from]!.type == GamePiece.Type.PAWN && (rank(to) == RANK_8 || rank(to) == RANK_1) {
 //                    let pieces = [GamePiece.Type.QUEEN, GamePiece.Type.ROOK, GamePiece.Type.BISHOP, GamePiece.Type.KNIGHT]
@@ -209,24 +209,25 @@ class Game {
         
         /* do we want legal moves? */
         var legal = true
-        if options["legal"] != nil {
-            legal = options["legal"]
+        if options.legal != nil {
+            legal = options.legal!
         }
         
         /* are we generating moves for a single square? */
-        if options["legal"] != nil {
-            if options["square"] != nil {
-                first_sq = last_sq = board.SQUARES[options["square"]! as! String]
+        if options.legal != nil {
+            if options.square != nil {
+                first_sq = board.SQUARES[options.square!]!
+                last_sq = board.SQUARES[options.square!]!
                 single_square = true
             } else {
                 /* invalid square */
-                return [];
+                return []
             }
         }
         
         for var i = first_sq!; i <= last_sq!; i++ {
             /* did we run off the end of the board */
-            if i & 0x88 {
+            if i & 0x88 > 0 {
                 i += 7
                 continue
             }
@@ -243,37 +244,36 @@ class Game {
                 let square = i + offsetArray[us][0]
                 
                 if (board[square] == nil) {
-                    add_move(board, moves, i, square, BITS.NORMAL);
+                    add_move(board, moves, i, square, BITS.NORMAL)
                     
                     /* double square */
-                    let square = i + offsetArray[us][1];
+                    let square = i + offsetArray[1]
                     if (second_rank[us] == rank(i) && board[square] == nil) {
-                        add_move(board, moves, i, square, BITS.BIG_PAWN);
+                        add_move(board, moves, i, square, BITS.BIG_PAWN)
                     }
                 }
                 
                 /* pawn captures */
                 for var j = 2; j < 4; j++ {
-                    let square = i + offsetArray[us][j]
-                    if square & 0x88 {
+                    let square = i + offsetArray[j]
+                    if square & 0x88 > 0 {
                         continue
                     }
                     
-                    if (board[square] != nil &&
-                        board[square].color == them) {
-                            add_move(board, moves, i, square, BITS.CAPTURE);
-                    } else if (square == ep_square) {
-                        add_move(board, moves as! Array<Int>, i, ep_square, BITS.EP_CAPTURE);
+                    if board[square] != nil && board[square].color == them {
+                        add_move(board, moves, i, square, BITS.CAPTURE)
+                    } else if square == ep_square {
+                        add_move(board, moves, i, ep_square, BITS.EP_CAPTURE)
                     }
                 }
             } else {
-                for var j = 0, len = offsetArray[piece.type].length; j < len; j++ {
-                    let offset = offsetArray[piece.type][j];
-                    let square = i;
+                for var j = 0, len = offsetArray.count; j < len; j++ {
+                    let offset = offsetArray[j]
+                    var square = i
                     
                     while (true) {
                         square += offset
-                        if square & 0x88 {
+                        if square & 0x88 > 0 {
                             break
                         }
                         if (board[square] == nil) {
@@ -283,7 +283,7 @@ class Game {
                                 break
                             }
                             add_move(board, moves, i, square, BITS.CAPTURE)
-                            break;
+                            break
                         }
                         
                         /* break, if knight or king */
@@ -300,7 +300,7 @@ class Game {
         */
         if !single_square || last_sq == kings[us] {
             /* king-side castling */
-            if (castling[us]! & BITS.KSIDE_CASTLE.rawValue) {
+            if castling[us]! & BITS.KSIDE_CASTLE.rawValue > 0 {
                 let castling_from = kings[us]
                 let castling_to = castling_from! + 2
                 
@@ -311,7 +311,7 @@ class Game {
             
             /* queen-side castling */
             if (castling[us]! & BITS.QSIDE_CASTLE.rawValue) {
-                let castling_from = kings[us];
+                let castling_from = kings[us]
                 let castling_to = castling_from! - 2
                 
                 if (board[castling_from - 1] == nil && board[castling_from - 2] == nil && board[castling_from - 3] == nil && !attacked(them, kings[us]) && !attacked(them, castling_from - 1) && !attacked(them, castling_to)) {
@@ -346,7 +346,7 @@ class Game {
         var empty = 0
         var fen = ""
         
-        for var i = SQUARES["a8"]!; i <= SQUARES["h1"]!; i++ {
+        for var i = board.SQUARES["a8"]!; i <= board.SQUARES["h1"]!; i++ {
             if (board[i] == nil) {
                 empty++
             } else {
@@ -357,16 +357,15 @@ class Game {
                 var color = board[i].color
                 var piece = board[i].type
                 
-                fen += (color == WHITE) ?
-                    piece.toUpperCase() : piece.toLowerCase()
+                fen += (color == GamePiece.Side.WHITE) ? piece.toUpperCase() : piece.toLowerCase()
             }
             
-            if (i + 1) & 0x88 {
+            if (i + 1) & 0x88 > 0 {
                 if empty > 0 {
                     fen += String(empty)
                 }
                 
-                if (i != SQUARES["h1"]) {
+                if (i != board.SQUARES["h1"]) {
                     fen += "/"
                 }
                 
@@ -376,16 +375,69 @@ class Game {
         }
         
         var cflags = ""
-        if (castling[WHITE]! & BITS.KSIDE_CASTLE.rawValue) { cflags += "K" }
-        if (castling[WHITE]! & BITS.QSIDE_CASTLE.rawValue) { cflags += "Q" }
-        if (castling[BLACK]! & BITS.KSIDE_CASTLE.rawValue) { cflags += "k" }
-        if (castling[BLACK]! & BITS.QSIDE_CASTLE.rawValue) { cflags += "q" }
+        if (castling[GamePiece.Side.WHITE]! & BITS.KSIDE_CASTLE.rawValue) { cflags += "K" }
+        if (castling[GamePiece.Side.WHITE]! & BITS.QSIDE_CASTLE.rawValue) { cflags += "Q" }
+        if (castling[GamePiece.Side.BLACK]! & BITS.KSIDE_CASTLE.rawValue) { cflags += "k" }
+        if (castling[GamePiece.Side.BLACK]! & BITS.QSIDE_CASTLE.rawValue) { cflags += "q" }
         
         /* do we have an empty castling flag? */
         cflags = cflags || "-"
         var epflags = (ep_square == EMPTY) ? "-" : algebraic(ep_square)
         
         return [fen, turn, cflags, epflags, half_moves, move_number].componentsJoinedByString(" ")
+    }
+    
+    func attacked(color: GamePiece.Side, square: Int) -> Bool {
+        for var i = board.SQUARES["a8"]!; i <= board.SQUARES["h1"]!; i++ {
+            /* did we run off the end of the board */
+            if (i & 0x88 > 0) { i += 7; continue; }
+            
+            /* if empty square or wrong color */
+            if board[i] == nil || board[i].color !== color {
+                continue
+            }
+            
+            var piece = board[i]
+            var difference = i - square
+            var index = difference + 119
+            
+            if ATTACKS[index] & (1 << SHIFTS[piece.type]) {
+                if piece.type === GamePiece.Type.PAWN {
+                    if difference > 0 {
+                        if piece.color === GamePiece.Side.WHITE {
+                            return true
+                        }
+                    } else {
+                        if piece.color === GamePiece.Side.BLACK {
+                            return true
+                        }
+                    }
+                    continue
+                }
+                
+                /* if the piece is a knight or a king */
+                if (piece.type === "n" || piece.type === "k") {
+                    return true
+                }
+                
+                var offset = RAYS[index]
+                var j = i + offset
+                
+                var blocked = false
+                while j !== square {
+                    if (board[j] != nil) {
+                        blocked = true
+                        break
+                    }
+                    j += offset
+                }
+                if (!blocked) {
+                    return true
+                }
+            }
+        }
+        
+        return false
     }
     
 }
