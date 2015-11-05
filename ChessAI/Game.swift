@@ -130,14 +130,41 @@ class Game {
         //        }
     }
     
-    func build_move(from: Int, to: Int, flag: GameMove.Flag, promotionPiece: GamePiece) -> GameMove {
-//        var move = GameMove(side: turn, fromIndex: from, toIndex: to, flag: flag, promotionPiece: promotionPiece)
+    func build_move(from: Int, to: Int, promotionPiece: GamePiece) -> GameMove {
+        var flag = GameMove.Flag.NORMAL
+        let movingPiece = board[from]
+        let capturedPiece = board[to]
         
-//        if board[to] > -1 {
-//            move.captured = board[to].type
-//        } else if flags & BITS.EP_CAPTURE.rawValue {
-//            move.captured = GamePiece.Type.PAWN
-//        }
+        if (capturedPiece != nil){ // Handle capturing pieces
+            if movingPiece.type == GamePiece.Type.PAWN {
+                if rank(to) == 1 || rank(to) == 8 {
+                    // Pawn captured and needs to be promoted
+                    flag = GameMove.Flag.PAWN_PROMOTION_CAPTURE
+                } else {
+                    // Pawn only captures
+                    flag = GameMove.Flag.CAPTURE
+                }
+            } else {
+                flag = GameMove.Flag.CAPTURE
+            }
+        } else if movingPiece.type = GamePiece.Type.KING { // Handle castling
+            if file(from) == 5 && file(to) == 6 && board.canCastleKingside(turn){
+                flag = GameMove.Flag.KINGSIDE_CASTLE
+            } else if file(from) == 5 && file(to) == 3 && board.canCastleQueenside(turn) {
+                flag = GameMove.Flag.QUEENSIDE_CASTLE
+            } else {
+                flag = GameMove.Flag.NORMAL
+            }
+        } else if movingPiece.type = GamePiece.Type.PAWN { // Handle PAWN_PROMOTION, PAWN_PUSH, and EN_PASSANT
+            if rank(to) == 1 || rank(to) == 8 {
+                flag = GameMove.Flag.PAWN_PROMOTION
+            } else if rank(to) == rank(from) + 2 || rank(to) == rank(from) - 2 {
+                flag = GameMove.Flag.PAWN_PUSH
+            } else if file(to) != file(from) {
+                flag = GameMove.Flag.EN_PASSANT
+            }
+        }
+        var move = GameMove(side: turn, fromIndex: from, toIndex: to, flag: flag, promotionPiece: promotionPiece, capturedPiece: capturedPiece)
         return move
     }
     
@@ -211,7 +238,7 @@ class Game {
             }
             
             
-            if (piece.type == GamePiece.Type.PAWN) {
+            if piece.type == GamePiece.Type.PAWN {
                 /* single square, non-capturing */
                 let square = i + offsetArray[us][0]
                 

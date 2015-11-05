@@ -34,4 +34,11 @@ class GameBoard {
     func generateFenString(){
         // TODO Generate FEN string from current board state
     }
+    
+    func canCastleKingside(side: GamePiece.Side) -> Bool {
+        // TODO return if side can castle kingside or not
+    }
+    func canCastleQueenside(side: GamePiece.Side) -> Bool {
+        // TODO return if side can castle queenside or not
+    }
 }
