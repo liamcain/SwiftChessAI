@@ -11,6 +11,13 @@ import Foundation
 class GameBoard {
     let DEFAULT_POSITION = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
     
+    var whiteQueensideCastle: Bool
+    var whiteKingsideCastle: Bool
+    var blackQueensideCastle: Bool
+    var blackKingsideCastle: Bool
+    
+    var pieceLocations: [Int: GamePiece?]
+    
     let SQUARES = [
         "a8":   0, "b8":   1, "c8":   2, "d8":   3, "e8":   4, "f8":   5, "g8":   6, "h8":   7,
         "a7":  16, "b7":  17, "c7":  18, "d7":  19, "e7":  20, "f7":  21, "g7":  22, "h7":  23,
@@ -24,21 +31,33 @@ class GameBoard {
     
     
     init(){
-        self.loadFromFen(self.DEFAULT_POSITION)
+        whiteQueensideCastle = true
+        whiteKingsideCastle = true
+        blackQueensideCastle = true
+        blackKingsideCastle = true
+        pieceLocations = [:]
     }
     
-    func loadFromFen(fenString: String){
-        // TODO change the current board state to reflect fen
+    func get(location: Int) -> GamePiece? {
+        // Returns GamePiece at the int location
+        return pieceLocations[location]!
     }
     
-    func generateFenString(){
-        // TODO Generate FEN string from current board state
+    func disableCastling(side: GamePiece.Side){
+        if side == GamePiece.Side.WHITE {
+            self.whiteQueensideCastle = false
+            self.whiteKingsideCastle = false
+        } else {
+            self.blackQueensideCastle = false
+            self.blackKingsideCastle = false
+        }
     }
     
-    func canCastleKingside(side: GamePiece.Side) -> Bool {
-        // TODO return if side can castle kingside or not
-    }
-    func canCastleQueenside(side: GamePiece.Side) -> Bool {
-        // TODO return if side can castle queenside or not
-    }
+        // Castling rules:
+        // Can't be in check
+        // Can't pass through check
+        // Can't end up in check
+        // King and Rook have not previously moved
+        // No pieces between them
+    
 }
