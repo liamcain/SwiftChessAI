@@ -464,4 +464,95 @@ class Game {
         return false
     }
     
+    func make_move(move: GameMove) {
+        var us = turn
+        var them = swap_color(us)
+        push(move)
+        
+        board[move.to] = board.get(move.from)
+        board[move.from] = nil
+        
+        /* if ep capture, remove the captured pawn */
+        if (move.flags & BITS.EP_CAPTURE) {
+            if (turn === BLACK) {
+                board[move.to - 16] = nil
+            } else {
+                board[move.to + 16] = nil
+            }
+        }
+        
+        /* if pawn promotion, replace with new piece */
+        if (move.flag & BITS.PROMOTION) {
+            board[move.to] = {type: move.promotion, color: us};
+        }
+        
+        /* if we moved the king */
+        if (board.get(move.toIndex)!.type === GamePiece.Kind.KING) {
+            kings[board.get(move.toIndex)!.side] = move.toIndex
+            
+            /* if we castled, move the rook next to the king */
+            if (move.flag & BITS.KSIDE_CASTLE.rawValue > 0) {
+                var castling_to = move.toIndex - 1
+                var castling_from = move.toIndex + 1
+                board[castling_to] = board.get(castling_from)
+                board[castling_from] = nil
+            } else if (move.flag & BITS.QSIDE_CASTLE.rawValue > 0) {
+                var castling_to = move.toIndex + 1
+                var castling_from = move.toIndex - 2
+                board[castling_to] = board.get(castling_from)
+                board[castling_from] = nil
+            }
+            
+            /* turn off castling */
+            castling[us] = "";
+        }
+        
+        /* turn off castling if we move a rook */
+        if (castling[us]) {
+            for (var i = 0, len = ROOKS[us].length; i < len; i++) {
+                if (move.from === ROOKS[us][i].square &&
+                    castling[us] & ROOKS[us][i].flag) {
+                        castling[us] ^= ROOKS[us][i].flag;
+                        break;
+                }
+            }
+        }
+        
+        /* turn off castling if we capture a rook */
+        if (castling[them]) {
+            for (var i = 0, len = ROOKS[them].length; i < len; i++) {
+                if (move.to === ROOKS[them][i].square &&
+                    castling[them] & ROOKS[them][i].flag) {
+                        castling[them] ^= ROOKS[them][i].flag;
+                        break;
+                }
+            }
+        }
+        
+        /* if big pawn move, update the en passant square */
+        if move.flag & BITS.BIG_PAWN.rawValue > 0 {
+            if (turn == "b") {
+                ep_square = move.toIndex - 16
+            } else {
+                ep_square = move.toIndex + 16
+            }
+        } else {
+            ep_square = EMPTY;
+        }
+        
+        /* reset the 50 move counter if a pawn is moved or a piece is captured */
+        if move.piece == GamePiece.Kind.PAWN.rawValue {
+            half_moves = 0
+        } else if move.flag & (BITS.CAPTURE | BITS.EP_CAPTURE) > 0 {
+            half_moves = 0
+        } else {
+            half_moves++
+        }
+        
+        if turn == GamePiece.Side.BLACK {
+            move_number++;
+        }
+        turn = swap_color(turn);
+    }
+    
 }
