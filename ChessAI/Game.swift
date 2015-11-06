@@ -263,12 +263,12 @@ class Game {
                 let square = i + offsetArray[0]
                 
                 if (board.get(square) == nil) {
-                    add_move(board, moves, i, square, BITS.NORMAL.rawValue)
+                    add_move(board, moves: moves, from: i, to: square, flags: BITS.NORMAL.rawValue)
                     
                     /* double square */
                     let square = i + offsetArray[1]
                     if (second_rank[us] == rank(i) && board.get(square) == nil) {
-                        add_move(board, moves, i, square, BITS.BIG_PAWN.rawValue)
+                        add_move(board, moves: moves, from: i, to: square, flags: BITS.BIG_PAWN.rawValue)
                     }
                 }
                 
@@ -279,10 +279,10 @@ class Game {
                         continue
                     }
                     
-                    if board.get(square) != nil && board.get(square).side == them {
-                        add_move(board, moves, i, square, BITS.CAPTURE.rawValue)
+                    if board.get(square) != nil && board.get(square)!.side == them {
+                        add_move(board, moves: moves, from: i, to: square, flags: BITS.CAPTURE.rawValue)
                     } else if square == ep_square {
-                        add_move(board, moves, i, ep_square, BITS.EP_CAPTURE.rawValue)
+                        add_move(board, moves: moves, from: i, to: ep_square, flags: BITS.EP_CAPTURE.rawValue)
                     }
                 }
             } else {
@@ -400,7 +400,9 @@ class Game {
         if (castling[GamePiece.Side.BLACK]! & BITS.QSIDE_CASTLE.rawValue) { cflags += "q" }
         
         /* do we have an empty castling flag? */
-        cflags = cflags || "-"
+        if cflags == "" {
+            cflags = "-"
+        }
         var epflags = (ep_square == EMPTY) ? "-" : algebraic(ep_square)
         
         return [fen, String(turn), cflags, epflags, half_moves, move_number].componentsJoinedByString(" ")
@@ -446,8 +448,8 @@ class Game {
                 var j = i + offset
                 
                 var blocked = false
-                while j !== square {
-                    if (board[j] != nil) {
+                while j != square {
+                    if (board.get(j) != nil) {
                         blocked = true
                         break
                     }
