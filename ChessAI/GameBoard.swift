@@ -80,6 +80,10 @@ class GameBoard {
         return pieceLocations[location]!
     }
     
+    func set(location: Int, piece: GamePiece?) {
+        pieceLocations[location] = piece
+    }
+    
     func disableCastling(side: GamePiece.Side){
         if side == GamePiece.Side.WHITE {
             self.whiteQueensideCastle = false

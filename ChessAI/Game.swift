@@ -13,7 +13,7 @@ class Game {
     var ep_square = -1
     var half_moves = 0
     var move_number = 1
-    var history = []
+    var history = Array<GameMove>()
     var header = {}
     
     let DEFAULT_POSITION = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
@@ -347,8 +347,8 @@ class Game {
         }
         
         /* filter out illegal moves */
-        let legal_moves = []
-        for var i = 0, len = moves.count; i < len; i++ {
+        let legal_moves = Array<GameMoves>()
+        for var i = 0; i < moves.count; i++ {
             make_move(moves[i])
             if !king_attacked(us) {
                 legal_moves.push(moves[i])
@@ -406,6 +406,10 @@ class Game {
         var epflags = (ep_square == EMPTY) ? "-" : algebraic(ep_square)
         
         return [fen, String(turn), cflags, epflags, half_moves, move_number].componentsJoinedByString(" ")
+    }
+    
+    func king_attacked(side: GamePiece.Side) {
+        return attacked(swap_color(side), kings[side])
     }
     
     func attacked(color: GamePiece.Side, square: Int) -> Bool {
@@ -467,23 +471,24 @@ class Game {
     func make_move(move: GameMove) {
         var us = turn
         var them = swap_color(us)
-        push(move)
+//        push(move)
+        history.append(move)
         
-        board[move.to] = board.get(move.from)
-        board[move.from] = nil
+        board.set(move.toIndex, piece: board.get(move.fromIndex))
+        board.set(move.fromIndex, piece: nil)
         
         /* if ep capture, remove the captured pawn */
-        if (move.flags & BITS.EP_CAPTURE) {
+        if move.flag & BITS.EP_CAPTURE > 0 {
             if (turn === BLACK) {
-                board[move.to - 16] = nil
+                board.set(move.toIndex - 16,  piece: nil)
             } else {
-                board[move.to + 16] = nil
+                board.set(move.toIndex + 16, piece: nil)
             }
         }
         
         /* if pawn promotion, replace with new piece */
-        if (move.flag & BITS.PROMOTION) {
-            board[move.to] = {type: move.promotion, color: us};
+        if move.flag & BITS.PROMOTION > 0 {
+            board.set(move.toIndex, GamePiece(side: us, type: move.promotionPiece!.type))
         }
         
         /* if we moved the king */
@@ -491,12 +496,12 @@ class Game {
             kings[board.get(move.toIndex)!.side] = move.toIndex
             
             /* if we castled, move the rook next to the king */
-            if (move.flag & BITS.KSIDE_CASTLE.rawValue > 0) {
+            if move.flag & BITS.KSIDE_CASTLE.rawValue > 0 {
                 var castling_to = move.toIndex - 1
                 var castling_from = move.toIndex + 1
                 board[castling_to] = board.get(castling_from)
                 board[castling_from] = nil
-            } else if (move.flag & BITS.QSIDE_CASTLE.rawValue > 0) {
+            } else if move.flag & BITS.QSIDE_CASTLE.rawValue > 0 {
                 var castling_to = move.toIndex + 1
                 var castling_from = move.toIndex - 2
                 board[castling_to] = board.get(castling_from)
@@ -531,7 +536,7 @@ class Game {
         
         /* if big pawn move, update the en passant square */
         if move.flag & BITS.BIG_PAWN.rawValue > 0 {
-            if (turn == "b") {
+            if turn == "b" {
                 ep_square = move.toIndex - 16
             } else {
                 ep_square = move.toIndex + 16
