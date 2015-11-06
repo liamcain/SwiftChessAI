@@ -9,7 +9,8 @@
 import Foundation
 
 class GamePiece {
-    enum Type {
+    
+    enum Kind {
         case KING
         case QUEEN
         case ROOK
