@@ -10,11 +10,11 @@ class Game {
     var kings = [GamePiece.Side.WHITE: -1, GamePiece.Side.BLACK: -1]
     var ROOKS = [
         GamePiece.Side.WHITE: [
-            ["square": board.SQUARES.a1, "flag": GameMove.Flag.QUEENSIDE_CASTLE],
-            ["square": board.SQUARES.h1, "flag": GameMove.Flag.KINGSIDE_CASTLE]],
+            ["square": 112, "flag": GameMove.Flag.QUEENSIDE_CASTLE.rawValue],
+            ["square": 119, "flag": GameMove.Flag.KINGSIDE_CASTLE.rawValue]],
         GamePiece.Side.BLACK: [
-            ["square": board.SQUARES.a8, "flag": GameMove.Flag.QUEENSIDE_CASTLE],
-            ["square": board.SQUARES.h8, "flag": GameMove.Flag.KINGSIDE_CASTLE]]
+            ["square": 0, "flag": GameMove.Flag.QUEENSIDE_CASTLE.rawValue],
+            ["square": 7, "flag": GameMove.Flag.KINGSIDE_CASTLE.rawValue]]
         ]
     var castling = [GamePiece.Side.WHITE: 0, GamePiece.Side.BLACK: 0]
     var turn = GamePiece.Side.WHITE
@@ -25,16 +25,6 @@ class Game {
     var header = {}
     
     let DEFAULT_POSITION = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-    
-//    enum BITS: Int {
-//        case NORMAL = 1
-//        case CAPTURE = 2
-//        case BIG_PAWN = 4
-//        case EP_CAPTURE = 8
-//        case PROMOTION = 16
-//        case KSIDE_CASTLE = 32
-//        case QSIDE_CASTLE = 64
-//    }
     
     let RANK_1 = 7
     let RANK_2 = 6
@@ -212,7 +202,7 @@ class Game {
         
         let us = turn
         let them = (us == GamePiece.Side.WHITE) ? GamePiece.Side.BLACK : GamePiece.Side.WHITE
-        let second_rank = ["b": RANK_7, "w": RANK_2]
+        let second_rank = [GamePiece.Side.BLACK: RANK_7, GamePiece.Side.WHITE: RANK_2]
         
         var first_sq = board.SQUARES["a8"]
         var last_sq = board.SQUARES["h1"]
@@ -325,9 +315,9 @@ class Game {
                 let castling_from = kings[us]
                 let castling_to = castling_from! - 2
                 
-//                if board.get(castling_from - 1) == nil && board.get(castling_from - 2) == nil && board.get(castling_from - 3) == nil && !attacked(them, kings[us]) && !attacked(them, castling_from - 1) && !attacked(them, castling_to) {
-//                    add_move(kings[us]!, to: castling_to)
-//                }
+                if board.get(castling_from! - 1) == nil && board.get(castling_from! - 2) == nil && board.get(castling_from! - 3) == nil && !attacked(them, square: kings[us]!) && !attacked(them, square: castling_from! - 1) && !attacked(them, square: castling_to) {
+                    add_move(kings[us]!, to: castling_to)
+                }
             }
         }
         
@@ -345,7 +335,7 @@ class Game {
             if !king_attacked(us) {
                 legal_moves.append(moves[i])
             }
-            undo_move()
+//            undo_move()
         }
         
         return legal_moves 
@@ -461,9 +451,8 @@ class Game {
     }
     
     func make_move(move: GameMove) {
-        var us = turn
-        var them = swap_color(us)
-        //        push(move)
+        let us = turn
+        let them = swap_color(us)
         history.append(move)
         
         board.set(move.toIndex, piece: board.get(move.fromIndex))
@@ -490,13 +479,13 @@ class Game {
             
             /* if we castled, move the rook next to the king */
             if move.flag.rawValue & GameMove.Flag.KINGSIDE_CASTLE.rawValue > 0 {
-                var castling_to = move.toIndex - 1
-                var castling_from = move.toIndex + 1
+                let castling_to = move.toIndex - 1
+                let castling_from = move.toIndex + 1
                 board.set(castling_to, piece: board.get(castling_from))
                 board.set(castling_from, piece: nil)
             } else if move.flag.rawValue & GameMove.Flag.QUEENSIDE_CASTLE.rawValue > 0 {
-                var castling_to = move.toIndex + 1
-                var castling_from = move.toIndex - 2
+                let castling_to = move.toIndex + 1
+                let castling_from = move.toIndex - 2
                 board.set(castling_to, piece: board.get(castling_from))
                 board.set(castling_from, piece: nil)
             }
@@ -505,12 +494,58 @@ class Game {
             castling[us] = nil
         }
         
+        func undo_move() -> GameMove? {
+            let old = history.popLast()
+            if (old == nil) {
+                return nil
+            }
+            
+            let us = turn
+            let them = swap_color(turn)
+            
+            board.set(move.fromIndex, piece: board.get(move.toIndex))
+            board.get(move.fromIndex)!.kind = move.promotionPiece!  // to undo any promotions
+            board.set(move.toIndex, piece: nil)
+            
+            if move.flag.rawValue & GameMove.Flag.CAPTURE.rawValue > 0 {
+                board.set(move.toIndex, piece: GamePiece(side: them, kind: move.capturedPiece!.kind))
+            } else if move.flag.rawValue & GameMove.Flag.EN_PASSANT.rawValue > 0  {
+                var index: Int
+                if (us == GamePiece.Side.BLACK) {
+                    index = move.toIndex - 16
+                } else {
+                    index = move.toIndex + 16
+                }
+                board.set(index, piece: GamePiece(side: them, kind: GamePiece.Kind.PAWN))
+            }
+            
+            
+            if move.flag.rawValue & (GameMove.Flag.KINGSIDE_CASTLE.rawValue | GameMove.Flag.QUEENSIDE_CASTLE.rawValue) > 0 {
+                var castling_to: Int?
+                var castling_from: Int?
+                if move.flag.rawValue & GameMove.Flag.KINGSIDE_CASTLE.rawValue > 0 {
+                    castling_to = move.toIndex + 1
+                    castling_from = move.toIndex - 1
+                } else if move.flag.rawValue & GameMove.Flag.QUEENSIDE_CASTLE.rawValue > 0 {
+                    castling_to = move.toIndex - 2
+                    castling_from = move.toIndex + 1
+                }
+                
+                if castling_from != nil {
+                    board.set(castling_to!, piece: board.get(castling_from!))
+                    board.set(castling_from!,  piece: nil)
+                }
+            }
+            
+            return move;
+        }
+        
         /* turn off castling if we move a rook */
         if castling[us] != nil {
-            for (var i = 0, len = ROOKS[us].count; i < len; i++) {
-                if (move.from == ROOKS[us][i].square &&
-                    castling[us] & ROOKS[us][i].flag) {
-                        castling[us] ^= ROOKS[us][i].flag;
+            for var i = 0, len = ROOKS[us]!.count; i < len; i++ {
+                if move.fromIndex == ROOKS[us]![i]["square"]! &&
+                    castling[us]! & ROOKS[us]![i]["flag"]! > 0 {
+                        castling[us]! ^= ROOKS[us]![i]["flag"]!
                         break;
                 }
             }
@@ -518,11 +553,11 @@ class Game {
         
         /* turn off castling if we capture a rook */
         if castling[them] != nil {
-            for (var i = 0, len = ROOKS[them].length; i < len; i++) {
-                if (move.to == ROOKS[them][i].square &&
-                    castling[them] & ROOKS[them][i].flag) {
-                        castling[them] ^= ROOKS[them][i].flag;
-                        break;
+            for (var i = 0, len = ROOKS[them]!.count; i < len; i++) {
+                if move.toIndex == ROOKS[them]![i]["square"]! &&
+                    castling[them]! & ROOKS[them]![i]["flag"]! > 0 {
+                        castling[them]! ^= ROOKS[them]![i]["flag"]!
+                        break
                 }
             }
         }

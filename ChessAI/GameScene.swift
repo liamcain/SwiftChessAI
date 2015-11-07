@@ -10,12 +10,13 @@ import SpriteKit
 
 class GameScene: SKScene {
     
-    var board: Board?
+    var board: Board = Board()
+    var game: Game = Game()
+    
     var activePiece: Piece?
     
     override func didMoveToView(view: SKView) {
-        board = Board()
-        self.addChild(board!)
+        self.addChild(board)
     }
 
     override func mouseDown(theEvent: NSEvent) {
@@ -39,7 +40,7 @@ class GameScene: SKScene {
     override func mouseUp(theEvent: NSEvent) {
         // Todo: snap back
         if activePiece != nil {
-            board?.snapToSpace(activePiece!)
+            board.snapToSpace(activePiece!)
             activePiece?.zPosition = ZPOSITION_INACTIVE_PIECE
             activePiece = nil
         }
