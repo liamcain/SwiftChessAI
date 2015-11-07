@@ -538,7 +538,7 @@ class Game {
         }
         
         /* reset the 50 move counter if a pawn is moved or a piece is captured */
-        if move.piece == GamePiece.Kind.PAWN.rawValue {
+        if board.get(move.toIndex)!.kind == GamePiece.Kind.PAWN {
             half_moves = 0
         } else if move.flag.rawValue & (GameMove.Flag.CAPTURE.rawValue | GameMove.Flag.EN_PASSANT.rawValue) > 0 {
             half_moves = 0
