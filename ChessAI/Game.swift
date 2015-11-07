@@ -7,7 +7,7 @@ class Game {
     
     var board = GameBoard()
     
-    var kings = ["w": -1, "b": -1]
+    var kings = [GamePiece.Side.WHITE: -1, GamePiece.Side.BLACK: -1]
     var turn = GamePiece.Side.WHITE
     var castling = ["w": 0, "b": 0]
     var ep_square = -1
@@ -18,17 +18,15 @@ class Game {
     
     let DEFAULT_POSITION = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
     
-    enum BITS: Int {
-        case NORMAL = 1
-        case CAPTURE = 2
-        case BIG_PAWN = 4
-        case EP_CAPTURE = 8
-        case PROMOTION = 16
-        case KSIDE_CASTLE = 32
-        case QSIDE_CASTLE = 64
-    }
-    
-    
+//    enum BITS: Int {
+//        case NORMAL = 1
+//        case CAPTURE = 2
+//        case BIG_PAWN = 4
+//        case EP_CAPTURE = 8
+//        case PROMOTION = 16
+//        case KSIDE_CASTLE = 32
+//        case QSIDE_CASTLE = 64
+//    }
     
     let RANK_1 = 7
     let RANK_2 = 6
@@ -41,7 +39,7 @@ class Game {
     
     func clear() {
         board = GameBoard()
-        kings = ["w": EMPTY, "b": EMPTY]
+        kings = [GamePiece.Side.WHITE: -1, GamePiece.Side.BLACK: -1]
         turn = GamePiece.Side.WHITE
         castling = ["w": 0, "b": 0]
         ep_square = EMPTY
@@ -408,8 +406,8 @@ class Game {
         return [fen, String(turn), cflags, epflags, half_moves, move_number].componentsJoinedByString(" ")
     }
     
-    func king_attacked(side: GamePiece.Side) {
-        return attacked(swap_color(side), kings[side])
+    func king_attacked(side: GamePiece.Side) -> Bool {
+        return attacked(swap_color(side), square: kings[side]!)
     }
     
     func attacked(color: GamePiece.Side, square: Int) -> Bool {
@@ -479,7 +477,7 @@ class Game {
         
         /* if ep capture, remove the captured pawn */
         if move.flag & BITS.EP_CAPTURE > 0 {
-            if (turn === BLACK) {
+            if turn == GamePiece.Side.BLACK {
                 board.set(move.toIndex - 16,  piece: nil)
             } else {
                 board.set(move.toIndex + 16, piece: nil)
@@ -499,13 +497,13 @@ class Game {
             if move.flag & BITS.KSIDE_CASTLE.rawValue > 0 {
                 var castling_to = move.toIndex - 1
                 var castling_from = move.toIndex + 1
-                board[castling_to] = board.get(castling_from)
-                board[castling_from] = nil
+                board.set(castling_to, piece: board.get(castling_from))
+                board.set(castling_from, piece: nil)
             } else if move.flag & BITS.QSIDE_CASTLE.rawValue > 0 {
                 var castling_to = move.toIndex + 1
                 var castling_from = move.toIndex - 2
-                board[castling_to] = board.get(castling_from)
-                board[castling_from] = nil
+                board.set(castling_to, piece: board.get(castling_from))
+                board.set(castling_from, piece: nil)
             }
             
             /* turn off castling */
@@ -536,7 +534,7 @@ class Game {
         
         /* if big pawn move, update the en passant square */
         if move.flag & BITS.BIG_PAWN.rawValue > 0 {
-            if turn == "b" {
+            if turn == GamePiece.Side.BLACK {
                 ep_square = move.toIndex - 16
             } else {
                 ep_square = move.toIndex + 16
