@@ -25,15 +25,15 @@ class GamePiece {
     }
     
     var side: Side
-    var type: Type
+    var kind: Kind
     
-    init(side: Side, type: Type){
+    init(side: Side, kind: Kind){
         self.side = side
-        self.type = type
+        self.kind = kind
     }
     
     func getOffsetArray() -> [Int]{
-        switch self.type {
+        switch self.kind {
             case Type.PAWN:
                 if self.side == Side.WHITE {
                     return [-16, -32, -17, -15]

@@ -25,10 +25,10 @@ class GameMove {
     var fromIndex: Int
     var toIndex: Int
     var flag: Flag
-    var promotionPiece: GamePiece?
+    var promotionPiece: GamePiece.Kind?
     var capturedPiece: GamePiece?
     
-    init (side: GamePiece.Side, fromIndex: Int, toIndex: Int, flag: Flag, promotionPiece: GamePiece?, capturedPiece: GamePiece?){
+    init (side: GamePiece.Side, fromIndex: Int, toIndex: Int, flag: Flag, promotionPiece: GamePiece.Kind?, capturedPiece: GamePiece?){
         self.side = side
         self.fromIndex = fromIndex
         self.toIndex = toIndex

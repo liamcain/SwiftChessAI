@@ -128,13 +128,13 @@ class Game {
         //        }
     }
     
-    func build_move(from: Int, to: Int, promotionPiece: GamePiece) -> GameMove {
+    func build_move(from: Int, to: Int, promotionPiece: GamePiece.Kind?) -> GameMove {
         var flag = GameMove.Flag.NORMAL
-        let capturedPiece = board.get(to)
         let movingPiece = board.get(from)!
-            
+        let capturedPiece = board.get(to)
+        
         if capturedPiece != nil {
-            if movingPiece.type == GamePiece.Kind.PAWN {
+            if movingPiece.kind == GamePiece.Kind.PAWN {
                 if rank(to) == 1 || rank(to) == 8 {
                     // Pawn captured and needs to be promoted
                     flag = GameMove.Flag.PAWN_PROMOTION_CAPTURE
@@ -145,16 +145,16 @@ class Game {
             } else {
                 flag = GameMove.Flag.CAPTURE
             }
-        } else if movingPiece.type = GamePiece.Kind.KING { // Handle castling
-            if file(from) == 5 && file(to) == 6 && canCastleKingside(turn){
+        } else if movingPiece.kind == GamePiece.Kind.KING { // Handle castling
+            if file(from) == 5 && file(to) == 7 {
                 flag = GameMove.Flag.KINGSIDE_CASTLE
-            } else if file(from) == 5 && file(to) == 3 && canCastleQueenside(turn) {
+            } else if file(from) == 5 && file(to) == 3 {
                 flag = GameMove.Flag.QUEENSIDE_CASTLE
             } else {
                 flag = GameMove.Flag.NORMAL
             }
             board.disableCastling(turn)
-        } else if movingPiece.type = GamePiece.Kind.PAWN { // Handle PAWN_PROMOTION, PAWN_PUSH, and EN_PASSANT
+        } else if movingPiece.kind == GamePiece.Kind.PAWN { // Handle PAWN_PROMOTION, PAWN_PUSH, and EN_PASSANT
             if rank(to) == 1 || rank(to) == 8 {
                 flag = GameMove.Flag.PAWN_PROMOTION
             } else if rank(to) == rank(from) + 2 || rank(to) == rank(from) - 2 {
@@ -163,7 +163,7 @@ class Game {
                 flag = GameMove.Flag.EN_PASSANT
             }
         }
-        var move = GameMove(side: turn, fromIndex: from, toIndex: to, flag: flag, promotionPiece: promotionPiece, capturedPiece: capturedPiece)
+        let move = GameMove(side: turn, fromIndex: from, toIndex: to, flag: flag, promotionPiece: promotionPiece, capturedPiece: capturedPiece)
         return move
     }
 
@@ -175,24 +175,6 @@ class Game {
         return i & 15
     }
     
-    func canCastleKingside(side: GamePiece.Side) -> Bool {
-        
-    }
-
-    func canCastleQueenside(side: GamePiece.Side) -> Bool {
-        if side == GamePiece.Side.WHITE {
-            if !board.whiteQueensideCastle {
-                return false
-            } else {
-            }
-        } else {
-            if !board.blackQueensideCastle {
-                return false
-            } else {
-            }
-        }
-    }
-    
     func algebraic(i: Int) -> String {
         let f = file(i), r = rank(i)
         return "abcdefgh".substringWithRange(NSRange(location: f, length: 1)) + "87654321".substringWithRange(NSRange(location: r, length: 1))
@@ -202,20 +184,24 @@ class Game {
         return c == GamePiece.Side.WHITE ? GamePiece.Side.BLACK : GamePiece.Side.WHITE
     }
     
-    func generate_moves(options: GameOptions) -> Array<Int> {
-        func add_move(board: GameBoard, moves: Array<Int>, from: Int, to: Int, flags: Int) {
+    func generate_moves(options: GameOptions) -> Array<GameMove> {
+        var moves = Array<GameMove>()
+        func add_move(from: Int, to: Int) {
             /* if pawn promotion */
-            //            if board[from]!.type == GamePiece.Type.PAWN && (rank(to) == RANK_8 || rank(to) == RANK_1) {
-            //                    let pieces = [GamePiece.Type.QUEEN, GamePiece.Type.ROOK, GamePiece.Type.BISHOP, GamePiece.Type.KNIGHT]
-            //                    for var i = 0; len = pieces.length; i < len; i++ {
-            //                        moves.push(build_move(board, from, to, flags, pieces[i]));
-            //                    }
-            //            } else {
-            //                moves.add(build_move(board, from, to, flags))
-            //            }
+            if board.get(from)!.kind == GamePiece.Kind.PAWN && (rank(to) == RANK_8 || rank(to) == RANK_1) {
+                moves.append(build_move(from, to: to, promotionPiece: GamePiece.Kind.QUEEN));
+                moves.append(build_move(from, to: to, promotionPiece: GamePiece.Kind.ROOK));
+                moves.append(build_move(from, to: to, promotionPiece: GamePiece.Kind.KNIGHT));
+                moves.append(build_move(from, to: to, promotionPiece: GamePiece.Kind.BISHOP));
+                // let pieces = [GamePiece.Kind.QUEEN, GamePiece.Kind.ROOK, GamePiece.Kind.BISHOP, GamePiece.Kind.KNIGHT]
+                // for var i = 0, len = pieces.count; i < len; i++ {
+                //     temp.append(build_move(from, to: to, promotionPiece: GamePiece.Kind.BISHOP));
+                // }
+            } else {
+                moves.append(build_move(from, to: to, promotionPiece: nil))
+            }
         }
         
-        let moves = Array<Int>()
         let us = turn
         let them = (us == GamePiece.Side.WHITE) ? GamePiece.Side.BLACK : GamePiece.Side.WHITE
         let second_rank = ["b": RANK_7, "w": RANK_2]
@@ -256,17 +242,17 @@ class Game {
             }
             
             
-            if piece.type == GamePiece.Kind.PAWN {
+            if piece.kind == GamePiece.Kind.PAWN {
                 /* single square, non-capturing */
                 let square = i + offsetArray[0]
                 
                 if (board.get(square) == nil) {
-                    add_move(board, moves: moves, from: i, to: square, flags: BITS.NORMAL.rawValue)
+                    add_move(i, to: square)
                     
                     /* double square */
                     let square = i + offsetArray[1]
                     if (second_rank[us] == rank(i) && board.get(square) == nil) {
-                        add_move(board, moves: moves, from: i, to: square, flags: BITS.BIG_PAWN.rawValue)
+                        add_move(i, to: square)
                     }
                 }
                 
@@ -278,9 +264,9 @@ class Game {
                     }
                     
                     if board.get(square) != nil && board.get(square)!.side == them {
-                        add_move(board, moves: moves, from: i, to: square, flags: BITS.CAPTURE.rawValue)
+                        add_move(i, to: square)
                     } else if square == ep_square {
-                        add_move(board, moves: moves, from: i, to: ep_square, flags: BITS.EP_CAPTURE.rawValue)
+                        add_move(i, to: ep_square)
                     }
                 }
             } else {
@@ -294,17 +280,17 @@ class Game {
                             break
                         }
                         if (board.get(square) == nil) {
-                            add_move(board, moves: moves, from: i, to: square, flags: BITS.NORMAL.rawValue)
+                            add_move(i, to: square)
                         } else {
                             if (board.get(square)!.side == us) {
                                 break
                             }
-                            add_move(board, moves: moves, from: i, to: square, flags: BITS.CAPTURE.rawValue)
+                            add_move(i, to: square)
                             break
                         }
                         
                         /* break, if knight or king */
-                        if (piece.type == GamePiece.Kind.KNIGHT || piece.type == GamePiece.Kind.KING) {
+                        if (piece.kind == GamePiece.Kind.KNIGHT || piece.kind == GamePiece.Kind.KING) {
                             break
                         }
                     }
@@ -322,7 +308,7 @@ class Game {
                 let castling_to = castling_from! + 2
                 
                 if (board[castling_from + 1] == nil && board[castling_to] == nil && !attacked(them, kings[us]) && !attacked(them, castling_from + 1) && !attacked(them, castling_to)) {
-                    add_move(board, moves: moves, from: kings[us]! , to: castling_to, flags: BITS.KSIDE_CASTLE.rawValue)
+                    add_move(kings[us]! , to: castling_to)
                 }
             }
             
@@ -332,7 +318,7 @@ class Game {
                 let castling_to = castling_from! - 2
                 
                 if (board[castling_from - 1] == nil && board[castling_from - 2] == nil && board[castling_from - 3] == nil && !attacked(them, kings[us]) && !attacked(them, castling_from - 1) && !attacked(them, castling_to)) {
-                    add_move(board, moves: moves as! Array<Int>, from: kings[us]!, to: castling_to, flags: BITS.QSIDE_CASTLE.rawValue)
+                    add_move(kings[us]!, to: castling_to)
                 }
             }
         }
@@ -345,7 +331,7 @@ class Game {
         }
         
         /* filter out illegal moves */
-        let legal_moves = Array<GameMoves>()
+        let legal_moves = Array<GameMove>()
         for var i = 0; i < moves.count; i++ {
             make_move(moves[i])
             if !king_attacked(us) {
@@ -354,7 +340,7 @@ class Game {
             undo_move()
         }
         
-        return legal_moves as! Array<Int>
+        return legal_moves 
     }
     
     
@@ -372,7 +358,7 @@ class Game {
                     empty = 0
                 }
                 var color = board.get(i)!.side
-                var piece = board.get(i)!.type
+                var piece = board.get(i)!.kind
                 
                 fen += (color == GamePiece.Side.WHITE) ? piece.toUpperCase() : piece.toLowerCase()
             }
@@ -427,8 +413,8 @@ class Game {
             var difference = i - square
             var index = difference + 119
             
-            if board.ATTACKS[index] & (1 << board.SHIFTS[piece.type]) {
-                if piece.type === GamePiece.Kind.PAWN {
+            if board.ATTACKS[index] & (1 << board.SHIFTS[piece.kind]) {
+                if piece.kind == GamePiece.Kind.PAWN {
                     if difference > 0 {
                         if piece.side == GamePiece.Side.WHITE {
                             return true
@@ -442,7 +428,7 @@ class Game {
                 }
                 
                 /* if the piece is a knight or a king */
-                if (piece.type === "n" || piece.type === "k") {
+                if (piece.kind == "n" || piece.kind == "k") {
                     return true
                 }
                 
@@ -469,7 +455,7 @@ class Game {
     func make_move(move: GameMove) {
         var us = turn
         var them = swap_color(us)
-//        push(move)
+        //        push(move)
         history.append(move)
         
         board.set(move.toIndex, piece: board.get(move.fromIndex))
@@ -486,11 +472,11 @@ class Game {
         
         /* if pawn promotion, replace with new piece */
         if move.flag & BITS.PROMOTION > 0 {
-            board.set(move.toIndex, GamePiece(side: us, type: move.promotionPiece!.type))
+            board.set(move.toIndex, GamePiece(side: us, kind: move.promotionPiece!.kind))
         }
         
         /* if we moved the king */
-        if (board.get(move.toIndex)!.type === GamePiece.Kind.KING) {
+        if (board.get(move.toIndex)!.kind == GamePiece.Kind.KING) {
             kings[board.get(move.toIndex)!.side] = move.toIndex
             
             /* if we castled, move the rook next to the king */
@@ -513,7 +499,7 @@ class Game {
         /* turn off castling if we move a rook */
         if (castling[us]) {
             for (var i = 0, len = ROOKS[us].length; i < len; i++) {
-                if (move.from === ROOKS[us][i].square &&
+                if (move.from == ROOKS[us][i].square &&
                     castling[us] & ROOKS[us][i].flag) {
                         castling[us] ^= ROOKS[us][i].flag;
                         break;
@@ -524,7 +510,7 @@ class Game {
         /* turn off castling if we capture a rook */
         if (castling[them]) {
             for (var i = 0, len = ROOKS[them].length; i < len; i++) {
-                if (move.to === ROOKS[them][i].square &&
+                if (move.to == ROOKS[them][i].square &&
                     castling[them] & ROOKS[them][i].flag) {
                         castling[them] ^= ROOKS[them][i].flag;
                         break;
