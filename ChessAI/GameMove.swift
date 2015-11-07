@@ -10,7 +10,7 @@ import Foundation
 
 class GameMove {
     
-    enum Flag{
+    enum Flag: Int {
         case NORMAL
         case PAWN_PUSH
         case PAWN_PROMOTION

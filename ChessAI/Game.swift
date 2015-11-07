@@ -8,8 +8,8 @@ class Game {
     var board = GameBoard()
     
     var kings = [GamePiece.Side.WHITE: -1, GamePiece.Side.BLACK: -1]
+    var castling = [GamePiece.Side.WHITE: 0, GamePiece.Side.BLACK: 0]
     var turn = GamePiece.Side.WHITE
-    var castling = ["w": 0, "b": 0]
     var ep_square = -1
     var half_moves = 0
     var move_number = 1
@@ -41,7 +41,7 @@ class Game {
         board = GameBoard()
         kings = [GamePiece.Side.WHITE: -1, GamePiece.Side.BLACK: -1]
         turn = GamePiece.Side.WHITE
-        castling = ["w": 0, "b": 0]
+        castling = [GamePiece.Side.WHITE: 0, GamePiece.Side.BLACK: 0]
         ep_square = EMPTY
         half_moves = 0
         move_number = 1
@@ -87,16 +87,16 @@ class Game {
 
         
         if tokens[2].rangeOfString("K") != nil {
-            castling["b"]! |= BITS.KSIDE_CASTLE.rawValue
+            castling[GamePiece.Side.WHITE]! |= GameMove.Flag.KINGSIDE_CASTLE.rawValue
         }
         if tokens[2].rangeOfString("Q") != nil {
-            castling["w"]! |= BITS.QSIDE_CASTLE.rawValue
+            castling[GamePiece.Side.WHITE]! |= GameMove.Flag.QUEENSIDE_CASTLE.rawValue
         }
         if tokens[2].rangeOfString("k") != nil {
-            castling["b"]! |= BITS.KSIDE_CASTLE.rawValue
+            castling[GamePiece.Side.BLACK]! |= GameMove.Flag.KINGSIDE_CASTLE.rawValue
         }
         if tokens[2].rangeOfString("q") != nil {
-            castling["b"]! |= BITS.QSIDE_CASTLE.rawValue
+            castling[GamePiece.Side.BLACK]! |= GameMove.Flag.QUEENSIDE_CASTLE.rawValue
         }
         
         if tokens[3] == "-" {
@@ -303,21 +303,21 @@ class Game {
         */
         if !single_square || last_sq == kings[us] {
             /* king-side castling */
-            if castling[us]! & BITS.KSIDE_CASTLE.rawValue > 0 {
-                let castling_from = kings[us]
-                let castling_to = castling_from! + 2
+            if castling[us]! & GameMove.Flag.KINGSIDE_CASTLE.rawValue > 0 {
+                let castling_from = kings[us]!
+                let castling_to = castling_from + 2
                 
-                if (board[castling_from + 1] == nil && board[castling_to] == nil && !attacked(them, kings[us]) && !attacked(them, castling_from + 1) && !attacked(them, castling_to)) {
+                if board.get(castling_from + 1) == nil && board.get(castling_to) == nil && !attacked(them, square: kings[us]!) && !attacked(them, square: castling_from + 1) && !attacked(them, square: castling_to) {
                     add_move(kings[us]! , to: castling_to)
                 }
             }
             
             /* queen-side castling */
-            if (castling[us]! & BITS.QSIDE_CASTLE.rawValue) {
+            if (castling[us]! & GameMove.Flag.QUEENSIDE_CASTLE > 0 {
                 let castling_from = kings[us]
                 let castling_to = castling_from! - 2
                 
-                if (board[castling_from - 1] == nil && board[castling_from - 2] == nil && board[castling_from - 3] == nil && !attacked(them, kings[us]) && !attacked(them, castling_from - 1) && !attacked(them, castling_to)) {
+                if (board.get(castling_from - 1) == nil && board.get(castling_from - 2) == nil && board.get(castling_from - 3) == nil && !attacked(them, kings[us]) && !attacked(them, castling_from - 1) && !attacked(them, castling_to)) {
                     add_move(kings[us]!, to: castling_to)
                 }
             }
@@ -331,11 +331,11 @@ class Game {
         }
         
         /* filter out illegal moves */
-        let legal_moves = Array<GameMove>()
+        var legal_moves = Array<GameMove>()
         for var i = 0; i < moves.count; i++ {
             make_move(moves[i])
             if !king_attacked(us) {
-                legal_moves.push(moves[i])
+                legal_moves.append(moves[i])
             }
             undo_move()
         }
@@ -357,10 +357,10 @@ class Game {
                     fen += String(empty)
                     empty = 0
                 }
-                var color = board.get(i)!.side
-                var piece = board.get(i)!.kind
+                let color = board.get(i)!.side
+                let piece = board.get(i)!.kind
                 
-                fen += (color == GamePiece.Side.WHITE) ? piece.toUpperCase() : piece.toLowerCase()
+                fen += (color == GamePiece.Side.WHITE) ? piece.rawValue.uppercaseString :piece.rawValue
             }
             
             if (i + 1) & 0x88 > 0 {
@@ -378,16 +378,16 @@ class Game {
         }
         
         var cflags = ""
-        if (castling[GamePiece.Side.WHITE]! & BITS.KSIDE_CASTLE.rawValue) { cflags += "K" }
-        if (castling[GamePiece.Side.WHITE]! & BITS.QSIDE_CASTLE.rawValue) { cflags += "Q" }
-        if (castling[GamePiece.Side.BLACK]! & BITS.KSIDE_CASTLE.rawValue) { cflags += "k" }
-        if (castling[GamePiece.Side.BLACK]! & BITS.QSIDE_CASTLE.rawValue) { cflags += "q" }
+        if (castling[GamePiece.Side.WHITE]! & GameMove.Flag.KINGSIDE_CASTLE.rawValue > 0) { cflags += "K" }
+        if (castling[GamePiece.Side.WHITE]! & GameMove.Flag.QUEENSIDE_CASTLE.rawValue > 0) { cflags += "Q" }
+        if (castling[GamePiece.Side.BLACK]! & GameMove.Flag.KINGSIDE_CASTLE.rawValue > 0) { cflags += "k" }
+        if (castling[GamePiece.Side.BLACK]! & GameMove.Flag.QUEENSIDE_CASTLE.rawValue > 0) { cflags += "q" }
         
         /* do we have an empty castling flag? */
         if cflags == "" {
             cflags = "-"
         }
-        var epflags = (ep_square == EMPTY) ? "-" : algebraic(ep_square)
+        let epflags = (ep_square == EMPTY) ? "-" : algebraic(ep_square)
         
         return [fen, String(turn), cflags, epflags, half_moves, move_number].componentsJoinedByString(" ")
     }
@@ -409,11 +409,11 @@ class Game {
                 continue
             }
             
-            var piece = board.get(i)!
-            var difference = i - square
-            var index = difference + 119
+            let piece = board.get(i)!
+            let difference = i - square
+            let index = difference + 119
             
-            if board.ATTACKS[index] & (1 << board.SHIFTS[piece.kind]) {
+            if board.ATTACKS[index] & (1 << board.SHIFTS[piece.kind]!) > 0 {
                 if piece.kind == GamePiece.Kind.PAWN {
                     if difference > 0 {
                         if piece.side == GamePiece.Side.WHITE {
@@ -428,11 +428,11 @@ class Game {
                 }
                 
                 /* if the piece is a knight or a king */
-                if (piece.kind == "n" || piece.kind == "k") {
+                if (piece.kind == GamePiece.Kind.KING || piece.kind == GamePiece.Kind.KNIGHT) {
                     return true
                 }
                 
-                var offset = board.RAYS[index]
+                let offset = board.RAYS[index]
                 var j = i + offset
                 
                 var blocked = false
@@ -462,7 +462,7 @@ class Game {
         board.set(move.fromIndex, piece: nil)
         
         /* if ep capture, remove the captured pawn */
-        if move.flag & BITS.EP_CAPTURE > 0 {
+        if move.flag.rawValue & GameMove.Flag.EN_PASSANT.rawValue > 0 {
             if turn == GamePiece.Side.BLACK {
                 board.set(move.toIndex - 16,  piece: nil)
             } else {
@@ -471,7 +471,7 @@ class Game {
         }
         
         /* if pawn promotion, replace with new piece */
-        if move.flag & BITS.PROMOTION > 0 {
+        if move.flag.rawValue & GameMove.Flag.PAWN_PROMOTION.rawValue > 0 {
             board.set(move.toIndex, GamePiece(side: us, kind: move.promotionPiece!.kind))
         }
         
@@ -480,12 +480,12 @@ class Game {
             kings[board.get(move.toIndex)!.side] = move.toIndex
             
             /* if we castled, move the rook next to the king */
-            if move.flag & BITS.KSIDE_CASTLE.rawValue > 0 {
+            if move.flag.rawValue & GameMove.Flag.KINGSIDE_CASTLE.rawValue > 0 {
                 var castling_to = move.toIndex - 1
                 var castling_from = move.toIndex + 1
                 board.set(castling_to, piece: board.get(castling_from))
                 board.set(castling_from, piece: nil)
-            } else if move.flag & BITS.QSIDE_CASTLE.rawValue > 0 {
+            } else if move.flag.rawValue & GameMove.Flag.QUEENSIDE_CASTLE.rawValue > 0 {
                 var castling_to = move.toIndex + 1
                 var castling_from = move.toIndex - 2
                 board.set(castling_to, piece: board.get(castling_from))
@@ -493,11 +493,11 @@ class Game {
             }
             
             /* turn off castling */
-            castling[us] = "";
+            castling[us] = ""
         }
         
         /* turn off castling if we move a rook */
-        if (castling[us]) {
+        if castling[us] != nil {
             for (var i = 0, len = ROOKS[us].length; i < len; i++) {
                 if (move.from == ROOKS[us][i].square &&
                     castling[us] & ROOKS[us][i].flag) {
@@ -508,7 +508,7 @@ class Game {
         }
         
         /* turn off castling if we capture a rook */
-        if (castling[them]) {
+        if castling[them] != nil {
             for (var i = 0, len = ROOKS[them].length; i < len; i++) {
                 if (move.to == ROOKS[them][i].square &&
                     castling[them] & ROOKS[them][i].flag) {
@@ -519,7 +519,7 @@ class Game {
         }
         
         /* if big pawn move, update the en passant square */
-        if move.flag & BITS.BIG_PAWN.rawValue > 0 {
+        if move.flag.rawValue & GameMove.Flag.PAWN_PUSH.rawValue > 0 {
             if turn == GamePiece.Side.BLACK {
                 ep_square = move.toIndex - 16
             } else {
@@ -532,7 +532,7 @@ class Game {
         /* reset the 50 move counter if a pawn is moved or a piece is captured */
         if move.piece == GamePiece.Kind.PAWN.rawValue {
             half_moves = 0
-        } else if move.flag & (BITS.CAPTURE | BITS.EP_CAPTURE) > 0 {
+        } else if move.flag.rawValue & (GameMove.Flag.CAPTURE.rawValue | GameMove.Flag.EN_PASSANT.rawValue) > 0 {
             half_moves = 0
         } else {
             half_moves++

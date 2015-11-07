@@ -65,7 +65,7 @@ class GameBoard {
         -15,  0, 0,  0,  0,  0, 0, -16,  0,  0,  0,  0,  0,  0, -17
     ];
     
-    var SHIFTS = [ "p": 0, "n": 1, "b": 2, "r": 3, "q": 4, "k": 5 ]
+    var SHIFTS = [ GamePiece.Kind.PAWN: 0, GamePiece.Kind.KNIGHT: 1, GamePiece.Kind.BISHOP: 2, GamePiece.Kind.ROOK: 3, GamePiece.Kind.QUEEN: 4, GamePiece.Kind.KING: 5 ]
     
     init(){
         whiteQueensideCastle = true

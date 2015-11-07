@@ -10,13 +10,13 @@ import Foundation
 
 class GamePiece {
     
-    enum Kind {
-        case KING
-        case QUEEN
-        case ROOK
-        case KNIGHT
-        case BISHOP
-        case PAWN
+    enum Kind: String {
+        case KING = "k"
+        case QUEEN = "q"
+        case ROOK = "r"
+        case KNIGHT = "n"
+        case BISHOP = "b"
+        case PAWN = "p"
     }
     
     enum Side {
@@ -34,21 +34,21 @@ class GamePiece {
     
     func getOffsetArray() -> [Int]{
         switch self.kind {
-            case Type.PAWN:
+            case Kind.PAWN:
                 if self.side == Side.WHITE {
                     return [-16, -32, -17, -15]
                 } else {
                     return [16, 32, 17, 15]
                 }
-            case Type.KNIGHT:
+            case Kind.KNIGHT:
                 return [-18, -33, -31, -14,  18, 33, 31,  14]
-            case Type.BISHOP:
+            case Kind.BISHOP:
                 return [-17, -15,  17,  15]
-            case Type.ROOK:
+            case Kind.ROOK:
                 return [-16,   1,  16,  -1]
-            case Type.QUEEN:
+            case Kind.QUEEN:
                 return [-17, -16, -15,   1,  17, 16, 15,  -1]
-            case Type.KING:
+            case Kind.KING:
                 return [-17, -16, -15,   1,  17, 16, 15,  -1]
             }
     }
