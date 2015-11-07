@@ -480,7 +480,8 @@ class Game {
         
         /* if pawn promotion, replace with new piece */
         if move.flag.rawValue & GameMove.Flag.PAWN_PROMOTION.rawValue > 0 {
-            board.set(move.toIndex, GamePiece(side: us, kind: move.promotionPiece!.kind))
+            let piece = board.get(move.toIndex)!
+            board.set(move.toIndex, piece: GamePiece(side: us, kind: piece.kind))
         }
         
         /* if we moved the king */
