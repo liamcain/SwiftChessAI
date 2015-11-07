@@ -8,6 +8,14 @@ class Game {
     var board = GameBoard()
     
     var kings = [GamePiece.Side.WHITE: -1, GamePiece.Side.BLACK: -1]
+    var ROOKS = [
+        GamePiece.Side.WHITE: [
+            ["square": board.SQUARES.a1, "flag": GameMove.Flag.QUEENSIDE_CASTLE],
+            ["square": board.SQUARES.h1, "flag": GameMove.Flag.KINGSIDE_CASTLE]],
+        GamePiece.Side.BLACK: [
+            ["square": board.SQUARES.a8, "flag": GameMove.Flag.QUEENSIDE_CASTLE],
+            ["square": board.SQUARES.h8, "flag": GameMove.Flag.KINGSIDE_CASTLE]]
+        ]
     var castling = [GamePiece.Side.WHITE: 0, GamePiece.Side.BLACK: 0]
     var turn = GamePiece.Side.WHITE
     var ep_square = -1
@@ -313,13 +321,13 @@ class Game {
             }
             
             /* queen-side castling */
-            if (castling[us]! & GameMove.Flag.QUEENSIDE_CASTLE > 0 {
+            if castling[us]! & GameMove.Flag.QUEENSIDE_CASTLE.rawValue > 0 {
                 let castling_from = kings[us]
                 let castling_to = castling_from! - 2
                 
-                if (board.get(castling_from - 1) == nil && board.get(castling_from - 2) == nil && board.get(castling_from - 3) == nil && !attacked(them, kings[us]) && !attacked(them, castling_from - 1) && !attacked(them, castling_to)) {
-                    add_move(kings[us]!, to: castling_to)
-                }
+//                if board.get(castling_from - 1) == nil && board.get(castling_from - 2) == nil && board.get(castling_from - 3) == nil && !attacked(them, kings[us]) && !attacked(them, castling_from - 1) && !attacked(them, castling_to) {
+//                    add_move(kings[us]!, to: castling_to)
+//                }
             }
         }
         
@@ -493,12 +501,12 @@ class Game {
             }
             
             /* turn off castling */
-            castling[us] = ""
+            castling[us] = nil
         }
         
         /* turn off castling if we move a rook */
         if castling[us] != nil {
-            for (var i = 0, len = ROOKS[us].length; i < len; i++) {
+            for (var i = 0, len = ROOKS[us].count; i < len; i++) {
                 if (move.from == ROOKS[us][i].square &&
                     castling[us] & ROOKS[us][i].flag) {
                         castling[us] ^= ROOKS[us][i].flag;
