@@ -17,6 +17,7 @@ class GameScene: SKScene {
     
     override func didMoveToView(view: SKView) {
         self.addChild(board)
+        game.reset()
     }
 
     override func mouseDown(theEvent: NSEvent) {
@@ -38,9 +39,17 @@ class GameScene: SKScene {
     }
     
     override func mouseUp(theEvent: NSEvent) {
-        // Todo: snap back
         if activePiece != nil {
-            board.snapToSpace(activePiece!)
+            
+            let legalMoves = game.generate_moves(GameOptions())
+            let space = board.closestSpace(activePiece!)
+            print(space)
+            let move = game.build_move(activePiece!.boardSpace!, toPosition:space, promotionPiece: nil)
+            
+            if legalMoves.contains(move) {
+                board.snapToSpace(activePiece!)
+            }
+            
             activePiece?.zPosition = ZPOSITION_INACTIVE_PIECE
             activePiece = nil
         }

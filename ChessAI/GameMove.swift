@@ -8,7 +8,12 @@
 
 import Foundation
 
-class GameMove {
+
+func == (lhs: GameMove, rhs: GameMove) -> Bool {
+    return lhs.fromIndex == rhs.fromIndex && lhs.toIndex == rhs.toIndex
+}
+
+class GameMove: Equatable {
     
     enum Flag: Int {
         case NORMAL

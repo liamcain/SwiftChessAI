@@ -44,8 +44,6 @@ class Game {
         half_moves = 0
         move_number = 1
         history = []
-        //        header = []
-        update_setup(generate_fen())
     }
     
     func reset() {
@@ -56,9 +54,30 @@ class Game {
         turn = (turn == GamePiece.Side.WHITE) ? GamePiece.Side.BLACK : GamePiece.Side.WHITE
     }
     
+    func put(piece: GamePiece, square: String) -> Bool {
+        /* check for valid square */
+        //        if !board.SQUARES.contains(square) {
+        //            return false
+        //        }
+        
+        let sq = board.SQUARES[square]!
+        
+        /* don't let the user place more than one king */
+        //        if (piece.kind == GamePiece.Kind.KING &&
+        //            !(kings[piece.side] == EMPTY || kings[piece.color] == sq)) {
+        //                return false;
+        //        }
+        
+        board.set(sq, piece: piece)
+        if (piece.kind == GamePiece.Kind.KING) {
+            kings[piece.side] = sq;
+        }
+        return true
+    }
+    
     func loadFromFen(fen: String) -> Bool {
         let tokens = fen.componentsSeparatedByString(" ")
-        var position = Array(arrayLiteral: tokens[0])
+        var position = Array(tokens[0].characters)
         var square = 0
         
         //        if !validate_fen(fen).valid {
@@ -68,15 +87,14 @@ class Game {
         clear()
         
         for var i = 0; i < position.count; i++ {
-            let piece = position[i]
+            let piece = String(position[i])
             
             if piece == "/" {
                 square += 8
             } else if let pieceValue = Int(piece) {
                 square += pieceValue
             } else {
-//                let color = (piece < "a") ? GamePiece.Side.WHITE : GamePiece.Side.BLACK
-//                put(["type": piece.toLowerCase(), "color": color], algebraic(square))
+                put(GamePiece(str: piece), square: algebraic(square))
                 square++
             }
         }
@@ -105,25 +123,13 @@ class Game {
         half_moves = Int(tokens[4])!
         move_number = Int(tokens[5])!
         
-        update_setup(generate_fen())
-        
         return true
     }
     
-    
-    
-    func update_setup(fen: String) {
-        if history.count > 0 {
-            return
-        }
-        
-        //        if fen != DEFAULT_POSITION {
-        //            header["SetUp"] = "1"
-        //            header["FEN"] = fen
-        //        } else {
-        //            delete header["SetUp"]
-        //            delete header["FEN"]
-        //        }
+    func build_move(fromPosition: (Int, Int), toPosition: (Int, Int), promotionPiece: GamePiece.Kind?) -> GameMove {
+        let from = (7 - fromPosition.1) * 16 + fromPosition.0
+        let to   = (7 - toPosition.1) * 16 + toPosition.0
+        return build_move(from, to: to, promotionPiece: promotionPiece);
     }
     
     func build_move(from: Int, to: Int, promotionPiece: GamePiece.Kind?) -> GameMove {
@@ -174,8 +180,11 @@ class Game {
     }
     
     func algebraic(i: Int) -> String {
-        let f = file(i), r = rank(i)
-        return "abcdefgh".substringWithRange(NSRange(location: f, length: 1)) + "87654321".substringWithRange(NSRange(location: r, length: 1))
+        let f = file(i)
+        let r = 8 - rank(i)
+        print( "\(Character(UnicodeScalar(97+f)))\(r)")
+        return "\(Character(UnicodeScalar(97+f)))\(r)"
+//        return "abcdefgh".substringWithRange(NSRange(location: f, length: 1)) + "87654321".substringWithRange(NSRange(location: r, length: 1))
     }
     
     func swap_color(c: GamePiece.Side) -> GamePiece.Side {

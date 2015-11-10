@@ -13,4 +13,7 @@ class GameOptions {
     var legal: Bool?
     var square: String?
     
+    init() {
+        legal = true
+    }
 }

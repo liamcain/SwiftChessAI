@@ -32,6 +32,25 @@ class GamePiece {
         self.kind = kind
     }
     
+    init(str: String) {
+        self.side = (str < "a") ? GamePiece.Side.WHITE : GamePiece.Side.BLACK
+        
+        switch str.lowercaseString {
+            case "r":
+                self.kind = GamePiece.Kind.ROOK
+            case "b":
+                self.kind = GamePiece.Kind.BISHOP
+            case "k":
+                self.kind = GamePiece.Kind.KING
+            case "q":
+                self.kind = GamePiece.Kind.QUEEN
+            case "n":
+                self.kind = GamePiece.Kind.KNIGHT
+            default:
+                self.kind = GamePiece.Kind.PAWN
+        }
+    }
+    
     func getOffsetArray() -> [Int]{
         switch self.kind {
             case Kind.PAWN:

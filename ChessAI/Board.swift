@@ -35,6 +35,23 @@ class Board: SKNode {
         reset()
     }
     
+    func closestSpace(piece: Piece) -> (Int, Int) {
+        let x = min(max(piece.position.x, SPACE_WIDTH/2), SPACE_WIDTH*8)
+        let y = min(max(piece.position.y, SPACE_WIDTH/2), SPACE_WIDTH*8)
+        
+        let roundedX = SPACE_WIDTH * ceil(x / SPACE_WIDTH) - SPACE_WIDTH/2
+        let roundedY = SPACE_WIDTH * ceil(y / SPACE_WIDTH) - SPACE_WIDTH/2
+        
+        let pt = CGPoint(x: roundedX, y: roundedY)
+        return pointToSpace(pt)
+    }
+    
+    func movePieceToSpace(piece: (Int, Int), space: (Int, Int)) {
+        if let spritePiece = pieces[piece.0][piece.1] {
+            spritePiece.position = positionOnBoard(space.0, y:space.1)
+        }
+    }
+    
     func snapToSpace(piece: Piece) {
         let x = min(max(piece.position.x, SPACE_WIDTH/2), SPACE_WIDTH*8)
         let y = min(max(piece.position.y, SPACE_WIDTH/2), SPACE_WIDTH*8)
@@ -137,6 +154,7 @@ class Board: SKNode {
             for j in 0...7 {
                 if let piece = pieces[i][j] {
                     piece.position = positionOnBoard(i, y: j)
+                    piece.boardSpace = (i, j)
                     addChild(piece)
                 }
             }

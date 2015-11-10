@@ -156,6 +156,7 @@
 			children = (
 				0C27767C1BDE80EE004B15CD /* GameScene.swift */,
 				0CBAB73B1BDEE503009BD21B /* Board.swift */,
+				0CBAB73D1BDEE6DD009BD21B /* Piece.swift */,
 				0CC3FEFD1BDFCC5000E73196 /* Pieces */,
 				0C2776801BDE80EE004B15CD /* Assets.xcassets */,
 			);
@@ -185,7 +186,6 @@
 			isa = PBXGroup;
 			children = (
 				0C2776821BDE80EE004B15CD /* MainMenu.xib */,
-				0CBAB73D1BDEE6DD009BD21B /* Piece.swift */,
 				0CFCA53C1BE29FA0008A3025 /* Rook.swift */,
 				0CFCA53E1BE29FA8008A3025 /* Queen.swift */,
 				0CFCA5401BE29FB0008A3025 /* King.swift */,

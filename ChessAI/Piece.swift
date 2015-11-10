@@ -12,6 +12,7 @@ class Piece: SKSpriteNode {
    
     var side: Side
     var type: Type
+    var boardSpace: (Int, Int)?
     
     enum Type {
         case KING
