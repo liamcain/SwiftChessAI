@@ -50,15 +50,8 @@ class Game {
         loadFromFen(DEFAULT_POSITION)
     }
     
-    func endTurn() {
-        turn = (turn == GamePiece.Side.WHITE) ? GamePiece.Side.BLACK : GamePiece.Side.WHITE
-    }
-    
     func put(piece: GamePiece, square: String) -> Bool {
         /* check for valid square */
-        //        if !board.SQUARES.contains(square) {
-        //            return false
-        //        }
         
         let sq = board.SQUARES[square]!
         
@@ -68,9 +61,10 @@ class Game {
         //                return false;
         //        }
         
+//        print("square: \(square). algebraic: \(sq). piece: \(piece.kind.rawValue)")
         board.set(sq, piece: piece)
         if (piece.kind == GamePiece.Kind.KING) {
-            kings[piece.side] = sq;
+            kings[piece.side] = sq
         }
         return true
     }
@@ -79,10 +73,6 @@ class Game {
         let tokens = fen.componentsSeparatedByString(" ")
         var position = Array(tokens[0].characters)
         var square = 0
-        
-        //        if !validate_fen(fen).valid {
-        //            return false
-        //        }
         
         clear()
         
@@ -122,18 +112,20 @@ class Game {
         }
         half_moves = Int(tokens[4])!
         move_number = Int(tokens[5])!
-        
+       
         return true
     }
     
     func build_move(fromPosition: (Int, Int), toPosition: (Int, Int), promotionPiece: GamePiece.Kind?) -> GameMove {
         let from = (7 - fromPosition.1) * 16 + fromPosition.0
         let to   = (7 - toPosition.1) * 16 + toPosition.0
-        return build_move(from, to: to, promotionPiece: promotionPiece);
+        return build_move(from, to: to, promotionPiece: promotionPiece)
     }
     
     func build_move(from: Int, to: Int, promotionPiece: GamePiece.Kind?) -> GameMove {
         var flag = GameMove.Flag.NORMAL
+        
+//        print("Building Move: from \(algebraic(from)) to \(algebraic(to))")
         let movingPiece = board.get(from)!
         let capturedPiece = board.get(to)
         
@@ -168,6 +160,11 @@ class Game {
             }
         }
         let move = GameMove(side: turn, fromIndex: from, toIndex: to, flag: flag, promotionPiece: promotionPiece, capturedPiece: capturedPiece)
+        move.side        = turn
+        move.ep_square   = ep_square
+        move.castling    = castling
+        move.move_number = move_number
+        move.half_moves  = half_moves
         return move
     }
 
@@ -182,9 +179,7 @@ class Game {
     func algebraic(i: Int) -> String {
         let f = file(i)
         let r = 8 - rank(i)
-        print( "\(Character(UnicodeScalar(97+f)))\(r)")
         return "\(Character(UnicodeScalar(97+f)))\(r)"
-//        return "abcdefgh".substringWithRange(NSRange(location: f, length: 1)) + "87654321".substringWithRange(NSRange(location: r, length: 1))
     }
     
     func swap_color(c: GamePiece.Side) -> GamePiece.Side {
@@ -242,14 +237,17 @@ class Game {
                 continue
             }
             
-            let piece: GamePiece = board.get(i)!
-            let offsetArray = piece.getOffsetArray()
-            if piece.side != us {
+            let piece = board.get(i)
+            if piece == nil {
+                continue;
+            }
+            let offsetArray = piece!.getOffsetArray()
+            if piece!.side != us {
                 continue
             }
             
             
-            if piece.kind == GamePiece.Kind.PAWN {
+            if piece!.kind == GamePiece.Kind.PAWN {
                 /* single square, non-capturing */
                 let square = i + offsetArray[0]
                 
@@ -297,7 +295,7 @@ class Game {
                         }
                         
                         /* break, if knight or king */
-                        if (piece.kind == GamePiece.Kind.KNIGHT || piece.kind == GamePiece.Kind.KING) {
+                        if (piece!.kind == GamePiece.Kind.KNIGHT || piece!.kind == GamePiece.Kind.KING) {
                             break
                         }
                     }
@@ -310,7 +308,7 @@ class Game {
         */
         if !single_square || last_sq == kings[us] {
             /* king-side castling */
-            if castling[us]! & GameMove.Flag.KINGSIDE_CASTLE.rawValue > 0 {
+            if castling[us] == GameMove.Flag.KINGSIDE_CASTLE.rawValue {
                 let castling_from = kings[us]!
                 let castling_to = castling_from + 2
                 
@@ -320,7 +318,7 @@ class Game {
             }
             
             /* queen-side castling */
-            if castling[us]! & GameMove.Flag.QUEENSIDE_CASTLE.rawValue > 0 {
+            if castling[us]! == GameMove.Flag.QUEENSIDE_CASTLE.rawValue {
                 let castling_from = kings[us]
                 let castling_to = castling_from! - 2
                 
@@ -344,7 +342,7 @@ class Game {
             if !king_attacked(us) {
                 legal_moves.append(moves[i])
             }
-//            undo_move()
+            undo_move()
         }
         
         return legal_moves 
@@ -385,10 +383,10 @@ class Game {
         }
         
         var cflags = ""
-        if (castling[GamePiece.Side.WHITE]! & GameMove.Flag.KINGSIDE_CASTLE.rawValue > 0) { cflags += "K" }
-        if (castling[GamePiece.Side.WHITE]! & GameMove.Flag.QUEENSIDE_CASTLE.rawValue > 0) { cflags += "Q" }
-        if (castling[GamePiece.Side.BLACK]! & GameMove.Flag.KINGSIDE_CASTLE.rawValue > 0) { cflags += "k" }
-        if (castling[GamePiece.Side.BLACK]! & GameMove.Flag.QUEENSIDE_CASTLE.rawValue > 0) { cflags += "q" }
+        if (castling[GamePiece.Side.WHITE]! == GameMove.Flag.KINGSIDE_CASTLE.rawValue) { cflags += "K" }
+        if (castling[GamePiece.Side.WHITE]! == GameMove.Flag.QUEENSIDE_CASTLE.rawValue) { cflags += "Q" }
+        if (castling[GamePiece.Side.BLACK]! == GameMove.Flag.KINGSIDE_CASTLE.rawValue) { cflags += "k" }
+        if (castling[GamePiece.Side.BLACK]! == GameMove.Flag.QUEENSIDE_CASTLE.rawValue) { cflags += "q" }
         
         /* do we have an empty castling flag? */
         if cflags == "" {
@@ -459,6 +457,63 @@ class Game {
         return false
     }
     
+    
+    func undo_move() -> GameMove? {
+        let old = history.popLast()
+        if (old == nil) {
+            return nil
+        }
+        
+        let move = old!
+        
+        turn        = old!.side
+        castling    = old!.castling!
+        ep_square   = old!.ep_square!
+        half_moves  = old!.half_moves!
+        move_number = old!.move_number!
+        
+        let us = turn
+        let them = swap_color(turn)
+        
+        board.set(move.fromIndex, piece: board.get(move.toIndex))
+        if move.promotionPiece != nil {
+            board.get(move.fromIndex)!.kind = move.promotionPiece!  // to undo any promotions
+        }
+        board.set(move.toIndex, piece: nil)
+        
+        if move.flag == GameMove.Flag.CAPTURE {
+            board.set(move.toIndex, piece: GamePiece(side: them, kind: move.capturedPiece!.kind))
+        } else if move.flag == GameMove.Flag.EN_PASSANT {
+            var index: Int
+            if (us == GamePiece.Side.BLACK) {
+                index = move.toIndex - 16
+            } else {
+                index = move.toIndex + 16
+            }
+            board.set(index, piece: GamePiece(side: them, kind: GamePiece.Kind.PAWN))
+        }
+        
+        
+        if move.flag == GameMove.Flag.KINGSIDE_CASTLE || move.flag == GameMove.Flag.QUEENSIDE_CASTLE {
+            var castling_to: Int?
+            var castling_from: Int?
+            if move.flag == GameMove.Flag.KINGSIDE_CASTLE {
+                castling_to = move.toIndex + 1
+                castling_from = move.toIndex - 1
+            } else if move.flag == GameMove.Flag.QUEENSIDE_CASTLE {
+                castling_to = move.toIndex - 2
+                castling_from = move.toIndex + 1
+            }
+            
+            if castling_from != nil {
+                board.set(castling_to!, piece: board.get(castling_from!))
+                board.set(castling_from!,  piece: nil)
+            }
+        }
+        
+        return move
+    }
+    
     func make_move(move: GameMove) {
         let us = turn
         let them = swap_color(us)
@@ -468,7 +523,7 @@ class Game {
         board.set(move.fromIndex, piece: nil)
         
         /* if ep capture, remove the captured pawn */
-        if move.flag.rawValue & GameMove.Flag.EN_PASSANT.rawValue > 0 {
+        if move.flag == GameMove.Flag.EN_PASSANT {
             if turn == GamePiece.Side.BLACK {
                 board.set(move.toIndex - 16,  piece: nil)
             } else {
@@ -477,22 +532,22 @@ class Game {
         }
         
         /* if pawn promotion, replace with new piece */
-        if move.flag.rawValue & GameMove.Flag.PAWN_PROMOTION.rawValue > 0 {
+        if move.flag == GameMove.Flag.PAWN_PROMOTION {
             let piece = board.get(move.toIndex)!
             board.set(move.toIndex, piece: GamePiece(side: us, kind: piece.kind))
         }
         
         /* if we moved the king */
-        if (board.get(move.toIndex)!.kind == GamePiece.Kind.KING) {
+        if (board.get(move.toIndex) != nil && board.get(move.toIndex)!.kind == GamePiece.Kind.KING) {
             kings[board.get(move.toIndex)!.side] = move.toIndex
             
             /* if we castled, move the rook next to the king */
-            if move.flag.rawValue & GameMove.Flag.KINGSIDE_CASTLE.rawValue > 0 {
+            if move.flag == GameMove.Flag.KINGSIDE_CASTLE {
                 let castling_to = move.toIndex - 1
                 let castling_from = move.toIndex + 1
                 board.set(castling_to, piece: board.get(castling_from))
                 board.set(castling_from, piece: nil)
-            } else if move.flag.rawValue & GameMove.Flag.QUEENSIDE_CASTLE.rawValue > 0 {
+            } else if move.flag == GameMove.Flag.QUEENSIDE_CASTLE {
                 let castling_to = move.toIndex + 1
                 let castling_from = move.toIndex - 2
                 board.set(castling_to, piece: board.get(castling_from))
@@ -500,54 +555,9 @@ class Game {
             }
             
             /* turn off castling */
-            castling[us] = nil
+            castling[us] = 0
         }
         
-        func undo_move() -> GameMove? {
-            let old = history.popLast()
-            if (old == nil) {
-                return nil
-            }
-            
-            let us = turn
-            let them = swap_color(turn)
-            
-            board.set(move.fromIndex, piece: board.get(move.toIndex))
-            board.get(move.fromIndex)!.kind = move.promotionPiece!  // to undo any promotions
-            board.set(move.toIndex, piece: nil)
-            
-            if move.flag.rawValue & GameMove.Flag.CAPTURE.rawValue > 0 {
-                board.set(move.toIndex, piece: GamePiece(side: them, kind: move.capturedPiece!.kind))
-            } else if move.flag.rawValue & GameMove.Flag.EN_PASSANT.rawValue > 0  {
-                var index: Int
-                if (us == GamePiece.Side.BLACK) {
-                    index = move.toIndex - 16
-                } else {
-                    index = move.toIndex + 16
-                }
-                board.set(index, piece: GamePiece(side: them, kind: GamePiece.Kind.PAWN))
-            }
-            
-            
-            if move.flag.rawValue & (GameMove.Flag.KINGSIDE_CASTLE.rawValue | GameMove.Flag.QUEENSIDE_CASTLE.rawValue) > 0 {
-                var castling_to: Int?
-                var castling_from: Int?
-                if move.flag.rawValue & GameMove.Flag.KINGSIDE_CASTLE.rawValue > 0 {
-                    castling_to = move.toIndex + 1
-                    castling_from = move.toIndex - 1
-                } else if move.flag.rawValue & GameMove.Flag.QUEENSIDE_CASTLE.rawValue > 0 {
-                    castling_to = move.toIndex - 2
-                    castling_from = move.toIndex + 1
-                }
-                
-                if castling_from != nil {
-                    board.set(castling_to!, piece: board.get(castling_from!))
-                    board.set(castling_from!,  piece: nil)
-                }
-            }
-            
-            return move;
-        }
         
         /* turn off castling if we move a rook */
         if castling[us] != nil {
@@ -555,7 +565,7 @@ class Game {
                 if move.fromIndex == ROOKS[us]![i]["square"]! &&
                     castling[us]! & ROOKS[us]![i]["flag"]! > 0 {
                         castling[us]! ^= ROOKS[us]![i]["flag"]!
-                        break;
+                        break
                 }
             }
         }
@@ -572,7 +582,7 @@ class Game {
         }
         
         /* if big pawn move, update the en passant square */
-        if move.flag.rawValue & GameMove.Flag.PAWN_PUSH.rawValue > 0 {
+        if move.flag == GameMove.Flag.PAWN_PUSH {
             if turn == GamePiece.Side.BLACK {
                 ep_square = move.toIndex - 16
             } else {
@@ -583,18 +593,18 @@ class Game {
         }
         
         /* reset the 50 move counter if a pawn is moved or a piece is captured */
-        if board.get(move.toIndex)!.kind == GamePiece.Kind.PAWN {
+        if board.get(move.toIndex) != nil && board.get(move.toIndex)!.kind == GamePiece.Kind.PAWN {
             half_moves = 0
-        } else if move.flag.rawValue & (GameMove.Flag.CAPTURE.rawValue | GameMove.Flag.EN_PASSANT.rawValue) > 0 {
+        } else if move.flag == GameMove.Flag.CAPTURE || move.flag == GameMove.Flag.EN_PASSANT {
             half_moves = 0
         } else {
             half_moves++
         }
         
         if turn == GamePiece.Side.BLACK {
-            move_number++;
+            move_number++
         }
-        turn = swap_color(turn);
+        turn = swap_color(turn)
     }
     
 }

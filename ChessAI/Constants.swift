@@ -9,6 +9,9 @@
 import Foundation
 
 let SPACE_WIDTH = CGFloat(100)
+let HALF_SPACE_WIDTH = CGFloat(50)
+let FULL_BOARD_WIDTH = CGFloat(800)
+
 let ZPOSITION_ACTIVE_PIECE = CGFloat(100)
 let ZPOSITION_INACTIVE_PIECE = CGFloat(1)
 let ZPOSITION_BOARD_SPACE = CGFloat(0)

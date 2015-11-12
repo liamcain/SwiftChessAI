@@ -77,7 +77,13 @@ class GameBoard {
     
     func get(location: Int) -> GamePiece? {
         // Returns GamePiece at the int location
-        return pieceLocations[location]!
+//        print("Piece Locations: =====")
+//        print(pieceLocations)
+//        print("======================")
+        if let piece = pieceLocations[location] {
+            return piece
+        }
+        return nil
     }
     
     func set(location: Int, piece: GamePiece?) {

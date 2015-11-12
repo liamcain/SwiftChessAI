@@ -22,7 +22,7 @@ class Board: SKNode {
             for j in 0...7 {
                 row.append(nil)
                 let space = SKSpriteNode(imageNamed: "board-space")
-                space.position = CGPoint(x:100*j+50, y:100*i+50)
+                space.position = positionOnBoard(j, y: i)
                 if (i + j) % 2 == 0 {
                     space.colorBlendFactor = 1.0
                     space.color = SKColor.redColor()
@@ -36,11 +36,11 @@ class Board: SKNode {
     }
     
     func closestSpace(piece: Piece) -> (Int, Int) {
-        let x = min(max(piece.position.x, SPACE_WIDTH/2), SPACE_WIDTH*8)
-        let y = min(max(piece.position.y, SPACE_WIDTH/2), SPACE_WIDTH*8)
+        let x = min(max(piece.position.x, HALF_SPACE_WIDTH), FULL_BOARD_WIDTH)
+        let y = min(max(piece.position.y, HALF_SPACE_WIDTH), FULL_BOARD_WIDTH)
         
-        let roundedX = SPACE_WIDTH * ceil(x / SPACE_WIDTH) - SPACE_WIDTH/2
-        let roundedY = SPACE_WIDTH * ceil(y / SPACE_WIDTH) - SPACE_WIDTH/2
+        let roundedX = SPACE_WIDTH * ceil(x / SPACE_WIDTH) - HALF_SPACE_WIDTH
+        let roundedY = SPACE_WIDTH * ceil(y / SPACE_WIDTH) - HALF_SPACE_WIDTH
         
         let pt = CGPoint(x: roundedX, y: roundedY)
         return pointToSpace(pt)
@@ -48,16 +48,20 @@ class Board: SKNode {
     
     func movePieceToSpace(piece: (Int, Int), space: (Int, Int)) {
         if let spritePiece = pieces[piece.0][piece.1] {
-            spritePiece.position = positionOnBoard(space.0, y:space.1)
+            spritePiece.setSpace(space.0, y: space.1)
         }
     }
     
+    func snapback(piece: Piece) {
+        piece.setSpace(piece.boardSpace.0, y: piece.boardSpace.1)
+    }
+    
     func snapToSpace(piece: Piece) {
-        let x = min(max(piece.position.x, SPACE_WIDTH/2), SPACE_WIDTH*8)
-        let y = min(max(piece.position.y, SPACE_WIDTH/2), SPACE_WIDTH*8)
+        let x = min(max(piece.position.x, HALF_SPACE_WIDTH), FULL_BOARD_WIDTH)
+        let y = min(max(piece.position.y, HALF_SPACE_WIDTH), FULL_BOARD_WIDTH)
         
-        let roundedX = SPACE_WIDTH * ceil(x / SPACE_WIDTH) - SPACE_WIDTH/2
-        let roundedY = SPACE_WIDTH * ceil(y / SPACE_WIDTH) - SPACE_WIDTH/2
+        let roundedX = SPACE_WIDTH * ceil(x / SPACE_WIDTH) - HALF_SPACE_WIDTH
+        let roundedY = SPACE_WIDTH * ceil(y / SPACE_WIDTH) - HALF_SPACE_WIDTH
         
         let pt = CGPoint(x: roundedX, y: roundedY)
         let space = pointToSpace(pt)
@@ -68,7 +72,7 @@ class Board: SKNode {
         }
         
         pieces[space.0][space.1] = piece
-        piece.position = pt
+        piece.setSpace(space.0, y: space.1)
     }
     
     func clearBoard(){
@@ -91,7 +95,8 @@ class Board: SKNode {
     }
     
     func positionOnBoard(x: Int, y: Int) -> CGPoint {
-        return CGPoint(x: x * 100 + 50, y: y * 100 + 50)
+        return CGPoint(x: CGFloat(x) * SPACE_WIDTH + HALF_SPACE_WIDTH,
+                       y: CGFloat(y) * SPACE_WIDTH + HALF_SPACE_WIDTH)
     }
     
     func loadPositionFromFEN(fenString: String){
@@ -103,37 +108,37 @@ class Board: SKNode {
         for rank in ranks {
             for c in rank.characters {
                 switch c {
-                case "p":
-                    self.pieces[i++][j] = Pawn(side: Piece.Side.BLACK)
-                case "P":
-                    self.pieces[i++][j] = Pawn(side: Piece.Side.WHITE)
-                case "r":
-                    self.pieces[i++][j] = Rook(side: Piece.Side.BLACK)
-                case "R":
-                    self.pieces[i++][j] = Rook(side: Piece.Side.WHITE)
-                case "n":
-                    self.pieces[i++][j] = Knight(side: Piece.Side.BLACK)
-                case "N":
-                    self.pieces[i++][j] = Knight(side: Piece.Side.WHITE)
-                case "b":
-                    self.pieces[i++][j] = Bishop(side: Piece.Side.BLACK)
-                case "B":
-                    self.pieces[i++][j] = Bishop(side: Piece.Side.WHITE)
-                case "k":
-                    self.pieces[i++][j] = King(side: Piece.Side.BLACK)
-                case "K":
-                    self.pieces[i++][j] = King(side: Piece.Side.WHITE)
-                case "q":
-                    self.pieces[i++][j] = Queen(side: Piece.Side.BLACK)
-                case "Q":
-                    self.pieces[i++][j] = Queen(side: Piece.Side.WHITE)
-                default:
-                    let tempString = String(c)
-                    if let numOfBlankSpaces = Int(tempString) {
-                        for _ in 1...numOfBlankSpaces {
-                            self.pieces[i++][j] = nil
+                    case "p":
+                        self.pieces[i++][j] = Pawn(side: Piece.Side.BLACK)
+                    case "P":
+                        self.pieces[i++][j] = Pawn(side: Piece.Side.WHITE)
+                    case "r":
+                        self.pieces[i++][j] = Rook(side: Piece.Side.BLACK)
+                    case "R":
+                        self.pieces[i++][j] = Rook(side: Piece.Side.WHITE)
+                    case "n":
+                        self.pieces[i++][j] = Knight(side: Piece.Side.BLACK)
+                    case "N":
+                        self.pieces[i++][j] = Knight(side: Piece.Side.WHITE)
+                    case "b":
+                        self.pieces[i++][j] = Bishop(side: Piece.Side.BLACK)
+                    case "B":
+                        self.pieces[i++][j] = Bishop(side: Piece.Side.WHITE)
+                    case "k":
+                        self.pieces[i++][j] = King(side: Piece.Side.BLACK)
+                    case "K":
+                        self.pieces[i++][j] = King(side: Piece.Side.WHITE)
+                    case "q":
+                        self.pieces[i++][j] = Queen(side: Piece.Side.BLACK)
+                    case "Q":
+                        self.pieces[i++][j] = Queen(side: Piece.Side.WHITE)
+                    default:
+                        let tempString = String(c)
+                        if let numOfBlankSpaces = Int(tempString) {
+                            for _ in 1...numOfBlankSpaces {
+                                self.pieces[i++][j] = nil
+                            }
                         }
-                    }
                 }
                 if(i == 8){
                     j--
@@ -153,8 +158,7 @@ class Board: SKNode {
         for i in 0...7 {
             for j in 0...7 {
                 if let piece = pieces[i][j] {
-                    piece.position = positionOnBoard(i, y: j)
-                    piece.boardSpace = (i, j)
+                    piece.setSpace(i, y: j)
                     addChild(piece)
                 }
             }

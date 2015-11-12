@@ -27,6 +27,12 @@ class GameMove: Equatable {
     }
     
     var side: GamePiece.Side
+    
+    var castling: Dictionary<GamePiece.Side, Int>?
+    var ep_square: Int?
+    var half_moves: Int?
+    var move_number: Int?
+    
     var fromIndex: Int
     var toIndex: Int
     var flag: Flag

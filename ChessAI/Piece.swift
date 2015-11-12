@@ -12,7 +12,7 @@ class Piece: SKSpriteNode {
    
     var side: Side
     var type: Type
-    var boardSpace: (Int, Int)?
+    var boardSpace: (Int, Int)
     
     enum Type {
         case KING
@@ -31,9 +31,16 @@ class Piece: SKSpriteNode {
     init(side: Side, type: Type, texture: SKTexture) {
         self.side = side
         self.type = type
+        self.boardSpace = (0, 0)
         
         super.init(texture: texture, color: SKColor.clearColor(), size: texture.size())
         self.zPosition = ZPOSITION_INACTIVE_PIECE
+    }
+    
+    func setSpace(x: Int, y: Int) {
+        position = CGPoint(x: CGFloat(x) * SPACE_WIDTH + HALF_SPACE_WIDTH,
+                           y: CGFloat(y) * SPACE_WIDTH + HALF_SPACE_WIDTH)
+        boardSpace = (x, y)
     }
 
     required init?(coder aDecoder: NSCoder) {

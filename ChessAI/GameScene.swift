@@ -42,14 +42,23 @@ class GameScene: SKScene {
         if activePiece != nil {
             
             let legalMoves = game.generate_moves(GameOptions())
-            let space = board.closestSpace(activePiece!)
-            print(space)
-            let move = game.build_move(activePiece!.boardSpace!, toPosition:space, promotionPiece: nil)
+            let nextSpace = board.closestSpace(activePiece!)
+            let currentSpace = activePiece!.boardSpace
+            
+            if nextSpace.0 == currentSpace.0 && nextSpace.1 == currentSpace.1 {
+                board.snapback(activePiece!)
+                return
+            }
+            
+            let move = game.build_move(currentSpace, toPosition:nextSpace, promotionPiece: nil)
             
             if legalMoves.contains(move) {
                 board.snapToSpace(activePiece!)
+                game.make_move(move)
+            } else {
+                board.snapback(activePiece!)
             }
-            
+        
             activePiece?.zPosition = ZPOSITION_INACTIVE_PIECE
             activePiece = nil
         }

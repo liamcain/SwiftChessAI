@@ -16,6 +16,21 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet weak var window: NSWindow!
     @IBOutlet weak var skView: SKView!
     
+    override func awakeFromNib() {
+        let bar = NSStatusBar.systemStatusBar()
+        let statusItem = bar.statusItemWithLength(CGFloat(NSVariableStatusItemLength))
+        
+        statusItem.title = "Edit"
+        statusItem.highlightMode = true
+        statusItem.menu = NSMenu()
+        statusItem.enabled = true
+        
+        let newItem : NSMenuItem = NSMenuItem(title: "Undo", action: Selector("Undo:"), keyEquivalent: "90")
+        statusItem.menu!.addItem(newItem)
+        statusItem.menu!.addItem(NSMenuItem.separatorItem())
+        
+    }
+    
     func applicationDidFinishLaunching(aNotification: NSNotification) {
         
         let scene = GameScene(size: CGSize(width:800, height:800))
@@ -29,6 +44,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         self.skView!.showsFPS = true
         self.skView!.showsNodeCount = true
+        
+    }
+    
+    func undo(sender: AnyObject) {
+        
     }
     
     func applicationShouldTerminateAfterLastWindowClosed(sender: NSApplication) -> Bool {
