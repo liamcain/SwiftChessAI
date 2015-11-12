@@ -16,24 +16,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet weak var window: NSWindow!
     @IBOutlet weak var skView: SKView!
     
-    override func awakeFromNib() {
-        let bar = NSStatusBar.systemStatusBar()
-        let statusItem = bar.statusItemWithLength(CGFloat(NSVariableStatusItemLength))
-        
-        statusItem.title = "Edit"
-        statusItem.highlightMode = true
-        statusItem.menu = NSMenu()
-        statusItem.enabled = true
-        
-        let newItem : NSMenuItem = NSMenuItem(title: "Undo", action: Selector("Undo:"), keyEquivalent: "90")
-        statusItem.menu!.addItem(newItem)
-        statusItem.menu!.addItem(NSMenuItem.separatorItem())
-        
-    }
+    weak var currentScene: GameScene?
     
     func applicationDidFinishLaunching(aNotification: NSNotification) {
         
         let scene = GameScene(size: CGSize(width:800, height:800))
+        currentScene = scene
         /* Set the scale mode to scale to fit the window */
         scene.scaleMode = .AspectFill
         
@@ -45,10 +33,30 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         self.skView!.showsFPS = true
         self.skView!.showsNodeCount = true
         
+        let menuBar = NSMenu(title:"")
+        let app = NSMenu(title: "ChessAI")
+        app.addItemWithTitle("About ChessAI", action: nil, keyEquivalent: "")
+        app.addItem(NSMenuItem.separatorItem())
+        app.addItemWithTitle("Quit", action: Selector("quit:"), keyEquivalent: "q")
+        
+        let appItem = menuBar.addItemWithTitle("", action: nil, keyEquivalent: "")
+        appItem?.submenu = app
+        
+        let edit = NSMenu.init(title: "Edit")
+        edit.addItemWithTitle("Undo", action: Selector("undo"), keyEquivalent: "z")
+        
+        let heading = menuBar.addItemWithTitle("", action: nil, keyEquivalent: "")
+        heading?.submenu = edit
+        
+        NSApp.mainMenu = menuBar
     }
     
-    func undo(sender: AnyObject) {
-        
+    func undo() {
+        currentScene?.undo()
+    }
+    
+    func quit(sender: AnyObject) {
+        NSApp.terminate(self)
     }
     
     func applicationShouldTerminateAfterLastWindowClosed(sender: NSApplication) -> Bool {

@@ -38,6 +38,10 @@ class GameScene: SKScene {
         activePiece?.position = location
     }
     
+    func undo() {
+        game.undo_move()
+    }
+    
     override func mouseUp(theEvent: NSEvent) {
         if activePiece != nil {
             
