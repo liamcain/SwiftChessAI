@@ -49,6 +49,7 @@ class GameScene: SKScene {
             let nextSpace = board.closestSpace(activePiece!)
             let currentSpace = activePiece!.boardSpace
             
+            // If we haven't moved the piece
             if nextSpace.0 == currentSpace.0 && nextSpace.1 == currentSpace.1 {
                 board.snapback(activePiece!)
                 return
@@ -57,8 +58,14 @@ class GameScene: SKScene {
             let move = game.build_move(currentSpace, toPosition:nextSpace, promotionPiece: nil)
             
             if legalMoves.contains(move) {
-                board.snapToSpace(activePiece!)
+//                board.snapToSpace(activePiece!)
+                board.movePieceToSpace(activePiece!, space: nextSpace)
                 game.make_move(move)
+                game.print_board()
+                
+                if (game.king_attacked(game.turn)) {
+                    print("King is in check")
+                }
             } else {
                 board.snapback(activePiece!)
             }

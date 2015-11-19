@@ -30,7 +30,7 @@ class GameBoard {
     ]
     
     let ATTACKS = [
-        20, 0, 0, 0, 0, 0, 0, 24, 0, 0, 0, 0, 0, 0,20, 0,
+        20, 0, 0, 0, 0, 0, 0,24, 0, 0, 0, 0, 0, 0,20, 0,
         0,20, 0, 0, 0, 0, 0, 24,  0, 0, 0, 0, 0,20, 0, 0,
         0, 0,20, 0, 0, 0, 0, 24,  0, 0, 0, 0,20, 0, 0, 0,
         0, 0, 0,20, 0, 0, 0, 24,  0, 0, 0,20, 0, 0, 0, 0,
@@ -65,7 +65,12 @@ class GameBoard {
         -15,  0, 0,  0,  0,  0, 0, -16,  0,  0,  0,  0,  0,  0, -17
     ];
     
-    var SHIFTS = [ GamePiece.Kind.PAWN: 0, GamePiece.Kind.KNIGHT: 1, GamePiece.Kind.BISHOP: 2, GamePiece.Kind.ROOK: 3, GamePiece.Kind.QUEEN: 4, GamePiece.Kind.KING: 5 ]
+    var SHIFTS = [ GamePiece.Kind.PAWN:   0,
+                   GamePiece.Kind.KNIGHT: 1,
+                   GamePiece.Kind.BISHOP: 2,
+                   GamePiece.Kind.ROOK:   3,
+                   GamePiece.Kind.QUEEN:  4,
+                   GamePiece.Kind.KING:   5 ]
     
     init(){
         whiteQueensideCastle = true
@@ -77,9 +82,6 @@ class GameBoard {
     
     func get(location: Int) -> GamePiece? {
         // Returns GamePiece at the int location
-//        print("Piece Locations: =====")
-//        print(pieceLocations)
-//        print("======================")
         if let piece = pieceLocations[location] {
             return piece
         }

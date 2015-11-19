@@ -48,31 +48,22 @@ class Board: SKNode {
     
     func movePieceToSpace(piece: (Int, Int), space: (Int, Int)) {
         if let spritePiece = pieces[piece.0][piece.1] {
-            spritePiece.setSpace(space.0, y: space.1)
+            movePieceToSpace(spritePiece, space: space)
         }
+    }
+    
+    func movePieceToSpace(piece: Piece, space: (Int, Int)) {
+        let pieceAtSpace = pieces[space.0][space.1]
+        if pieceAtSpace != nil && pieceAtSpace != piece {
+            print("Space: \(space). Removing piece \(pieceAtSpace!.type) on \(piece.boardSpace)")
+            pieceAtSpace?.removeFromParent()
+        }
+        pieces[space.0][space.1] = piece
+        piece.setSpace(space.0, y: space.1)
     }
     
     func snapback(piece: Piece) {
         piece.setSpace(piece.boardSpace.0, y: piece.boardSpace.1)
-    }
-    
-    func snapToSpace(piece: Piece) {
-        let x = min(max(piece.position.x, HALF_SPACE_WIDTH), FULL_BOARD_WIDTH)
-        let y = min(max(piece.position.y, HALF_SPACE_WIDTH), FULL_BOARD_WIDTH)
-        
-        let roundedX = SPACE_WIDTH * ceil(x / SPACE_WIDTH) - HALF_SPACE_WIDTH
-        let roundedY = SPACE_WIDTH * ceil(y / SPACE_WIDTH) - HALF_SPACE_WIDTH
-        
-        let pt = CGPoint(x: roundedX, y: roundedY)
-        let space = pointToSpace(pt)
-        
-        let pieceAtSpace = pieces[space.0][space.1]
-        if pieceAtSpace != nil && pieceAtSpace != piece {
-            pieceAtSpace?.removeFromParent()
-        }
-        
-        pieces[space.0][space.1] = piece
-        piece.setSpace(space.0, y: space.1)
     }
     
     func clearBoard(){

@@ -8,7 +8,7 @@
 
 import Foundation
 
-class GamePiece {
+class GamePiece: CustomStringConvertible {
     
     enum Kind: String {
         case KING = "k"
@@ -26,6 +26,9 @@ class GamePiece {
     
     var side: Side
     var kind: Kind
+    var description: String {
+        return "\(side)'s \(kind)"
+    }
     
     init(side: Side, kind: Kind){
         self.side = side
@@ -53,22 +56,24 @@ class GamePiece {
     
     func getOffsetArray() -> [Int]{
         switch self.kind {
-            case Kind.PAWN:
-                if self.side == Side.WHITE {
-                    return [-16, -32, -17, -15]
-                } else {
-                    return [16, 32, 17, 15]
-                }
-            case Kind.KNIGHT:
-                return [-18, -33, -31, -14,  18, 33, 31,  14]
-            case Kind.BISHOP:
-                return [-17, -15,  17,  15]
-            case Kind.ROOK:
-                return [-16,   1,  16,  -1]
-            case Kind.QUEEN:
-                return [-17, -16, -15,   1,  17, 16, 15,  -1]
-            case Kind.KING:
-                return [-17, -16, -15,   1,  17, 16, 15,  -1]
+        case Kind.PAWN:
+            if self.side == Side.WHITE {
+                return [-16, -32, -17, -15]
+            } else {
+                return [16, 32, 17, 15]
             }
+        case Kind.KNIGHT:
+            return [-18, -33, -31, -14,  18, 33, 31,  14]
+        case Kind.BISHOP:
+            return [-17, -15,  17,  15]
+        case Kind.ROOK:
+            return [-16,   1,  16,  -1]
+        case Kind.QUEEN:
+            return [-17, -16, -15,   1,  17, 16, 15,  -1]
+        case Kind.KING:
+            return [-17, -16, -15,   1,  17, 16, 15,  -1]
+        }
     }
+    
+    
 }

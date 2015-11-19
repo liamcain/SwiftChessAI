@@ -123,8 +123,9 @@ class Game {
     }
     
     func build_move(from: Int, to: Int, promotionPiece: GamePiece.Kind?) -> GameMove {
-        var flag = GameMove.Flag.NORMAL
+        assert(board.get(from) != nil)
         
+        var flag = GameMove.Flag.NORMAL
 //        print("Building Move: from \(algebraic(from)) to \(algebraic(to))")
         let movingPiece = board.get(from)!
         let capturedPiece = board.get(to)
@@ -418,7 +419,9 @@ class Game {
             let difference = i - square
             let index = difference + 119
             
-            if board.ATTACKS[index] & (1 << board.SHIFTS[piece.kind]!) > 0 {
+//            print("SHIFTS:  \(board.ATTACKS[index] & (1 << board.SHIFTS[piece.kind]!))")
+            
+            if (board.ATTACKS[index] & (1 << board.SHIFTS[piece.kind]!)) > 0 {
                 if piece.kind == GamePiece.Kind.PAWN {
                     if difference > 0 {
                         if piece.side == GamePiece.Side.WHITE {
@@ -531,15 +534,16 @@ class Game {
             }
         }
         
+        let piece = board.get(move.toIndex)
+        
         /* if pawn promotion, replace with new piece */
         if move.flag == GameMove.Flag.PAWN_PROMOTION {
-            let piece = board.get(move.toIndex)!
-            board.set(move.toIndex, piece: GamePiece(side: us, kind: piece.kind))
+            board.set(move.toIndex, piece: GamePiece(side: us, kind: piece!.kind))
         }
         
         /* if we moved the king */
-        if (board.get(move.toIndex) != nil && board.get(move.toIndex)!.kind == GamePiece.Kind.KING) {
-            kings[board.get(move.toIndex)!.side] = move.toIndex
+        if (piece != nil && piece?.kind == GamePiece.Kind.KING) {
+            kings[piece!.side] = move.toIndex
             
             /* if we castled, move the rook next to the king */
             if move.flag == GameMove.Flag.KINGSIDE_CASTLE {
@@ -604,7 +608,31 @@ class Game {
         if turn == GamePiece.Side.BLACK {
             move_number++
         }
+        
+//        print_board()
         turn = swap_color(turn)
+    }
+    
+    func print_board()  {
+        let first_sq = board.SQUARES["a8"]
+        let last_sq = board.SQUARES["h1"]
+        print("Move number: \(move_number)\n")
+        
+        var line = ""
+        for var i = first_sq!; i <= last_sq!; i++ {
+            if let piece = board.get(i) {
+                let kind = Array(arrayLiteral: piece.kind.rawValue)[0]
+                line += " \(kind) "
+            } else {
+                line += " □ "
+            }
+            if i % 8 == 7 {
+                print(line)
+                line = ""
+                i += 8
+            }
+        }
+        print("\n\n")
     }
     
 }
