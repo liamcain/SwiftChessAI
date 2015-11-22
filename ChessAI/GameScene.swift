@@ -14,10 +14,12 @@ class GameScene: SKScene {
     var game: Game = Game()
     
     var activePiece: Piece?
+    var legalMoves: [GameMove]?
     
     override func didMoveToView(view: SKView) {
         self.addChild(board)
         game.reset()
+        legalMoves = game.generate_moves(GameOptions())
     }
 
     override func mouseDown(theEvent: NSEvent) {
@@ -28,6 +30,14 @@ class GameScene: SKScene {
             if piece.isKindOfClass(Piece) {
                 activePiece = touchedPiece as? Piece
                 activePiece?.zPosition = ZPOSITION_ACTIVE_PIECE
+                
+                let space = activePiece?.boardSpace
+                for move in legalMoves! {
+//                    if move.fromIndex == activePiece?.boardSpace {
+                        // highlight boardspace
+//                    }
+                }
+                
                 break
             }
         }
@@ -45,7 +55,6 @@ class GameScene: SKScene {
     override func mouseUp(theEvent: NSEvent) {
         if activePiece != nil {
             
-            let legalMoves = game.generate_moves(GameOptions())
             let nextSpace = board.closestSpace(activePiece!)
             let currentSpace = activePiece!.boardSpace
             
@@ -57,8 +66,7 @@ class GameScene: SKScene {
             
             let move = game.build_move(currentSpace, toPosition:nextSpace, promotionPiece: nil)
             
-            if legalMoves.contains(move) {
-//                board.snapToSpace(activePiece!)
+            if legalMoves!.contains(move) {
                 board.movePieceToSpace(activePiece!, space: nextSpace)
                 game.make_move(move)
                 game.print_board()
@@ -66,6 +74,7 @@ class GameScene: SKScene {
                 if (game.king_attacked(game.turn)) {
                     print("King is in check")
                 }
+                legalMoves = game.generate_moves(GameOptions())
             } else {
                 board.snapback(activePiece!)
             }

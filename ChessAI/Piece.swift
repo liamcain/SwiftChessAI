@@ -28,10 +28,10 @@ class Piece: SKSpriteNode {
         case BLACK
     }
     
-    init(side: Side, type: Type, texture: SKTexture) {
+    init(side: Side, type: Type, space: (Int, Int), texture: SKTexture) {
         self.side = side
         self.type = type
-        self.boardSpace = (0, 0)
+        self.boardSpace = space
         
         super.init(texture: texture, color: SKColor.clearColor(), size: texture.size())
         self.zPosition = ZPOSITION_INACTIVE_PIECE

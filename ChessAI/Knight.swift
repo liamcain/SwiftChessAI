@@ -10,13 +10,13 @@ import SpriteKit
 
 class Knight: Piece {
     
-    init(side: Piece.Side) {
+    init(side: Piece.Side, space: (Int, Int)) {
         var colorName = "w"
         if side == Piece.Side.BLACK {
             colorName = "b"
         }
         let texture = SKTexture(imageNamed: colorName + "N")
-        super.init(side: side, type: Type.PAWN, texture: texture)
+        super.init(side: side, type: Type.KNIGHT, space: space, texture: texture)
     }
     
     required init?(coder aDecoder: NSCoder) {

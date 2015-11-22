@@ -419,8 +419,6 @@ class Game {
             let difference = i - square
             let index = difference + 119
             
-//            print("SHIFTS:  \(board.ATTACKS[index] & (1 << board.SHIFTS[piece.kind]!))")
-            
             if (board.ATTACKS[index] & (1 << board.SHIFTS[piece.kind]!)) > 0 {
                 if piece.kind == GamePiece.Kind.PAWN {
                     if difference > 0 {

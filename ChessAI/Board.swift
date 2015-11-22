@@ -21,13 +21,14 @@ class Board: SKNode {
             var row = Array<Piece?>()
             for j in 0...7 {
                 row.append(nil)
-                let space = SKSpriteNode(imageNamed: "board-space")
-                space.position = positionOnBoard(j, y: i)
+                
+                var space: Space
                 if (i + j) % 2 == 0 {
-                    space.colorBlendFactor = 1.0
-                    space.color = SKColor.redColor()
-                    space.zPosition = ZPOSITION_BOARD_SPACE
+                    space = Space(color: Space.Color.BLACK, space: (j, i))
+                } else {
+                    space = Space(color: Space.Color.WHITE, space: (j, i))
                 }
+                space.position = positionOnBoard(j, y: i)
                 addChild(space)
             }
             pieces.append(row)
@@ -53,11 +54,16 @@ class Board: SKNode {
     }
     
     func movePieceToSpace(piece: Piece, space: (Int, Int)) {
+        // remove piece from pieces array
+        pieces[piece.boardSpace.0][piece.boardSpace.1] = nil
+        
+        // Check for capture
         let pieceAtSpace = pieces[space.0][space.1]
         if pieceAtSpace != nil && pieceAtSpace != piece {
-            print("Space: \(space). Removing piece \(pieceAtSpace!.type) on \(piece.boardSpace)")
-            pieceAtSpace?.removeFromParent()
+            pieceAtSpace!.removeFromParent()
         }
+        
+        // set piece at new location
         pieces[space.0][space.1] = piece
         piece.setSpace(space.0, y: space.1)
     }
@@ -100,29 +106,29 @@ class Board: SKNode {
             for c in rank.characters {
                 switch c {
                     case "p":
-                        self.pieces[i++][j] = Pawn(side: Piece.Side.BLACK)
+                        self.pieces[i++][j] = Pawn(side: Piece.Side.BLACK, space: (i, j))
                     case "P":
-                        self.pieces[i++][j] = Pawn(side: Piece.Side.WHITE)
+                        self.pieces[i++][j] = Pawn(side: Piece.Side.WHITE, space: (i, j))
                     case "r":
-                        self.pieces[i++][j] = Rook(side: Piece.Side.BLACK)
+                        self.pieces[i++][j] = Rook(side: Piece.Side.BLACK, space: (i, j))
                     case "R":
-                        self.pieces[i++][j] = Rook(side: Piece.Side.WHITE)
+                        self.pieces[i++][j] = Rook(side: Piece.Side.WHITE, space: (i, j))
                     case "n":
-                        self.pieces[i++][j] = Knight(side: Piece.Side.BLACK)
+                        self.pieces[i++][j] = Knight(side: Piece.Side.BLACK, space: (i, j))
                     case "N":
-                        self.pieces[i++][j] = Knight(side: Piece.Side.WHITE)
+                        self.pieces[i++][j] = Knight(side: Piece.Side.WHITE, space: (i, j))
                     case "b":
-                        self.pieces[i++][j] = Bishop(side: Piece.Side.BLACK)
+                        self.pieces[i++][j] = Bishop(side: Piece.Side.BLACK, space: (i, j))
                     case "B":
-                        self.pieces[i++][j] = Bishop(side: Piece.Side.WHITE)
+                        self.pieces[i++][j] = Bishop(side: Piece.Side.WHITE, space: (i, j))
                     case "k":
-                        self.pieces[i++][j] = King(side: Piece.Side.BLACK)
+                        self.pieces[i++][j] = King(side: Piece.Side.BLACK, space: (i, j))
                     case "K":
-                        self.pieces[i++][j] = King(side: Piece.Side.WHITE)
+                        self.pieces[i++][j] = King(side: Piece.Side.WHITE, space: (i, j))
                     case "q":
-                        self.pieces[i++][j] = Queen(side: Piece.Side.BLACK)
+                        self.pieces[i++][j] = Queen(side: Piece.Side.BLACK, space: (i, j))
                     case "Q":
-                        self.pieces[i++][j] = Queen(side: Piece.Side.WHITE)
+                        self.pieces[i++][j] = Queen(side: Piece.Side.WHITE, space: (i, j))
                     default:
                         let tempString = String(c)
                         if let numOfBlankSpaces = Int(tempString) {
