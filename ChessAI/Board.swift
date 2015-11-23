@@ -45,10 +45,10 @@ class Board: SKNode {
             var piece: Piece
             if turn == GamePiece.Side.BLACK {
                 let space = locate(square! - 16)
-                piece = pieces[space.1][space.0]!
+                piece = pieces[space.0][space.1]!
             } else {
                 let space = locate(square! + 16)
-                piece = pieces[space.1][space.0]!
+                piece = pieces[space.0][space.1]!
             }
             piece.removeFromParent()
         }
@@ -179,12 +179,12 @@ class Board: SKNode {
     }
     
     func updateFromFEN(fenString: String){
-        self.loadPositionFromFEN(fenString)
-        self.syncDisplay()
+        loadPositionFromFEN(fenString)
+        syncDisplay()
     }
     
     func syncDisplay(){
-        self.clearBoard()
+        clearBoard()
         for i in 0...7 {
             for j in 0...7 {
                 if let piece = pieces[i][j] {

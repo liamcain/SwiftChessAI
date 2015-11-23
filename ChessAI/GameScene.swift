@@ -48,6 +48,9 @@ class GameScene: SKScene {
     
     func undo() {
         game.undo_move()
+        board.clearBoard()
+        board.updateFromFEN(game.generate_fen())
+        legalMoves = game.generate_moves(GameOptions())
     }
     
     func reset(){
