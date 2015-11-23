@@ -124,6 +124,7 @@ class Game {
     
     func build_move(from: Int, to: Int, promotionPiece: GamePiece.Kind?) -> GameMove {
         assert(board.get(from) != nil)
+        print(kings)
         
         var flag = GameMove.Flag.NORMAL
 //        print("Building Move: from \(algebraic(from)) to \(algebraic(to))")
@@ -164,6 +165,7 @@ class Game {
         move.side        = turn
         move.ep_square   = ep_square
         move.castling    = castling
+        move.kings       = kings
         move.move_number = move_number
         move.half_moves  = half_moves
         return move
@@ -469,6 +471,7 @@ class Game {
         
         turn        = old!.side
         castling    = old!.castling!
+        kings       = old!.kings!
         ep_square   = old!.ep_square!
         half_moves  = old!.half_moves!
         move_number = old!.move_number!

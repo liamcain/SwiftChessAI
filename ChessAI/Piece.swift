@@ -46,5 +46,9 @@ class Piece: SKSpriteNode {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    func boardIndex() -> Int {
+        return (7 - boardSpace.1) * 16 + boardSpace.0
+    }
 
 }

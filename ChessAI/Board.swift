@@ -12,15 +12,17 @@ class Board: SKNode {
     
     var DEFAULT_POSITION = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
     
+    var spaces: [[Space]] = [[Space]]()
     var pieces: [[Piece?]] = [[Piece?]]()
     
     override init() {
         super.init()
         
         for i in 0...7 {
-            var row = Array<Piece?>()
+            var pieceRow = Array<Piece?>()
+            var spaceRow = Array<Space>()
             for j in 0...7 {
-                row.append(nil)
+                pieceRow.append(nil)
                 
                 var space: Space
                 if (i + j) % 2 == 0 {
@@ -30,10 +32,23 @@ class Board: SKNode {
                 }
                 space.position = positionOnBoard(j, y: i)
                 addChild(space)
+                spaceRow.append(space)
             }
-            pieces.append(row)
+            pieces.append(pieceRow)
+            spaces.append(spaceRow)
         }
         reset()
+    }
+    
+    func get(position: Int) -> Space {
+        let x: Int = position % 16
+        let y: Int = 7 - (position / 16)
+        print("Position: \(x), \(y)")
+        return spaces[y][x]
+    }
+    
+    func get(position: (Int, Int)) -> Space {
+        return spaces[position.1][position.0]
     }
     
     func closestSpace(piece: Piece) -> (Int, Int) {

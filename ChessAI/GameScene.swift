@@ -31,13 +31,11 @@ class GameScene: SKScene {
                 activePiece = touchedPiece as? Piece
                 activePiece?.zPosition = ZPOSITION_ACTIVE_PIECE
                 
-                let space = activePiece?.boardSpace
                 for move in legalMoves! {
-//                    if move.fromIndex == activePiece?.boardSpace {
-                        // highlight boardspace
-//                    }
+                    if move.fromIndex == activePiece?.boardIndex() {
+                        board.get(move.toIndex).valid()
+                    }
                 }
-                
                 break
             }
         }
@@ -53,6 +51,13 @@ class GameScene: SKScene {
     }
     
     override func mouseUp(theEvent: NSEvent) {
+        
+        for row in board.spaces {
+            for space in row {
+                space.invalid()
+            }
+        }
+        
         if activePiece != nil {
             
             let nextSpace = board.closestSpace(activePiece!)
