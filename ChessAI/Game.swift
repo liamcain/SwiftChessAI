@@ -38,8 +38,8 @@ class Game {
     func clear() {
         board = GameBoard()
         kings = [GamePiece.Side.WHITE: -1, GamePiece.Side.BLACK: -1]
-        turn = GamePiece.Side.WHITE
         castling = [GamePiece.Side.WHITE: 0, GamePiece.Side.BLACK: 0]
+        turn = GamePiece.Side.WHITE
         ep_square = EMPTY
         half_moves = 0
         move_number = 1
@@ -48,6 +48,7 @@ class Game {
     
     func reset() {
         loadFromFen(DEFAULT_POSITION)
+        turn = GamePiece.Side.WHITE
     }
     
     func put(piece: GamePiece, square: String) -> Bool {
@@ -90,7 +91,6 @@ class Game {
         }
         
         turn = tokens[1] == "w" ? GamePiece.Side.WHITE : GamePiece.Side.BLACK
-
         
         if tokens[2].rangeOfString("K") != nil {
             castling[GamePiece.Side.WHITE]! |= GameMove.Flag.KINGSIDE_CASTLE.rawValue
@@ -124,7 +124,6 @@ class Game {
     
     func build_move(from: Int, to: Int, promotionPiece: GamePiece.Kind?) -> GameMove {
         assert(board.get(from) != nil)
-        print(kings)
         
         var flag = GameMove.Flag.NORMAL
 //        print("Building Move: from \(algebraic(from)) to \(algebraic(to))")
@@ -609,8 +608,6 @@ class Game {
         if turn == GamePiece.Side.BLACK {
             move_number++
         }
-        
-//        print_board()
         turn = swap_color(turn)
     }
     
@@ -623,7 +620,11 @@ class Game {
         for var i = first_sq!; i <= last_sq!; i++ {
             if let piece = board.get(i) {
                 let kind = Array(arrayLiteral: piece.kind.rawValue)[0]
-                line += " \(kind) "
+                if piece.side == GamePiece.Side.BLACK {
+                    line += " \(kind.uppercaseString) "
+                } else {
+                    line += " \(kind) "
+                }
             } else {
                 line += " □ "
             }

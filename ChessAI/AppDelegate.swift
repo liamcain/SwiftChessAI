@@ -44,6 +44,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         let edit = NSMenu.init(title: "Edit")
         edit.addItemWithTitle("Undo", action: Selector("undo"), keyEquivalent: "z")
+        edit.addItemWithTitle("Reset", action: Selector("reset"), keyEquivalent: "r")
         
         let heading = menuBar.addItemWithTitle("", action: nil, keyEquivalent: "")
         heading?.submenu = edit
@@ -53,6 +54,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func undo() {
         currentScene?.undo()
+    }
+    
+    func reset() {
+        currentScene?.reset()
     }
     
     func quit(sender: AnyObject) {

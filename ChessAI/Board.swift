@@ -40,11 +40,29 @@ class Board: SKNode {
         reset()
     }
     
+    func enPassant(turn: GamePiece.Side, square: Int?) {
+        if square != nil && square > -1 {
+            var piece: Piece
+            if turn == GamePiece.Side.BLACK {
+                let space = locate(square! - 16)
+                piece = pieces[space.1][space.0]!
+            } else {
+                let space = locate(square! + 16)
+                piece = pieces[space.1][space.0]!
+            }
+            piece.removeFromParent()
+        }
+    }
+    
+    func locate(index: Int) -> (Int, Int) {
+        let x: Int = index % 16
+        let y: Int = 7 - (index / 16)
+        return (x, y)
+    }
+    
     func get(position: Int) -> Space {
-        let x: Int = position % 16
-        let y: Int = 7 - (position / 16)
-        print("Position: \(x), \(y)")
-        return spaces[y][x]
+        let space = locate(position)
+        return spaces[space.1][space.0]
     }
     
     func get(position: (Int, Int)) -> Space {

@@ -50,6 +50,12 @@ class GameScene: SKScene {
         game.undo_move()
     }
     
+    func reset(){
+        board.reset()
+        game.reset()
+        legalMoves = game.generate_moves(GameOptions())
+    }
+    
     override func mouseUp(theEvent: NSEvent) {
         
         for row in board.spaces {
@@ -73,6 +79,9 @@ class GameScene: SKScene {
             
             if legalMoves!.contains(move) {
                 board.movePieceToSpace(activePiece!, space: nextSpace)
+                if move.flag == GameMove.Flag.EN_PASSANT {
+                    board.enPassant(move.side, square: move.ep_square)
+                }
                 game.make_move(move)
                 game.print_board()
                 
