@@ -19,7 +19,7 @@ class GameScene: SKScene {
     override func didMoveToView(view: SKView) {
         self.addChild(board)
         game.reset()
-        legalMoves = game.generate_moves(GameOptions())
+        legalMoves = game.generateMoves(GameOptions())
     }
 
     override func mouseDown(theEvent: NSEvent) {
@@ -47,16 +47,16 @@ class GameScene: SKScene {
     }
     
     func undo() {
-        game.undo_move()
+        game.undoMove()
         board.clearBoard()
-        board.updateFromFEN(game.generate_fen())
-        legalMoves = game.generate_moves(GameOptions())
+        board.updateFromFEN(game.generateFen())
+        legalMoves = game.generateMoves(GameOptions())
     }
     
     func reset(){
         board.reset()
         game.reset()
-        legalMoves = game.generate_moves(GameOptions())
+        legalMoves = game.generateMoves(GameOptions())
     }
     
     override func mouseUp(theEvent: NSEvent) {
@@ -68,7 +68,6 @@ class GameScene: SKScene {
         }
         
         if activePiece != nil {
-            
             let nextSpace = board.closestSpace(activePiece!)
             let currentSpace = activePiece!.boardSpace
             
@@ -78,20 +77,19 @@ class GameScene: SKScene {
                 return
             }
             
-            let move = game.build_move(currentSpace, toPosition:nextSpace, promotionPiece: nil)
+            let move = game.buildMove(currentSpace, toPosition:nextSpace, promotionPiece: nil)
             
             if legalMoves!.contains(move) {
                 board.movePieceToSpace(activePiece!, space: nextSpace)
                 if move.flag == GameMove.Flag.EN_PASSANT {
                     board.enPassant(move.side, square: move.ep_square)
                 }
-                game.make_move(move)
-                game.print_board()
-                
-                if (game.king_attacked(game.turn)) {
-                    print("King is in check")
-                }
-                legalMoves = game.generate_moves(GameOptions())
+                game.makeMove(move)
+//                game.print_board()
+//                if (game.king_attacked(game.turn)) {
+//                    print("King is in check")
+//                }
+                legalMoves = game.generateMoves(GameOptions())
             } else {
                 board.snapback(activePiece!)
             }

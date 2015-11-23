@@ -80,6 +80,12 @@ class GameBoard {
         pieceLocations = [:]
     }
     
+    func copy() -> GameBoard {
+        let copy = GameBoard()
+        copy.pieceLocations =  pieceLocations
+        return copy
+    }
+    
     func get(location: Int) -> GamePiece? {
         // Returns GamePiece at the int location
         if let piece = pieceLocations[location] {

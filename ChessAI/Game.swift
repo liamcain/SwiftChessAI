@@ -22,7 +22,6 @@ class Game {
     var half_moves = 0
     var move_number = 1
     var history = Array<GameMove>()
-    var header = {}
     
     let DEFAULT_POSITION = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
     
@@ -44,6 +43,20 @@ class Game {
         half_moves = 0
         move_number = 1
         history = []
+    }
+    
+    func copy() -> Game {
+        let copy = Game()
+        copy.castling = castling
+        copy.turn = turn
+        copy.ep_square = ep_square
+        copy.half_moves = half_moves
+        copy.move_number = move_number
+        copy.history = history
+        copy.kings = kings
+        copy.ROOKS = ROOKS
+        copy.board = board
+        return copy
     }
     
     func reset() {
@@ -116,13 +129,13 @@ class Game {
         return true
     }
     
-    func build_move(fromPosition: (Int, Int), toPosition: (Int, Int), promotionPiece: GamePiece.Kind?) -> GameMove {
+    func buildMove(fromPosition: (Int, Int), toPosition: (Int, Int), promotionPiece: GamePiece.Kind?) -> GameMove {
         let from = (7 - fromPosition.1) * 16 + fromPosition.0
         let to   = (7 - toPosition.1) * 16 + toPosition.0
-        return build_move(from, to: to, promotionPiece: promotionPiece)
+        return buildMove(from, to: to, promotionPiece: promotionPiece)
     }
     
-    func build_move(from: Int, to: Int, promotionPiece: GamePiece.Kind?) -> GameMove {
+    func buildMove(from: Int, to: Int, promotionPiece: GamePiece.Kind?) -> GameMove {
         assert(board.get(from) != nil)
         
         var flag = GameMove.Flag.NORMAL
@@ -184,25 +197,21 @@ class Game {
         return "\(Character(UnicodeScalar(97+f)))\(r)"
     }
     
-    func swap_color(c: GamePiece.Side) -> GamePiece.Side {
+    func swapColor(c: GamePiece.Side) -> GamePiece.Side {
         return c == GamePiece.Side.WHITE ? GamePiece.Side.BLACK : GamePiece.Side.WHITE
     }
     
-    func generate_moves(options: GameOptions) -> Array<GameMove> {
+    func generateMoves(options: GameOptions) -> Array<GameMove> {
         var moves = Array<GameMove>()
         func add_move(from: Int, to: Int) {
             /* if pawn promotion */
             if board.get(from)!.kind == GamePiece.Kind.PAWN && (rank(to) == RANK_8 || rank(to) == RANK_1) {
-                moves.append(build_move(from, to: to, promotionPiece: GamePiece.Kind.QUEEN));
-                moves.append(build_move(from, to: to, promotionPiece: GamePiece.Kind.ROOK));
-                moves.append(build_move(from, to: to, promotionPiece: GamePiece.Kind.KNIGHT));
-                moves.append(build_move(from, to: to, promotionPiece: GamePiece.Kind.BISHOP));
-                // let pieces = [GamePiece.Kind.QUEEN, GamePiece.Kind.ROOK, GamePiece.Kind.BISHOP, GamePiece.Kind.KNIGHT]
-                // for var i = 0, len = pieces.count; i < len; i++ {
-                //     temp.append(build_move(from, to: to, promotionPiece: GamePiece.Kind.BISHOP));
-                // }
+                moves.append(buildMove(from, to: to, promotionPiece: GamePiece.Kind.QUEEN));
+                moves.append(buildMove(from, to: to, promotionPiece: GamePiece.Kind.ROOK));
+                moves.append(buildMove(from, to: to, promotionPiece: GamePiece.Kind.KNIGHT));
+                moves.append(buildMove(from, to: to, promotionPiece: GamePiece.Kind.BISHOP));
             } else {
-                moves.append(build_move(from, to: to, promotionPiece: nil))
+                moves.append(buildMove(from, to: to, promotionPiece: nil))
             }
         }
         
@@ -340,11 +349,11 @@ class Game {
         /* filter out illegal moves */
         var legal_moves = Array<GameMove>()
         for var i = 0; i < moves.count; i++ {
-            make_move(moves[i])
-            if !king_attacked(us) {
+            makeMove(moves[i])
+            if !kingAttacked(us) {
                 legal_moves.append(moves[i])
             }
-            undo_move()
+            undoMove()
         }
         
         return legal_moves 
@@ -352,7 +361,7 @@ class Game {
     
     
     
-    func generate_fen() -> String {
+    func generateFen() -> String {
         var empty = 0
         var fen = ""
         
@@ -399,8 +408,8 @@ class Game {
         return [fen, String(turn), cflags, epflags, half_moves, move_number].componentsJoinedByString(" ")
     }
     
-    func king_attacked(side: GamePiece.Side) -> Bool {
-        return attacked(swap_color(side), square: kings[side]!)
+    func kingAttacked(side: GamePiece.Side) -> Bool {
+        return attacked(swapColor(side), square: kings[side]!)
     }
     
     func attacked(color: GamePiece.Side, square: Int) -> Bool {
@@ -460,7 +469,7 @@ class Game {
     }
     
     
-    func undo_move() -> GameMove? {
+    func undoMove() -> GameMove? {
         let old = history.popLast()
         if (old == nil) {
             return nil
@@ -476,7 +485,7 @@ class Game {
         move_number = old!.move_number!
         
         let us = turn
-        let them = swap_color(turn)
+        let them = swapColor(turn)
         
         board.set(move.fromIndex, piece: board.get(move.toIndex))
         if move.promotionPiece != nil {
@@ -517,9 +526,9 @@ class Game {
         return move
     }
     
-    func make_move(move: GameMove) {
+    func makeMove(move: GameMove) {
         let us = turn
-        let them = swap_color(us)
+        let them = swapColor(us)
         history.append(move)
         
         board.set(move.toIndex, piece: board.get(move.fromIndex))
@@ -608,10 +617,10 @@ class Game {
         if turn == GamePiece.Side.BLACK {
             move_number++
         }
-        turn = swap_color(turn)
+        turn = swapColor(turn)
     }
     
-    func print_board()  {
+    func printBoard()  {
         let first_sq = board.SQUARES["a8"]
         let last_sq = board.SQUARES["h1"]
         print("Move number: \(move_number)\n")
