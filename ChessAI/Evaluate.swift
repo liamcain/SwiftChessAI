@@ -13,6 +13,10 @@ class GameNode {
     var game: Game
     var children: [GameNode]
     
+    var material: Int?
+    var kingSafety: Int?
+    var centerControl: Int?
+    
     init(game: Game) {
         self.game = game
         children = [GameNode]()
@@ -28,12 +32,16 @@ class Evaluate {
     
     var root: GameNode
     
-    init() {
-        let game = Game()
+    init(game: Game) {
         root = GameNode(game: game)
     }
     
+    func start() {
+        step(root)
+    }
+    
     func step(node: GameNode){
+        
         let options = GameOptions()
         options.legal = false
         
@@ -45,6 +53,13 @@ class Evaluate {
             if !child.kingAttacked(child.turn) {
                 node.add(child)
             }
+        }
+        
+        print("Size: \(node.children.count)")
+        
+        // Recurse forever
+        for c in node.children {
+            step(c)
         }
     }
     

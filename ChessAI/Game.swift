@@ -205,7 +205,7 @@ class Game {
         var moves = Array<GameMove>()
         func add_move(from: Int, to: Int) {
             /* if pawn promotion */
-            if board.get(from)!.kind == GamePiece.Kind.PAWN && (rank(to) == RANK_8 || rank(to) == RANK_1) {
+            if board.get(from)?.kind == GamePiece.Kind.PAWN && (rank(to) == RANK_8 || rank(to) == RANK_1) {
                 moves.append(buildMove(from, to: to, promotionPiece: GamePiece.Kind.QUEEN));
                 moves.append(buildMove(from, to: to, promotionPiece: GamePiece.Kind.ROOK));
                 moves.append(buildMove(from, to: to, promotionPiece: GamePiece.Kind.KNIGHT));
@@ -219,9 +219,9 @@ class Game {
         let them = (us == GamePiece.Side.WHITE) ? GamePiece.Side.BLACK : GamePiece.Side.WHITE
         let second_rank = [GamePiece.Side.BLACK: RANK_7, GamePiece.Side.WHITE: RANK_2]
         
-        var first_sq = board.SQUARES["a8"]
-        var last_sq = board.SQUARES["h1"]
-        var single_square = false
+        let first_sq = board.SQUARES["a8"]
+        let last_sq = board.SQUARES["h1"]
+//        var single_square = false
         
         /* do we want legal moves? */
         var legal = true
@@ -230,16 +230,16 @@ class Game {
         }
         
         /* are we generating moves for a single square? */
-        if options.legal != nil {
-            if options.square != nil {
-                first_sq = board.SQUARES[options.square!]!
-                last_sq = board.SQUARES[options.square!]!
-                single_square = true
-            } else {
-                /* invalid square */
-                return []
-            }
-        }
+//        if options.legal != nil {
+//            if options.square != nil {
+//                first_sq = board.SQUARES[options.square!]!
+//                last_sq = board.SQUARES[options.square!]!
+//                single_square = true
+//            } else {
+//                /* invalid square */
+//                return []
+//            }
+//        }
         
         for var i = first_sq!; i <= last_sq!; i++ {
             /* did we run off the end of the board */
@@ -317,7 +317,7 @@ class Game {
         /* check for castling if: a) we're generating all moves, or b) we're doing
         * single square move generation on the king's square
         */
-        if !single_square || last_sq == kings[us] {
+        if /*!single_square*/ false || last_sq == kings[us] {
             /* king-side castling */
             if castling[us] == GameMove.Flag.KINGSIDE_CASTLE.rawValue {
                 let castling_from = kings[us]!

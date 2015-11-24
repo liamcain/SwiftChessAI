@@ -12,6 +12,7 @@ class GameScene: SKScene {
     
     var board: Board = Board()
     var game: Game = Game()
+    var ai: Bencarle?
     
     var activePiece: Piece?
     var legalMoves: [GameMove]?
@@ -19,6 +20,7 @@ class GameScene: SKScene {
     override func didMoveToView(view: SKView) {
         self.addChild(board)
         game.reset()
+        ai = Bencarle(startState: game)
         legalMoves = game.generateMoves(GameOptions())
     }
 
@@ -61,6 +63,7 @@ class GameScene: SKScene {
     
     override func mouseUp(theEvent: NSEvent) {
         
+        // Deselect all spaces
         for row in board.spaces {
             for space in row {
                 space.invalid()
@@ -85,10 +88,6 @@ class GameScene: SKScene {
                     board.enPassant(move.side, square: move.ep_square)
                 }
                 game.makeMove(move)
-//                game.print_board()
-//                if (game.king_attacked(game.turn)) {
-//                    print("King is in check")
-//                }
                 legalMoves = game.generateMoves(GameOptions())
             } else {
                 board.snapback(activePiece!)
