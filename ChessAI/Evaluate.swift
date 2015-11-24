@@ -41,7 +41,7 @@ class Evaluate {
     }
     
     func step(node: GameNode){
-        
+       
         let options = GameOptions()
         options.legal = false
         
@@ -50,17 +50,23 @@ class Evaluate {
         for m in moves {
             child = node.game.copy()
             child.makeMove(m)
+            print("Move number: \(child.move_number)")
             if !child.kingAttacked(child.turn) {
                 node.add(child)
             }
         }
         
-        print("Size: \(node.children.count)")
+//        print("Size: \(node.children.count)")
         
         // Recurse forever
         for c in node.children {
-            step(c)
+//            let priority = DISPATCH_QUEUE_PRIORITY_DEFAULT
+//            dispatch_async(dispatch_get_global_queue(priority, 0)) {
+//                dispatch_async(dispatch_get_main_queue()) {
+                    self.step(c)
+//                }
+//            }
         }
+//        print("o")
     }
-    
 }

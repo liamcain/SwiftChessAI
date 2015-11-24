@@ -25,6 +25,7 @@ class GameScene: SKScene {
     }
 
     override func mouseDown(theEvent: NSEvent) {
+        print(ai?.eval.root)
         let location = theEvent.locationInNode(self)
         let touchedPiece = nodeAtPoint(location)
         
