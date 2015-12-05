@@ -63,6 +63,9 @@ class Evaluate {
     func evaluateMaterial(node: GameNode) -> Int {
         var whiteScore = 0
         var blackScore = 0
+        var whiteBishops = 0
+        var blackBishops = 0
+        
         let game = node.game
         let board = game.board
         let first_sq = board.SQUARES["a8"]
@@ -71,12 +74,26 @@ class Evaluate {
         for var i = first_sq!; i <= last_sq!; i++ {
             if let piece = board.get(i) {
                 if piece.side == GamePiece.Side.BLACK {
+                    if piece.kind == GamePiece.Kind.BISHOP {
+                        blackBishops += 1
+                    }
                     blackScore += self.PIECE_VALUES[piece.kind]!
                 } else {
+                    if piece.kind == GamePiece.Kind.BISHOP {
+                        whiteBishops += 1
+                    }
                     whiteScore += self.PIECE_VALUES[piece.kind]!
                 }
             }
-            if i % 8 == 7 { i += 8 }
+            if i % 8 == 7 {
+                i += 8
+            }
+        }
+        if whiteBishops == 2{
+            whiteScore += 50
+        }
+        if blackBishops == 2{
+            blackScore += 50
         }
         return whiteScore - blackScore
     }
