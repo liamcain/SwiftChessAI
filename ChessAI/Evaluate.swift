@@ -22,8 +22,10 @@ class GameNode {
         children = [GameNode]()
     }
     
-    func add(game: Game) {
-        children.append(GameNode(game: game))
+    func add(game: Game) -> GameNode {
+        let node = GameNode(game: game)
+        children.append(node)
+        return node
     }
 }
 
@@ -60,6 +62,16 @@ class Evaluate {
         evaluateFromQueue()
     }
     
+    func start() {
+        let priority = DISPATCH_QUEUE_PRIORITY_DEFAULT
+        dispatch_async(dispatch_get_global_queue(priority, 0)) {
+            // do some task
+            repeat {
+                self.evaluateFromQueue()
+            } while (true)
+        }
+    }
+    
     func evaluateMaterial(node: GameNode) -> Int {
         var whiteScore = 0
         var blackScore = 0
@@ -85,14 +97,12 @@ class Evaluate {
                     whiteScore += self.PIECE_VALUES[piece.kind]!
                 }
             }
-            if i % 8 == 7 {
-                i += 8
-            }
+            if i % 8 == 7 { i += 8 }
         }
-        if whiteBishops == 2{
+        if whiteBishops == 2 {
             whiteScore += 50
         }
-        if blackBishops == 2{
+        if blackBishops == 2 {
             blackScore += 50
         }
         return whiteScore - blackScore
@@ -104,6 +114,7 @@ class Evaluate {
     }
     
     func evaluateFromQueue(){
+//        print("Queue Size: \(leafQueue.count)")
         if let node = leafQueue.dequeue() {
             let options = GameOptions()
             options.legal = false
@@ -113,8 +124,9 @@ class Evaluate {
                 let child = node.game.copy()
                 child.makeMove(m)
                 if !child.kingAttacked(child.turn) {
-                    node.add(child)
-                    leafQueue.enqueue(node)
+                    let childNode = node.add(child)
+                    evaluateNode(childNode)
+                    leafQueue.enqueue(childNode)
                 }
             }
         }

@@ -18,6 +18,7 @@ class Bencarle {
         game.loadFromFen(startState)
         eval = Evaluate(game: game)
         search = Search(root: eval.root)
+        eval.start()
     }
     
 }
