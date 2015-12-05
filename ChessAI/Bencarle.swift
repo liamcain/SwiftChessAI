@@ -13,11 +13,11 @@ class Bencarle {
     let eval: Evaluate
     let search: Search
     
-    init(startState: Game) {
-        eval = Evaluate(game: startState)
+    init(startState: String) {
+        let game = Game()
+        game.loadFromFen(startState)
+        eval = Evaluate(game: game)
         search = Search(root: eval.root)
-        
-        eval.start()
     }
     
 }

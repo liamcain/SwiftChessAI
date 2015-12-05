@@ -31,6 +31,7 @@ class GameNode {
 class Evaluate {
     
     var root: GameNode
+    var leafQueue: Queue<GameNode>
     
     // Claude Shannon(1949) values
     let PIECE_VALUES: [GamePiece.Kind:Int] = [
@@ -54,10 +55,9 @@ class Evaluate {
     
     init(game: Game) {
         root = GameNode(game: game)
-    }
-    
-    func start() {
-        step(root)
+        leafQueue = Queue<GameNode>()
+        leafQueue.enqueue(root)
+        evaluateFromQueue()
     }
     
     func evaluateMaterial(node: GameNode) -> Int {
@@ -76,45 +76,30 @@ class Evaluate {
                     whiteScore += self.PIECE_VALUES[piece.kind]!
                 }
             }
-            if i % 8 == 7 {
-                i += 8
-            }
+            if i % 8 == 7 { i += 8 }
         }
-        return whiteScore - blackScore;
+        return whiteScore - blackScore
     }
     
     func evaluateNode(node: GameNode) -> Int{
-        let material = self.evaluateMaterial(node);
+        let material = self.evaluateMaterial(node)
         return material;
     }
     
-    func step(node: GameNode){
-       
-        let options = GameOptions()
-        options.legal = false
-        
-        let moves = node.game.generateMoves(options)
-        var child: Game
-        for m in moves {
-            child = node.game.copy()
-            child.makeMove(m)
-            print("Move number: \(child.move_number)")
-            if !child.kingAttacked(child.turn) {
-                node.add(child)
+    func evaluateFromQueue(){
+        if let node = leafQueue.dequeue() {
+            let options = GameOptions()
+            options.legal = false
+            
+            let moves = node.game.generateMoves(options)
+            for m in moves {
+                let child = node.game.copy()
+                child.makeMove(m)
+                if !child.kingAttacked(child.turn) {
+                    node.add(child)
+                    leafQueue.enqueue(node)
+                }
             }
         }
-        
-//        print("Size: \(node.children.count)")
-        
-        // Recurse forever
-        for c in node.children {
-//            let priority = DISPATCH_QUEUE_PRIORITY_DEFAULT
-//            dispatch_async(dispatch_get_global_queue(priority, 0)) {
-//                dispatch_async(dispatch_get_main_queue()) {
-                    self.step(c)
-//                }
-//            }
-        }
-//        print("o")
     }
 }

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0C215C8D1C1350E500B066DF /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C215C8C1C1350E500B066DF /* Queue.swift */; };
+		0C215C8F1C13510700B066DF /* Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C215C8E1C13510700B066DF /* Node.swift */; };
 		0C27767B1BDE80EE004B15CD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C27767A1BDE80EE004B15CD /* AppDelegate.swift */; };
 		0C27767D1BDE80EE004B15CD /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C27767C1BDE80EE004B15CD /* GameScene.swift */; };
 		0C2776811BDE80EE004B15CD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0C2776801BDE80EE004B15CD /* Assets.xcassets */; };
@@ -51,6 +53,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0C215C8C1C1350E500B066DF /* Queue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Queue.swift; sourceTree = "<group>"; };
+		0C215C8E1C13510700B066DF /* Node.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Node.swift; sourceTree = "<group>"; };
 		0C2776771BDE80EE004B15CD /* ChessAI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChessAI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C27767A1BDE80EE004B15CD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0C27767C1BDE80EE004B15CD /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
@@ -188,6 +192,8 @@
 			isa = PBXGroup;
 			children = (
 				0CF02FF21C0369CB00F31324 /* Evaluate.swift */,
+				0C215C8C1C1350E500B066DF /* Queue.swift */,
+				0C215C8E1C13510700B066DF /* Node.swift */,
 				0CF02FF41C03C75A00F31324 /* Bencarle.swift */,
 				0CF02FF61C03C7DF00F31324 /* Search.swift */,
 			);
@@ -339,7 +345,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				0CF02FF51C03C75A00F31324 /* Bencarle.swift in Sources */,
+				0C215C8D1C1350E500B066DF /* Queue.swift in Sources */,
 				0CFCA53D1BE29FA0008A3025 /* Rook.swift in Sources */,
+				0C215C8F1C13510700B066DF /* Node.swift in Sources */,
 				43E1446D1BEA798A008B9EC8 /* GamePiece.swift in Sources */,
 				0CF02FF31C0369CB00F31324 /* Evaluate.swift in Sources */,
 				0C8783691BEBF407007F69DC /* GameOptions.swift in Sources */,

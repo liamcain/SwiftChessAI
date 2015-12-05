@@ -20,12 +20,11 @@ class GameScene: SKScene {
     override func didMoveToView(view: SKView) {
         self.addChild(board)
         game.reset()
-        ai = Bencarle(startState: game)
+        ai = Bencarle(startState: game.generateFen())
         legalMoves = game.generateMoves(GameOptions())
     }
 
     override func mouseDown(theEvent: NSEvent) {
-        print(ai?.eval.root)
         let location = theEvent.locationInNode(self)
         let touchedPiece = nodeAtPoint(location)
         
