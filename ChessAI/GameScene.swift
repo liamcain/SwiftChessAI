@@ -20,7 +20,7 @@ class GameScene: SKScene {
     override func didMoveToView(view: SKView) {
         self.addChild(board)
         game.reset()
-        ai = Bencarle(startState: game.generateFen())
+        ai = Bencarle(boardState: game)
         legalMoves = game.generateMoves(GameOptions())
     }
 
@@ -88,6 +88,11 @@ class GameScene: SKScene {
                     board.enPassant(move.side, square: move.ep_square)
                 }
                 game.makeMove(move)
+                
+                // Update Game State
+                ai?.handleMove(game.generateFen())
+                
+                // Generate legalMoves for next turn
                 legalMoves = game.generateMoves(GameOptions())
             } else {
                 board.snapback(activePiece!)
@@ -100,5 +105,14 @@ class GameScene: SKScene {
     
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
+        if let move = ai!.nextMove {
+            game.makeMove(move)
+            board.movePieceToSpace(move.fromIndex, space: move.toIndex)
+            if ai!.nextMove!.flag == GameMove.Flag.EN_PASSANT {
+                board.enPassant(move.side, square: move.ep_square)
+            }
+            ai!.nextMove = nil
+            legalMoves = game.generateMoves(GameOptions())
+        }
     }
 }

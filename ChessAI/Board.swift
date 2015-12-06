@@ -80,6 +80,12 @@ class Board: SKNode {
         return pointToSpace(pt)
     }
     
+    func movePieceToSpace(piece: Int, space: Int) {
+        let fromIndex = (piece % 16, 7 - piece / 16)
+        let toIndex = (space % 16, 7 - space / 16)
+        movePieceToSpace(fromIndex, space: toIndex)
+    }
+    
     func movePieceToSpace(piece: (Int, Int), space: (Int, Int)) {
         if let spritePiece = pieces[piece.0][piece.1] {
             movePieceToSpace(spritePiece, space: space)

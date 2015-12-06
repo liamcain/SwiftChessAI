@@ -10,42 +10,39 @@ import Foundation
 
 class Queue<T> {
     var count: Int = 0
-    var head: Node<T> = Node<T>()
-    var tail: Node<T> = Node<T>()
+    var head: Node<T>?
+    var tail: Node<T>?
     
-    init() {
-    }
-    
-    func isEmpty() -> Bool {
-        return self.count == 0
-    }
+    init() { }
     
     func enqueue(value: T) {
         let node = Node<T>(value: value)
-        if self.isEmpty() {
-            self.head = node
-            self.tail = node
+        if head == nil {
+            head = node
+            tail = node
         } else {
-            node.next = self.head
-            self.head = node
+            node.next = head
+            head?.prev = node
+            head = node
         }
-        self.count++
+        count++
     }
     
     func dequeue() -> T? {
-        if self.isEmpty() {
+        if head == nil {
             return nil
-        } else if self.count == 1 {
-            let temp: Node<T> = self.tail
-            self.count--
-            return temp.value
+        } else if head === tail {
+            let temp = tail?.value
+            head = nil
+            tail = nil
+            count--
+            return temp
         } else {
-            let temp: Node<T> = self.tail
-            
-            // ??????
-            
-            self.count--
-            return temp.value
+            let temp = tail?.value
+            tail = tail?.prev
+            tail?.next = nil
+            count--
+            return temp
         }
     }
 }

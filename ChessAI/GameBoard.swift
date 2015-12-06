@@ -82,7 +82,12 @@ class GameBoard {
     
     func copy() -> GameBoard {
         let copy = GameBoard()
-        copy.pieceLocations =  pieceLocations
+        copy.pieceLocations = Dictionary<Int, GamePiece>()
+        for (loc, piece) in pieceLocations {
+            if piece != nil {
+                copy.pieceLocations[loc] = GamePiece(piece: piece!)
+            }
+        }
         return copy
     }
     

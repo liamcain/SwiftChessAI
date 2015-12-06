@@ -1,7 +1,11 @@
 import Foundation
 
-class Game {
-    
+
+func == (lhs: Game, rhs: Game) -> Bool {
+    return lhs.generateFen() == rhs.generateFen()
+}
+
+class Game: Equatable {
     
     let EMPTY = -1
     
@@ -55,7 +59,7 @@ class Game {
         copy.history = history
         copy.kings = kings
         copy.ROOKS = ROOKS
-        copy.board = board
+        copy.board = board.copy()
         return copy
     }
     

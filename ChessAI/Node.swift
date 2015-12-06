@@ -9,12 +9,9 @@
 import Foundation
 
 class Node<T> {
-    var value: T? = nil
-    var next: Node<T>? = nil
-    var prev: Node<T>? = nil
-    
-    init() {
-    }
+    var value: T?
+    var next: Node<T>?
+    var prev: Node<T>?
     
     init(value: T) {
         self.value = value

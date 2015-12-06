@@ -35,6 +35,11 @@ class GamePiece: CustomStringConvertible {
         self.kind = kind
     }
     
+    init(piece: GamePiece) {
+        side = piece.side
+        kind = piece.kind
+    }
+    
     init(str: String) {
         self.side = (str < "a") ? GamePiece.Side.WHITE : GamePiece.Side.BLACK
         

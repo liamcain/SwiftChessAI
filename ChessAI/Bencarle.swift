@@ -11,14 +11,36 @@ import Foundation
 class Bencarle {
     
     let eval: Evaluate
-    let search: Search
+    var nextMove: GameMove?
+//    let search: Search
     
-    init(startState: String) {
-        let game = Game()
-        game.loadFromFen(startState)
-        eval = Evaluate(game: game)
-        search = Search(root: eval.root)
+    init(boardState: Game) {
+        eval = Evaluate(game: boardState)
         eval.start()
+    }
+    
+    func handleMove(fen: String) {
+        eval.updateRoot(fen)
+        let timeForTurn = calculateTimeForTurn()
+       
+        delay(timeForTurn) {
+            self.nextMove = self.eval.search()
+        }
+    }
+    
+    func calculateTimeForTurn() -> Double {
+        return 3.0
+    }
+    
+    func delay(delay: Double, closure: ()->()) {
+        dispatch_after(
+            dispatch_time(
+                DISPATCH_TIME_NOW,
+                Int64(delay * Double(NSEC_PER_SEC))
+            ),
+            dispatch_get_main_queue(),
+            closure
+        )
     }
     
 }

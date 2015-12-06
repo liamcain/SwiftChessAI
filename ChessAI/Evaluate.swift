@@ -11,19 +11,24 @@ import Foundation
 class GameNode {
     
     var game: Game
+    var move: GameMove?
+    
+    weak var parent: GameNode?
     var children: [GameNode]
     
     var material: Int?
     var kingSafety: Int?
     var centerControl: Int?
-    
-    init(game: Game) {
+   
+    init(game: Game, gameMove: GameMove?=nil) {
         self.game = game
+        self.move = gameMove
         children = [GameNode]()
     }
     
-    func add(game: Game) -> GameNode {
-        let node = GameNode(game: game)
+    func add(game: Game, move: GameMove) -> GameNode {
+        let node = GameNode(game: game, gameMove: move)
+        node.parent = self
         children.append(node)
         return node
     }
@@ -56,19 +61,26 @@ class Evaluate {
     // ];
     
     init(game: Game) {
-        root = GameNode(game: game)
+        root = GameNode(game: game.copy())
         leafQueue = Queue<GameNode>()
         leafQueue.enqueue(root)
-        evaluateFromQueue()
+    }
+    
+    func updateRoot(fen: String) {
+        for c in root.children {
+            if c.game.generateFen() == fen {
+                root = c
+                return
+            }
+        }
     }
     
     func start() {
         let priority = DISPATCH_QUEUE_PRIORITY_DEFAULT
         dispatch_async(dispatch_get_global_queue(priority, 0)) {
-            // do some task
-            repeat {
+            while true {
                 self.evaluateFromQueue()
-            } while (true)
+            }
         }
     }
     
@@ -108,14 +120,23 @@ class Evaluate {
         return whiteScore - blackScore
     }
     
-    func evaluateNode(node: GameNode) -> Int{
-        let material = self.evaluateMaterial(node)
-        return material;
+    func evaluateNode(node: GameNode) {
+        node.material = self.evaluateMaterial(node)
+//        return material;
     }
     
     func evaluateFromQueue(){
 //        print("Queue Size: \(leafQueue.count)")
+        print("ROOT: \(self.root.game.generateFen())")
         if let node = leafQueue.dequeue() {
+            
+            // Check if node is a descendant of the current board state.
+            var ancestor: GameNode? = node
+            while ancestor?.parent != nil {
+                ancestor = ancestor?.parent
+            }
+            if ancestor !== self.root { return }
+            
             let options = GameOptions()
             options.legal = false
             
@@ -124,11 +145,21 @@ class Evaluate {
                 let child = node.game.copy()
                 child.makeMove(m)
                 if !child.kingAttacked(child.turn) {
-                    let childNode = node.add(child)
+                    let childNode = node.add(child, move: m)
                     evaluateNode(childNode)
                     leafQueue.enqueue(childNode)
                 }
             }
         }
+    }
+    
+    func search() -> GameMove {
+        var bestMove = self.root.children[0]
+        for c in self.root.children {
+            if c.material > bestMove.material {
+                bestMove = c
+            }
+        }
+        return bestMove.move!
     }
 }

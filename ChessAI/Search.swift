@@ -10,11 +10,11 @@ import Foundation
 
 class Search {
     
-    var root: GameNode
-    
-    init(root: GameNode) {
-        self.root = root
-    }
+//    var root: GameNode
+//    
+//    init(root: GameNode) {
+//        self.root = root
+//    }
     
     func search() {
         
