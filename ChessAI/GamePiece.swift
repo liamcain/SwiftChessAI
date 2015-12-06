@@ -8,7 +8,12 @@
 
 import Foundation
 
-class GamePiece: CustomStringConvertible {
+
+func == (lhs: GamePiece, rhs: GamePiece) -> Bool {
+    return lhs.kind == rhs.kind && lhs.side == rhs.side
+}
+
+class GamePiece: CustomStringConvertible, Equatable {
     
     enum Kind: String {
         case KING = "k"

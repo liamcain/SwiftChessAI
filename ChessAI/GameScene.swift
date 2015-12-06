@@ -19,9 +19,7 @@ class GameScene: SKScene {
     
     override func didMoveToView(view: SKView) {
         self.addChild(board)
-        game.reset()
-        ai = Bencarle(boardState: game)
-        legalMoves = game.generateMoves(GameOptions())
+        reset()
     }
 
     override func mouseDown(theEvent: NSEvent) {
@@ -58,6 +56,7 @@ class GameScene: SKScene {
     func reset(){
         board.reset()
         game.reset()
+        ai = Bencarle(boardState: game)
         legalMoves = game.generateMoves(GameOptions())
     }
     
@@ -85,15 +84,15 @@ class GameScene: SKScene {
             if legalMoves!.contains(move) {
                 board.movePieceToSpace(activePiece!, space: nextSpace)
                 if move.flag == GameMove.Flag.EN_PASSANT {
-                    board.enPassant(move.side, square: move.ep_square)
+                    board.enPassant(move.side, square: move.epSquare)
                 }
+                // update current game
                 game.makeMove(move)
                 
-                // Update Game State
-                ai?.handleMove(game.generateFen())
+                // Inform AI that a move had been made
+                ai?.handleMove(move)
                 
-                // Generate legalMoves for next turn
-                legalMoves = game.generateMoves(GameOptions())
+                legalMoves = []
             } else {
                 board.snapback(activePiece!)
             }
@@ -104,12 +103,11 @@ class GameScene: SKScene {
     }
     
     override func update(currentTime: CFTimeInterval) {
-        /* Called before each frame is rendered */
         if let move = ai!.nextMove {
             game.makeMove(move)
             board.movePieceToSpace(move.fromIndex, space: move.toIndex)
             if ai!.nextMove!.flag == GameMove.Flag.EN_PASSANT {
-                board.enPassant(move.side, square: move.ep_square)
+                board.enPassant(move.side, square: move.epSquare)
             }
             ai!.nextMove = nil
             legalMoves = game.generateMoves(GameOptions())

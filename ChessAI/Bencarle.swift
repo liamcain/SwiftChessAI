@@ -19,8 +19,8 @@ class Bencarle {
         eval.start()
     }
     
-    func handleMove(fen: String) {
-        eval.updateRoot(fen)
+    func handleMove(move: GameMove) {
+        eval.updateRoot(move)
         let timeForTurn = calculateTimeForTurn()
        
         delay(timeForTurn) {
@@ -29,7 +29,7 @@ class Bencarle {
     }
     
     func calculateTimeForTurn() -> Double {
-        return 3.0
+        return 0.3
     }
     
     func delay(delay: Double, closure: ()->()) {

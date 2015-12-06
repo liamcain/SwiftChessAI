@@ -66,9 +66,9 @@ class Evaluate {
         leafQueue.enqueue(root)
     }
     
-    func updateRoot(fen: String) {
+    func updateRoot(move: GameMove) {
         for c in root.children {
-            if c.game.generateFen() == fen {
+            if c.move == move {
                 root = c
                 return
             }
@@ -90,8 +90,7 @@ class Evaluate {
         var whiteBishops = 0
         var blackBishops = 0
         
-        let game = node.game
-        let board = game.board
+        let board = node.game.board
         let first_sq = board.SQUARES["a8"]
         let last_sq = board.SQUARES["h1"]
         
@@ -117,17 +116,19 @@ class Evaluate {
         if blackBishops == 2 {
             blackScore += 50
         }
-        return whiteScore - blackScore
+        
+        if node.game.turn == GamePiece.Side.BLACK {
+            return blackScore - whiteScore
+        } else {
+            return whiteScore - blackScore
+        }
     }
     
     func evaluateNode(node: GameNode) {
         node.material = self.evaluateMaterial(node)
-//        return material;
     }
     
     func evaluateFromQueue(){
-//        print("Queue Size: \(leafQueue.count)")
-        print("ROOT: \(self.root.game.generateFen())")
         if let node = leafQueue.dequeue() {
             
             // Check if node is a descendant of the current board state.
@@ -135,7 +136,7 @@ class Evaluate {
             while ancestor?.parent != nil {
                 ancestor = ancestor?.parent
             }
-            if ancestor !== self.root { return }
+            if ancestor !== root { return }
             
             let options = GameOptions()
             options.legal = false
@@ -154,12 +155,13 @@ class Evaluate {
     }
     
     func search() -> GameMove {
-        var bestMove = self.root.children[0]
-        for c in self.root.children {
+        var bestMove = root.children[0]
+        for c in root.children {
             if c.material > bestMove.material {
                 bestMove = c
             }
         }
+        root = bestMove
         return bestMove.move!
     }
 }

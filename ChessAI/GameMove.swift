@@ -30,9 +30,9 @@ class GameMove: Equatable {
     
     var castling: Dictionary<GamePiece.Side, Int>?
     var kings: Dictionary<GamePiece.Side, Int>?
-    var ep_square: Int?
-    var half_moves: Int?
-    var move_number: Int?
+    var epSquare: Int?
+    var halfMoves: Int?
+    var moveNumber: Int?
     
     var fromIndex: Int
     var toIndex: Int
