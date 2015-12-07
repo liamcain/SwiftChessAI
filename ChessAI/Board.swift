@@ -80,31 +80,32 @@ class Board: SKNode {
         return pointToSpace(pt)
     }
     
-    func movePieceToSpace(piece: Int, space: Int) {
-        let fromIndex = (piece % 16, 7 - piece / 16)
-        let toIndex = (space % 16, 7 - space / 16)
-        movePieceToSpace(fromIndex, space: toIndex)
-    }
-    
-    func movePieceToSpace(piece: (Int, Int), space: (Int, Int)) {
-        if let spritePiece = pieces[piece.0][piece.1] {
-            movePieceToSpace(spritePiece, space: space)
+    func makeMove(move: GameMove) {
+        let fromIndex = (move.fromIndex % 16, 7 - move.fromIndex / 16)
+        if let spritePiece = pieces[fromIndex.0][fromIndex.1] {
+            makeMove(spritePiece, move: move)
         }
     }
     
-    func movePieceToSpace(piece: Piece, space: (Int, Int)) {
+    func makeMove(piece: Piece, move: GameMove) {
         // remove piece from pieces array
         pieces[piece.boardSpace.0][piece.boardSpace.1] = nil
         
         // Check for capture
-        let pieceAtSpace = pieces[space.0][space.1]
+        let toIndex = (move.toIndex % 16, 7 - move.toIndex / 16)
+        let pieceAtSpace = pieces[toIndex.0][toIndex.1]
         if pieceAtSpace != nil && pieceAtSpace != piece {
             pieceAtSpace!.removeFromParent()
         }
         
         // set piece at new location
-        pieces[space.0][space.1] = piece
-        piece.setSpace(space.0, y: space.1)
+        pieces[toIndex.0][toIndex.1] = piece
+        piece.setSpace(toIndex.0, y: toIndex.1)
+        
+        
+        if move.flag == GameMove.Flag.EN_PASSANT {
+            enPassant(move.side, square: move.epSquare)
+        }
     }
     
     func snapback(piece: Piece) {

@@ -12,17 +12,17 @@ class Bencarle {
     
     let eval: Evaluate
     var nextMove: GameMove?
-//    let search: Search
     
     init(boardState: Game) {
         eval = Evaluate(game: boardState)
         eval.start()
     }
     
-    func handleMove(move: GameMove) {
-        eval.updateRoot(move)
+    func handleMove(move: GameMove?) {
+        if move != nil {
+            eval.updateRoot(move!)
+        }
         let timeForTurn = calculateTimeForTurn()
-       
         delay(timeForTurn) {
             self.nextMove = self.eval.search()
         }

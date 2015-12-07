@@ -8,109 +8,71 @@
 
 import SpriteKit
 
+func == (left:(Int, Int), right: (Int, Int)) -> Bool {
+    return left.0 == right.0 && left.1 == right.1
+}
+
 class GameScene: SKScene {
     
     var board: Board = Board()
     var game: Game = Game()
-    var ai: Bencarle?
-    
-    var activePiece: Piece?
-    var legalMoves: [GameMove]?
+    var players: [GamePiece.Side: Player]?
     
     override func didMoveToView(view: SKView) {
         self.addChild(board)
-        reset()
-    }
-
-    override func mouseDown(theEvent: NSEvent) {
-        let location = theEvent.locationInNode(self)
-        let touchedPiece = nodeAtPoint(location)
         
-        for piece in nodesAtPoint(location){
-            if piece.isKindOfClass(Piece) {
-                activePiece = touchedPiece as? Piece
-                activePiece?.zPosition = ZPOSITION_ACTIVE_PIECE
-                
-                for move in legalMoves! {
-                    if move.fromIndex == activePiece?.boardIndex() {
-                        board.get(move.toIndex).valid()
-                    }
-                }
-                break
-            }
-        }
-    }
-    
-    override func mouseDragged(theEvent: NSEvent) {
-        let location = theEvent.locationInNode(self)
-        activePiece?.position = location
+        game.reset()
+        let human = Human(side: GamePiece.Side.WHITE, board: board, game: game)
+        let ai    =    AI(side: GamePiece.Side.BLACK, board: board, game: game)
+        
+        human.opponent = ai
+        ai.opponent = human
+        
+        players   = [GamePiece.Side.WHITE: human,
+                     GamePiece.Side.BLACK: ai]
+        
+        reset()
     }
     
     func undo() {
         game.undoMove()
         board.clearBoard()
         board.updateFromFEN(game.generateFen())
-        legalMoves = game.generateMoves(GameOptions())
     }
     
     func reset(){
         board.reset()
         game.reset()
-        ai = Bencarle(boardState: game)
-        legalMoves = game.generateMoves(GameOptions())
+        players![GamePiece.Side.WHITE]?.isTurn = true
+        players![GamePiece.Side.WHITE]?.handleMove(nil)
+        
+    }
+    
+    func currentPlayer() -> Player {
+        return players![game.turn]!
+    }
+
+    override func mouseDown(theEvent: NSEvent) {
+        assert(players != nil)
+        
+        let location = theEvent.locationInNode(self)
+        for piece in nodesAtPoint(location){
+            if piece.isKindOfClass(Piece) {
+                currentPlayer().mouseDown(piece as! Piece)
+                return
+            }
+        }
+    }
+    
+    override func mouseDragged(theEvent: NSEvent) {
+        currentPlayer().mouseDragged(theEvent.locationInNode(self))
     }
     
     override func mouseUp(theEvent: NSEvent) {
-        
-        // Deselect all spaces
-        for row in board.spaces {
-            for space in row {
-                space.invalid()
-            }
-        }
-        
-        if activePiece != nil {
-            let nextSpace = board.closestSpace(activePiece!)
-            let currentSpace = activePiece!.boardSpace
-            
-            // If we haven't moved the piece
-            if nextSpace.0 == currentSpace.0 && nextSpace.1 == currentSpace.1 {
-                board.snapback(activePiece!)
-                return
-            }
-            
-            let move = game.buildMove(currentSpace, toPosition:nextSpace, promotionPiece: nil)
-            
-            if legalMoves!.contains(move) {
-                board.movePieceToSpace(activePiece!, space: nextSpace)
-                if move.flag == GameMove.Flag.EN_PASSANT {
-                    board.enPassant(move.side, square: move.epSquare)
-                }
-                // update current game
-                game.makeMove(move)
-                
-                // Inform AI that a move had been made
-                ai?.handleMove(move)
-                
-                legalMoves = []
-            } else {
-                board.snapback(activePiece!)
-            }
-        
-            activePiece?.zPosition = ZPOSITION_INACTIVE_PIECE
-            activePiece = nil
-        }
+        currentPlayer().mouseUp()
     }
     
     override func update(currentTime: CFTimeInterval) {
-        if let move = ai!.nextMove {
-            game.makeMove(move)
-            board.movePieceToSpace(move.fromIndex, space: move.toIndex)
-            if ai!.nextMove!.flag == GameMove.Flag.EN_PASSANT {
-                board.enPassant(move.side, square: move.epSquare)
-            }
-            ai!.nextMove = nil
-            legalMoves = game.generateMoves(GameOptions())
-        }
+        currentPlayer().update()
     }
 }
