@@ -10,21 +10,20 @@ import Foundation
 
 class Bencarle {
     
-    let eval: Evaluate
+    var search: Search
     var nextMove: GameMove?
     
     init(boardState: Game) {
-        eval = Evaluate(game: boardState)
-        eval.start()
+        search = Search(game: boardState)
     }
     
     func handleMove(move: GameMove?) {
         if move != nil {
-            eval.updateRoot(move!)
+            search.updateRoot(move!)
         }
         let timeForTurn = calculateTimeForTurn()
         delay(timeForTurn) {
-            self.nextMove = self.eval.search()
+            self.nextMove = self.search.search()
         }
     }
     
