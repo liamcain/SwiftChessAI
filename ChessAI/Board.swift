@@ -54,6 +54,19 @@ class Board: SKNode {
         }
     }
     
+    func screenShake(powerLevel: Int) {
+        var actions = Array<SKAction>()
+        
+        for (var i = 0; i < 6; i++) {
+            let x = CGFloat(arc4random_uniform(UInt32(powerLevel)))
+            let y = CGFloat(arc4random_uniform(UInt32(powerLevel)))
+            actions.append(SKAction.moveByX(x, y: y, duration: 0.02))
+            actions.append(SKAction.moveByX(-x, y: -y, duration: 0.02))
+        }
+        let shake = SKAction.sequence(actions)
+        runAction(shake)
+    }
+    
     func promotePawn(side: Side, square: Int, promotionPiece: Kind) {
         let space = locate(square - 16)
         let piece = pieces[space.0][space.1]
@@ -102,6 +115,7 @@ class Board: SKNode {
         let pieceAtSpace = pieces[toIndex.0][toIndex.1]
         if pieceAtSpace != nil && pieceAtSpace != piece {
             pieceAtSpace!.removeFromParent()
+            screenShake(25)
         }
         
         // set piece at new location

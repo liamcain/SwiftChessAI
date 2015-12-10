@@ -28,9 +28,13 @@ class Bencarle {
         }
 //        let timeForTurn = calculateTimeForTurn()
         
-        self.search.alphaBetaSearch(self.search.game, depth: search.maxDepth, alpha: -999999, beta: 999999)
-        // self.search.alphaBetaSearch(self.search.root, depth: 3, alpha: -999999, beta: 999999)
-        self.nextMove = self.search.getBestMove()
+        
+        let priority = DISPATCH_QUEUE_PRIORITY_DEFAULT
+        dispatch_async(dispatch_get_global_queue(priority, 0)) {
+            self.search.alphaBetaSearch(self.search.game, depth: self.search.maxDepth, alpha: -999999, beta: 999999)
+            // self.search.alphaBetaSearch(self.search.root, depth: 3, alpha: -999999, beta: 999999)
+            self.nextMove = self.search.getBestMove()
+        }
         
 //        delay(timeForTurn) {
 //            self.search.alphaBetaSearch(self.search.root, depth: 3, alpha: -999999, beta: 999999)
