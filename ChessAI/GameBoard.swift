@@ -65,12 +65,12 @@ class GameBoard {
         -15,  0, 0,  0,  0,  0, 0, -16,  0,  0,  0,  0,  0,  0, -17
     ];
     
-    var SHIFTS = [ GamePiece.Kind.PAWN:   0,
-                   GamePiece.Kind.KNIGHT: 1,
-                   GamePiece.Kind.BISHOP: 2,
-                   GamePiece.Kind.ROOK:   3,
-                   GamePiece.Kind.QUEEN:  4,
-                   GamePiece.Kind.KING:   5 ]
+    var SHIFTS = [ Kind.PAWN:   0,
+                   Kind.KNIGHT: 1,
+                   Kind.BISHOP: 2,
+                   Kind.ROOK:   3,
+                   Kind.QUEEN:  4,
+                   Kind.KING:   5 ]
     
     init(){
         whiteQueensideCastle = true
@@ -103,8 +103,8 @@ class GameBoard {
         pieceLocations[location] = piece
     }
     
-    func disableCastling(side: GamePiece.Side){
-        if side == GamePiece.Side.WHITE {
+    func disableCastling(side: Side){
+        if side == .WHITE {
             self.whiteQueensideCastle = false
             self.whiteKingsideCastle = false
         } else {

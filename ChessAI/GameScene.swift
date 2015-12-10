@@ -16,20 +16,19 @@ class GameScene: SKScene {
     
     var board: Board = Board()
     var game: Game = Game()
-    var players: [GamePiece.Side: Player]?
+    var players: [Side: Player]?
     
     override func didMoveToView(view: SKView) {
         self.addChild(board)
         
         game.reset()
-        let human = Human(side: GamePiece.Side.WHITE, board: board, game: game)
-        let ai    =    AI(side: GamePiece.Side.BLACK, board: board, game: game)
+        let human = Human(side: .WHITE, board: board, game: game)
+        let ai    =    AI(side: .BLACK, board: board, game: game)
         
         human.opponent = ai
         ai.opponent = human
         
-        players   = [GamePiece.Side.WHITE: human,
-                     GamePiece.Side.BLACK: ai]
+        players = [.WHITE: human, .BLACK: ai]
         
         reset()
     }
@@ -43,8 +42,8 @@ class GameScene: SKScene {
     func reset(){
         board.reset()
         game.reset()
-        players![GamePiece.Side.WHITE]?.isTurn = true
-        players![GamePiece.Side.WHITE]?.handleMove(nil)
+        players![.WHITE]?.isTurn = true
+        players![.WHITE]?.handleMove(nil)
         
     }
     

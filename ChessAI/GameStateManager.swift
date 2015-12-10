@@ -14,7 +14,7 @@ class GameStateManager {
     
     var fen: String = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
     var moveNumber: Int = 0
-    var turn: GamePiece.Side = GamePiece.Side.WHITE
+    var turn: Side = .WHITE
     
 //    init() {
 //        fen =

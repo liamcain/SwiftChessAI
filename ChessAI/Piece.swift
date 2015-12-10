@@ -11,58 +11,58 @@ import SpriteKit
 class Piece: SKSpriteNode {
    
     var side: Side
-    var type: Type
+    var kind: Kind
     var boardSpace: (Int, Int)
     
-    enum Type {
-        case KING
-        case QUEEN
-        case ROOK
-        case KNIGHT
-        case BISHOP
-        case PAWN
-    }
+//    enum Type {
+//        case KING
+//        case QUEEN
+//        case ROOK
+//        case KNIGHT
+//        case BISHOP
+//        case PAWN
+//    }
+//    
+//    enum Side {
+//        case WHITE
+//        case BLACK
+//    }
     
-    enum Side {
-        case WHITE
-        case BLACK
-    }
-    
-    init(side: Side, type: Type, space: (Int, Int)) {
+    init(side: Side, kind: Kind, space: (Int, Int)) {
         self.side = side
-        self.type = type
+        self.kind = kind
         self.boardSpace = space
         
         var typeName = "p"
-        switch type {
-            case .KING:   typeName = "k"
-            case .QUEEN:  typeName   = "q"
-            case .ROOK:   typeName = "r"
-            case .KNIGHT: typeName = "k"
-            case .BISHOP: typeName = "b"
-            case .PAWN:   typeName = "p"
+        switch kind {
+            case .KING:   typeName = "K"
+            case .QUEEN:  typeName = "Q"
+            case .ROOK:   typeName = "R"
+            case .KNIGHT: typeName = "N"
+            case .BISHOP: typeName = "B"
+            case .PAWN:   typeName = "P"
         }
         var color = "w"
         if side == Side.BLACK { color = "b" }
-        let texture = SKTexture(imageNamed: color + typeName + ".png")
+        let texture = SKTexture(imageNamed: color + typeName)
         super.init(texture: texture, color: SKColor.clearColor(), size: texture.size())
         self.zPosition = ZPOSITION_INACTIVE_PIECE
     }
     
-    func setType(type: Type) -> SKTexture {
-        var typeName = "p"
-        switch type {
-            case .KING:   typeName = "k"
-            case .QUEEN:  typeName   = "q"
-            case .ROOK:   typeName = "r"
-            case .KNIGHT: typeName = "k"
-            case .BISHOP: typeName = "b"
-            case .PAWN:   typeName = "p"
+    func setKind(kind: Kind) -> SKTexture {
+        var typeName = "P"
+        switch kind {
+            case .KING:   typeName = "K"
+            case .QUEEN:  typeName = "Q"
+            case .ROOK:   typeName = "R"
+            case .KNIGHT: typeName = "N"
+            case .BISHOP: typeName = "B"
+            case .PAWN:   typeName = "P"
         }
         var color = "w"
-        if side == Side.BLACK { color = "b" }
-        self.type = type
-        let texture = SKTexture(imageNamed: color + typeName + ".png")
+        if side == .BLACK { color = "b" }
+        self.kind = kind
+        let texture = SKTexture(imageNamed: color + typeName)
         self.texture = texture
         return texture
     }

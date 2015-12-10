@@ -13,7 +13,7 @@ class Human: Player {
     var activePiece: Piece?
     var legalMoves: [GameMove]
     
-    override init(side: GamePiece.Side, board: Board, game: Game) {
+    override init(side: Side, board: Board, game: Game) {
         legalMoves = []
         super.init(side: side, board: board, game: game)
     }

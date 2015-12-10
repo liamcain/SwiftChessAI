@@ -26,11 +26,11 @@ class GameMove: Equatable {
         case QUEENSIDE_CASTLE
     }
     
-    var side: GamePiece.Side
+    var side: Side
     
-    var castling: Dictionary<GamePiece.Side, Int>?
-    var ROOKS: Dictionary<GamePiece.Side, Int>?
-    var kings: Dictionary<GamePiece.Side, Int>?
+    var castling: Dictionary<Side, Int>?
+    var ROOKS: Dictionary<Side, Int>?
+    var kings: Dictionary<Side, Int>?
     var epSquare: Int?
     var halfMoves: Int?
     var moveNumber: Int?
@@ -38,10 +38,10 @@ class GameMove: Equatable {
     var fromIndex: Int
     var toIndex: Int
     var flag: Flag
-    var promotionPiece: GamePiece.Kind?
+    var promotionPiece: Kind?
     var capturedPiece: GamePiece?
     
-    init (side: GamePiece.Side, fromIndex: Int, toIndex: Int, flag: Flag, promotionPiece: GamePiece.Kind?, capturedPiece: GamePiece?){
+    init (side: Side, fromIndex: Int, toIndex: Int, flag: Flag, promotionPiece: Kind?, capturedPiece: GamePiece?){
         self.side = side
         self.fromIndex = fromIndex
         self.toIndex = toIndex

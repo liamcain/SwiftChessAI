@@ -16,6 +16,7 @@
 		0C2776841BDE80EE004B15CD /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0C2776821BDE80EE004B15CD /* MainMenu.xib */; };
 		0C27768F1BDE80EE004B15CD /* ChessAITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C27768E1BDE80EE004B15CD /* ChessAITests.swift */; };
 		0C27769A1BDE80EE004B15CD /* ChessAIUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C2776991BDE80EE004B15CD /* ChessAIUITests.swift */; };
+		0C37CADE1C1A008C00BCF613 /* SingleThreadedSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C37CADD1C1A008C00BCF613 /* SingleThreadedSearch.swift */; };
 		0C8783691BEBF407007F69DC /* GameOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C8783681BEBF407007F69DC /* GameOptions.swift */; };
 		0CAB2F2F1BE1780500315BD9 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CAB2F2E1BE1780500315BD9 /* Game.swift */; };
 		0CAC4AF51BE0227500CBCB2B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CAC4AF41BE0227500CBCB2B /* Constants.swift */; };
@@ -66,6 +67,7 @@
 		0C2776951BDE80EE004B15CD /* ChessAIUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChessAIUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C2776991BDE80EE004B15CD /* ChessAIUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChessAIUITests.swift; sourceTree = "<group>"; };
 		0C27769B1BDE80EE004B15CD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0C37CADD1C1A008C00BCF613 /* SingleThreadedSearch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleThreadedSearch.swift; sourceTree = "<group>"; };
 		0C8783681BEBF407007F69DC /* GameOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameOptions.swift; sourceTree = "<group>"; };
 		0CAB2F2E1BE1780500315BD9 /* Game.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
 		0CAC4AF41BE0227500CBCB2B /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -191,6 +193,7 @@
 		0CAB2F2D1BE1775E00315BD9 /* AI */ = {
 			isa = PBXGroup;
 			children = (
+				0C37CADD1C1A008C00BCF613 /* SingleThreadedSearch.swift */,
 				0CF02FF21C0369CB00F31324 /* Evaluate.swift */,
 				0C215C8C1C1350E500B066DF /* Queue.swift */,
 				0C215C8E1C13510700B066DF /* Node.swift */,
@@ -343,6 +346,7 @@
 				0C27767D1BDE80EE004B15CD /* GameScene.swift in Sources */,
 				0CF02FF11C021FBB00F31324 /* Space.swift in Sources */,
 				0C215C911C136D7C00B066DF /* GameStateManager.swift in Sources */,
+				0C37CADE1C1A008C00BCF613 /* SingleThreadedSearch.swift in Sources */,
 				0CAB2F2F1BE1780500315BD9 /* Game.swift in Sources */,
 				0C27767B1BDE80EE004B15CD /* AppDelegate.swift in Sources */,
 				43E1446F1BEAA44D008B9EC8 /* GameBoard.swift in Sources */,

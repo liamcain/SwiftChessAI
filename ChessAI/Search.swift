@@ -42,14 +42,21 @@ class GameNode {
 class Search {
     
     var root: GameNode
+    var currentNode: GameNode
     var leafQueue: Queue<GameNode>
     var eval: Evaluate
+    var bestMove: GameNode?
+    var side: Side
     
-    init(game: Game) {
+    
+    init(game: Game, side: Side) {
         root = GameNode(game: game.copy())
+        currentNode = root
         leafQueue = Queue<GameNode>()
-        leafQueue.enqueue(root)
-        eval = Evaluate();
+        leafQueue.enqueue(currentNode)
+        eval = Evaluate()
+        bestMove = nil
+        self.side = side
     }
     
     func start() {
@@ -63,13 +70,14 @@ class Search {
     
     func evaluateFromQueue(){
         if let node = leafQueue.dequeue() {
-            
             // Check if node is a descendant of the current board state.
             var ancestor: GameNode? = node
             while ancestor?.parent != nil {
-                ancestor = ancestor?.parent
+                if ancestor! !== currentNode {
+                    ancestor = ancestor!.parent
+                }
             }
-            if ancestor !== root { return }
+            if ancestor == nil { return }
             
             let options = GameOptions()
             options.legal = false
@@ -84,44 +92,110 @@ class Search {
                     leafQueue.enqueue(childNode)
                 }
             }
+            // Throw this node away
         }
     }
     
-    func updateRoot(move: GameMove) {
-        for c in root.children {
+    func updateCurrentNode(move: GameMove) {
+        self.bestMove = nil
+        for c in currentNode.children {
             if c.move == move {
-                root = c
+                currentNode = c
                 return
             }
         }
     }
     
-    func search() -> GameMove {
-         var bestMove: GameNode? = nil
-         var bestScore: Int = -1
-         for c in root.children {
-             var bestOpponentMove: GameNode? = nil
-             var bestOpponentScore: Int = -1
-             for cc in c.children {
-                 if bestOpponentMove == nil || (cc.game.turn == GamePiece.Side.BLACK && cc.overallScore > bestOpponentMove!.overallScore) {
-                     bestOpponentMove = cc
-                     bestOpponentScore = bestOpponentMove!.overallScore!
-                 } else if bestOpponentMove == nil || (cc.game.turn == GamePiece.Side.WHITE && cc.overallScore < bestOpponentMove!.overallScore) {
-                     bestOpponentMove = cc
-                     bestOpponentScore = bestOpponentMove!.overallScore!
-                 }
-             }
-
-             if bestMove == nil || (c.game.turn == GamePiece.Side.BLACK && c.overallScore! - bestOpponentScore > bestScore) {
-                 bestMove = c
-                 bestScore = bestMove!.overallScore! - bestOpponentScore
-             } else if bestMove == nil || (c.game.turn == GamePiece.Side.WHITE && c.overallScore! - bestOpponentScore < bestScore) {
-                 bestMove = c
-                 bestScore = bestMove!.overallScore! - bestOpponentScore
-             }
-         }
-         root = bestMove!
-         return bestMove!.move!
-     }
+    func getBestMove() -> GameMove {
+        if (self.bestMove == nil) {
+            print("NO BEST MOVE")
+            if self.currentNode.children.count == 0 {
+               print("Caught up with tree generation")
+            }
+            self.bestMove = self.currentNode.children[0]
+        }
+        currentNode = self.bestMove!
+        return self.currentNode.move!
+    }
+    
+    func alphaBetaSearch(node: GameNode, depth: Int, var alpha: Int, beta: Int) -> Int {
+        if node.children.count == 0 || depth == 0 {
+            if node.overallScore == nil {
+                eval.evaluateNode(node)
+            }
+            print("leaf score: " + String(node.overallScore!))
+            return node.overallScore!
+        }
+        var score: Int = self.side == .WHITE ? -999999 : 999999
+        for child in node.children {
+            let current = alphaBetaSearch(child, depth: depth-1, alpha: alpha, beta: beta)
+            
+            if self.side == .WHITE {
+                // MAXImize value
+                if current > score {
+                    score = current
+                }
+                if score > alpha {
+                    alpha = score
+                    if node === currentNode {
+                        bestMove = child
+                    }
+                }
+                if alpha >= beta {
+                    print("a: " + String(alpha) + ", b: " + String(beta))
+                    return beta
+                }
+            } else {
+                // MINImize value
+                if current < score {
+                    score = current
+                }
+                if score < alpha {
+                    alpha = score
+                    if node === currentNode {
+                        bestMove = child
+                    }
+                }
+                if alpha <= beta {
+                    print("a: " + String(alpha) + ", b: " + String(beta))
+                    return beta
+                }
+                
+            }
+        }
+        print(String(depth) + ", Turn: " + String(node.game.turn) + ", value: " + String(score))
+        
+        return score
+        
+    }
+//    func search() -> GameMove {
+//         var bestMove: GameNode? = nil
+//         var bestScore: Int = -1
+//         for c in currentNode.children {
+//             var bestOpponentMove: GameNode? = nil
+//             var bestOpponentScore: Int = -1
+//             for cc in c.children {
+//                 if bestOpponentMove == nil || (cc.game.turn == GamePiece.Side.BLACK && cc.overallScore > bestOpponentMove!.overallScore) {
+//                     bestOpponentMove = cc
+//                     bestOpponentScore = bestOpponentMove!.overallScore!
+//                 } else if bestOpponentMove == nil || (cc.game.turn == GamePiece.Side.WHITE && cc.overallScore < bestOpponentMove!.overallScore) {
+//                     bestOpponentMove = cc
+//                     bestOpponentScore = bestOpponentMove!.overallScore!
+//                 }
+//             }
+//
+//             if bestMove == nil || (c.game.turn == GamePiece.Side.BLACK && c.overallScore! + bestOpponentScore > bestScore) {
+//                 bestMove = c
+//                 bestScore = bestMove!.overallScore! + bestOpponentScore
+//             } else if bestMove == nil || (c.game.turn == GamePiece.Side.WHITE && c.overallScore! + bestOpponentScore < bestScore) {
+//                 bestMove = c
+//                 bestScore = bestMove!.overallScore! + bestOpponentScore
+//             }
+//         }
+//         currentNode = bestMove!
+//         return bestMove!.move!
+//     }
+    
+    
     
 }

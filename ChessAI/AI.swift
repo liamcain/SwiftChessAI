@@ -12,8 +12,8 @@ class AI: Player {
     
     let brain: Bencarle
     
-    override init(side: GamePiece.Side, board: Board, game: Game) {
-        brain = Bencarle(boardState: game)
+    override init(side: Side, board: Board, game: Game) {
+        brain = Bencarle(boardState: game, side: side)
         super.init(side: side, board: board, game: game)
     }
     
@@ -21,6 +21,8 @@ class AI: Player {
         if let move = brain.nextMove {
             makeMove(move)
             brain.nextMove = nil
+        } else {
+            print("No next move")
         }
     }
     

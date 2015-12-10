@@ -11,17 +11,17 @@ class Game: Equatable {
     
     var board = GameBoard()
     
-    var kings = [GamePiece.Side.WHITE: -1, GamePiece.Side.BLACK: -1]
+    var kings = [Side.WHITE: -1, Side.BLACK: -1]
     var ROOKS = [
-        GamePiece.Side.WHITE: [
+        Side.WHITE: [
             ["square": 112, "flag": GameMove.Flag.QUEENSIDE_CASTLE.rawValue],
             ["square": 119, "flag": GameMove.Flag.KINGSIDE_CASTLE.rawValue]],
-        GamePiece.Side.BLACK: [
+        Side.BLACK: [
             ["square": 0, "flag": GameMove.Flag.QUEENSIDE_CASTLE.rawValue],
             ["square": 7, "flag": GameMove.Flag.KINGSIDE_CASTLE.rawValue]]
         ]
-    var castling = [GamePiece.Side.WHITE: 0, GamePiece.Side.BLACK: 0]
-    var turn = GamePiece.Side.WHITE
+    var castling = [Side.WHITE: 0, Side.BLACK: 0]
+    var turn = Side.WHITE
     var epSquare = -1
     var halfMoves = 0
     var moveNumber = 1
@@ -40,17 +40,17 @@ class Game: Equatable {
     
     func clear() {
         board = GameBoard()
-        kings = [GamePiece.Side.WHITE: -1, GamePiece.Side.BLACK: -1]
-        castling = [GamePiece.Side.WHITE: 0, GamePiece.Side.BLACK: 0]
+        kings = [Side.WHITE: -1, Side.BLACK: -1]
+        castling = [Side.WHITE: 0, Side.BLACK: 0]
         ROOKS = [
-            GamePiece.Side.WHITE: [
+            Side.WHITE: [
                 ["square": 112, "flag": GameMove.Flag.QUEENSIDE_CASTLE.rawValue],
                 ["square": 119, "flag": GameMove.Flag.KINGSIDE_CASTLE.rawValue]],
-            GamePiece.Side.BLACK: [
+            Side.BLACK: [
                 ["square": 0, "flag": GameMove.Flag.QUEENSIDE_CASTLE.rawValue],
                 ["square": 7, "flag": GameMove.Flag.KINGSIDE_CASTLE.rawValue]]
         ]
-        turn = GamePiece.Side.WHITE
+        turn = Side.WHITE
         epSquare = EMPTY
         halfMoves = 0
         moveNumber = 1
@@ -73,7 +73,7 @@ class Game: Equatable {
     
     func reset() {
         loadFromFen(DEFAULT_POSITION)
-        turn = GamePiece.Side.WHITE
+        turn = Side.WHITE
     }
     
     func put(piece: GamePiece, square: String) -> Bool {
@@ -88,7 +88,7 @@ class Game: Equatable {
         //        }
         
         board.set(sq, piece: piece)
-        if (piece.kind == GamePiece.Kind.KING) {
+        if (piece.kind == Kind.KING) {
             kings[piece.side] = sq
         }
         return true
@@ -114,19 +114,19 @@ class Game: Equatable {
             }
         }
         
-        turn = tokens[1] == "w" ? GamePiece.Side.WHITE : GamePiece.Side.BLACK
+        turn = tokens[1] == "w" ? .WHITE : .BLACK
         
         if tokens[2].rangeOfString("K") != nil {
-            castling[GamePiece.Side.WHITE]! |= GameMove.Flag.KINGSIDE_CASTLE.rawValue
+            castling[.WHITE]! |= GameMove.Flag.KINGSIDE_CASTLE.rawValue
         }
         if tokens[2].rangeOfString("Q") != nil {
-            castling[GamePiece.Side.WHITE]! |= GameMove.Flag.QUEENSIDE_CASTLE.rawValue
+            castling[.WHITE]! |= GameMove.Flag.QUEENSIDE_CASTLE.rawValue
         }
         if tokens[2].rangeOfString("k") != nil {
-            castling[GamePiece.Side.BLACK]! |= GameMove.Flag.KINGSIDE_CASTLE.rawValue
+            castling[.BLACK]! |= GameMove.Flag.KINGSIDE_CASTLE.rawValue
         }
         if tokens[2].rangeOfString("q") != nil {
-            castling[GamePiece.Side.BLACK]! |= GameMove.Flag.QUEENSIDE_CASTLE.rawValue
+            castling[.BLACK]! |= GameMove.Flag.QUEENSIDE_CASTLE.rawValue
         }
         
         if tokens[3] == "-" {
@@ -140,13 +140,13 @@ class Game: Equatable {
         return true
     }
     
-    func buildMove(fromPosition: (Int, Int), toPosition: (Int, Int), promotionPiece: GamePiece.Kind?) -> GameMove {
+    func buildMove(fromPosition: (Int, Int), toPosition: (Int, Int), promotionPiece: Kind?) -> GameMove {
         let from = (7 - fromPosition.1) * 16 + fromPosition.0
         let to   = (7 - toPosition.1) * 16 + toPosition.0
         return buildMove(from, to: to, promotionPiece: promotionPiece)
     }
     
-    func buildMove(from: Int, to: Int, promotionPiece: GamePiece.Kind?) -> GameMove {
+    func buildMove(from: Int, to: Int, promotionPiece: Kind?) -> GameMove {
         assert(board.get(from) != nil)
         
         var flag = GameMove.Flag.NORMAL
@@ -155,7 +155,7 @@ class Game: Equatable {
         let capturedPiece = board.get(to)
         
         if capturedPiece != nil {
-            if movingPiece.kind == GamePiece.Kind.PAWN {
+            if movingPiece.kind == Kind.PAWN {
                 if rank(to) == 1 || rank(to) == 8 {
                     // Pawn captured and needs to be promoted
                     flag = GameMove.Flag.PAWN_PROMOTION_CAPTURE
@@ -166,7 +166,7 @@ class Game: Equatable {
             } else {
                 flag = GameMove.Flag.CAPTURE
             }
-        } else if movingPiece.kind == GamePiece.Kind.KING { // Handle castling
+        } else if movingPiece.kind == Kind.KING { // Handle castling
             if file(from) == 5 && file(to) == 7 {
                 flag = GameMove.Flag.KINGSIDE_CASTLE
             } else if file(from) == 5 && file(to) == 3 {
@@ -175,7 +175,7 @@ class Game: Equatable {
                 flag = GameMove.Flag.NORMAL
             }
             board.disableCastling(turn)
-        } else if movingPiece.kind == GamePiece.Kind.PAWN { // Handle PAWN_PROMOTION, PAWN_PUSH, and EN_PASSANT
+        } else if movingPiece.kind == .PAWN { // Handle PAWN_PROMOTION, PAWN_PUSH, and EN_PASSANT
             if rank(to) == 1 || rank(to) == 8 {
                 flag = GameMove.Flag.PAWN_PROMOTION
             } else if rank(to) == rank(from) + 2 || rank(to) == rank(from) - 2 {
@@ -193,6 +193,17 @@ class Game: Equatable {
         move.halfMoves  = halfMoves
         return move
     }
+    
+    func kindName(kind: Kind) -> String {
+        switch kind {
+        case .BISHOP: return "b"
+        case .KING:   return "k"
+        case .KNIGHT: return "n"
+        case .PAWN:   return "p"
+        case .QUEEN:  return "q"
+        case .ROOK:   return "r"
+        }
+    }
 
     func rank(i: Int) -> Int {
         return i >> 4
@@ -208,27 +219,27 @@ class Game: Equatable {
         return "\(Character(UnicodeScalar(97+f)))\(r)"
     }
     
-    func swapColor(c: GamePiece.Side) -> GamePiece.Side {
-        return c == GamePiece.Side.WHITE ? GamePiece.Side.BLACK : GamePiece.Side.WHITE
+    func swapColor(c: Side) -> Side {
+        return c == .WHITE ? .BLACK : .WHITE
     }
     
     func generateMoves(options: GameOptions) -> Array<GameMove> {
         var moves = Array<GameMove>()
         func addMove(from: Int, to: Int) {
             /* if pawn promotion */
-            if board.get(from)?.kind == GamePiece.Kind.PAWN && (rank(to) == RANK_8 || rank(to) == RANK_1) {
-                moves.append(buildMove(from, to: to, promotionPiece: GamePiece.Kind.QUEEN));
-                moves.append(buildMove(from, to: to, promotionPiece: GamePiece.Kind.ROOK));
-                moves.append(buildMove(from, to: to, promotionPiece: GamePiece.Kind.KNIGHT));
-                moves.append(buildMove(from, to: to, promotionPiece: GamePiece.Kind.BISHOP));
+            if board.get(from)?.kind == .PAWN && (rank(to) == RANK_8 || rank(to) == RANK_1) {
+                moves.append(buildMove(from, to: to, promotionPiece: .QUEEN));
+                moves.append(buildMove(from, to: to, promotionPiece: .ROOK));
+                moves.append(buildMove(from, to: to, promotionPiece: .KNIGHT));
+                moves.append(buildMove(from, to: to, promotionPiece: .BISHOP));
             } else {
                 moves.append(buildMove(from, to: to, promotionPiece: nil))
             }
         }
         
         let us = turn
-        let them = (us == GamePiece.Side.WHITE) ? GamePiece.Side.BLACK : GamePiece.Side.WHITE
-        let secondRank = [GamePiece.Side.BLACK: RANK_7, GamePiece.Side.WHITE: RANK_2]
+        let them = (us == Side.WHITE) ? Side.BLACK : Side.WHITE
+        let secondRank = [Side.BLACK: RANK_7, Side.WHITE: RANK_2]
         
         let firstSq = board.SQUARES["a8"]
         let lastSq = board.SQUARES["h1"]
@@ -269,7 +280,7 @@ class Game: Equatable {
             }
             
             
-            if piece!.kind == GamePiece.Kind.PAWN {
+            if piece!.kind == Kind.PAWN {
                 /* single square, non-capturing */
                 let square = i + offsetArray[0]
                 
@@ -317,7 +328,7 @@ class Game: Equatable {
                         }
                         
                         /* break, if knight or king */
-                        if (piece!.kind == GamePiece.Kind.KNIGHT || piece!.kind == GamePiece.Kind.KING) {
+                        if (piece!.kind == Kind.KNIGHT || piece!.kind == Kind.KING) {
                             break
                         }
                     }
@@ -391,7 +402,7 @@ class Game: Equatable {
                 let color = board.get(i)!.side
                 let piece = board.get(i)!.kind
                 
-                fen += (color == GamePiece.Side.WHITE) ? piece.rawValue.uppercaseString :piece.rawValue
+                fen += (color == .WHITE) ? kindName(piece).uppercaseString :kindName(piece)
             }
             
             if (i + 1) & 0x88 > 0 {
@@ -409,10 +420,10 @@ class Game: Equatable {
         }
         
         var cflags = ""
-        if (castling[GamePiece.Side.WHITE]! == GameMove.Flag.KINGSIDE_CASTLE.rawValue) { cflags += "K" }
-        if (castling[GamePiece.Side.WHITE]! == GameMove.Flag.QUEENSIDE_CASTLE.rawValue) { cflags += "Q" }
-        if (castling[GamePiece.Side.BLACK]! == GameMove.Flag.KINGSIDE_CASTLE.rawValue) { cflags += "k" }
-        if (castling[GamePiece.Side.BLACK]! == GameMove.Flag.QUEENSIDE_CASTLE.rawValue) { cflags += "q" }
+        if (castling[Side.WHITE]! == GameMove.Flag.KINGSIDE_CASTLE.rawValue) { cflags += "K" }
+        if (castling[Side.WHITE]! == GameMove.Flag.QUEENSIDE_CASTLE.rawValue) { cflags += "Q" }
+        if (castling[Side.BLACK]! == GameMove.Flag.KINGSIDE_CASTLE.rawValue) { cflags += "k" }
+        if (castling[Side.BLACK]! == GameMove.Flag.QUEENSIDE_CASTLE.rawValue) { cflags += "q" }
         
         /* do we have an empty castling flag? */
         if cflags == "" {
@@ -423,11 +434,11 @@ class Game: Equatable {
         return [fen, String(turn), cflags, epflags, halfMoves, moveNumber].componentsJoinedByString(" ")
     }
     
-    func kingAttacked(side: GamePiece.Side) -> Bool {
+    func kingAttacked(side: Side) -> Bool {
         return attacked(swapColor(side), square: kings[side]!)
     }
     
-    func attacked(color: GamePiece.Side, square: Int) -> Bool {
+    func attacked(color: Side, square: Int) -> Bool {
         for var i = board.SQUARES["a8"]!; i <= board.SQUARES["h1"]!; i++ {
             /* did we run off the end of the board */
             if (i & 0x88 > 0) {
@@ -445,13 +456,13 @@ class Game: Equatable {
             let index = difference + 119
             
             if (board.ATTACKS[index] & (1 << board.SHIFTS[piece.kind]!)) > 0 {
-                if piece.kind == GamePiece.Kind.PAWN {
+                if piece.kind == Kind.PAWN {
                     if difference > 0 {
-                        if piece.side == GamePiece.Side.WHITE {
+                        if piece.side == Side.WHITE {
                             return true
                         }
                     } else {
-                        if piece.side == GamePiece.Side.BLACK {
+                        if piece.side == Side.BLACK {
                             return true
                         }
                     }
@@ -459,7 +470,7 @@ class Game: Equatable {
                 }
                 
                 /* if the piece is a knight or a king */
-                if (piece.kind == GamePiece.Kind.KING || piece.kind == GamePiece.Kind.KNIGHT) {
+                if (piece.kind == Kind.KING || piece.kind == Kind.KNIGHT) {
                     return true
                 }
                 
@@ -512,12 +523,12 @@ class Game: Equatable {
             board.set(move.toIndex, piece: GamePiece(side: them, kind: move.capturedPiece!.kind))
         } else if move.flag == GameMove.Flag.EN_PASSANT {
             var index: Int
-            if (us == GamePiece.Side.BLACK) {
+            if (us == Side.BLACK) {
                 index = move.toIndex - 16
             } else {
                 index = move.toIndex + 16
             }
-            board.set(index, piece: GamePiece(side: them, kind: GamePiece.Kind.PAWN))
+            board.set(index, piece: GamePiece(side: them, kind: Kind.PAWN))
         }
         
         
@@ -551,7 +562,7 @@ class Game: Equatable {
         
         /* if ep capture, remove the captured pawn */
         if move.flag == GameMove.Flag.EN_PASSANT {
-            if turn == GamePiece.Side.BLACK {
+            if turn == Side.BLACK {
                 board.set(move.toIndex - 16,  piece: nil)
             } else {
                 board.set(move.toIndex + 16, piece: nil)
@@ -566,7 +577,7 @@ class Game: Equatable {
         }
         
         /* if we moved the king */
-        if (piece != nil && piece?.kind == GamePiece.Kind.KING) {
+        if (piece != nil && piece?.kind == .KING) {
             kings[piece!.side] = move.toIndex
             
             /* if we castled, move the rook next to the king */
@@ -605,7 +616,7 @@ class Game: Equatable {
         
         /* if big pawn move, update the en passant square */
         if move.flag == GameMove.Flag.PAWN_PUSH {
-            if turn == GamePiece.Side.BLACK {
+            if turn == Side.BLACK {
                 epSquare = move.toIndex - 16
             } else {
                 epSquare = move.toIndex + 16
@@ -615,7 +626,7 @@ class Game: Equatable {
         }
         
         /* reset the 50 move counter if a pawn is moved or a piece is captured */
-        if board.get(move.toIndex) != nil && board.get(move.toIndex)!.kind == GamePiece.Kind.PAWN {
+        if board.get(move.toIndex) != nil && board.get(move.toIndex)!.kind == Kind.PAWN {
             halfMoves = 0
         } else if move.flag == GameMove.Flag.CAPTURE || move.flag == GameMove.Flag.EN_PASSANT {
             halfMoves = 0
@@ -623,7 +634,7 @@ class Game: Equatable {
             halfMoves++
         }
         
-        if turn == GamePiece.Side.BLACK {
+        if turn == Side.BLACK {
             moveNumber++
         }
         turn = swapColor(turn)
@@ -637,8 +648,8 @@ class Game: Equatable {
         var line = ""
         for var i = firstSq!; i <= lastSq!; i++ {
             if let piece = board.get(i) {
-                let kind = Array(arrayLiteral: piece.kind.rawValue)[0]
-                if piece.side == GamePiece.Side.BLACK {
+                let kind = Array(arrayLiteral: kindName(piece.kind))[0]
+                if piece.side == Side.BLACK {
                     line += " \(kind.uppercaseString) "
                 } else {
                     line += " \(kind) "
@@ -653,6 +664,20 @@ class Game: Equatable {
             }
         }
         print("\n\n")
+    }
+    
+    func isGameOver() -> Bool {
+        let options = GameOptions()
+        options.legal = true
+    
+        let moves = self.generateMoves(options)
+        if moves.count == 0 {
+            return true
+        }
+        
+        // TODO Add three-fold repetition check and insufficient material check
+        
+        return false
     }
     
 }

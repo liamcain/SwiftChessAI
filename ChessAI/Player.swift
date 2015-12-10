@@ -11,13 +11,13 @@ import SpriteKit
 class Player {
     
     var isTurn: Bool
-    var side: GamePiece.Side
+    var side: Side
     
     var board: Board
     var game: Game
     var opponent: Player?
     
-    init(side: GamePiece.Side, board: Board, game: Game) {
+    init(side: Side, board: Board, game: Game) {
         self.board = board
         self.game = game
         

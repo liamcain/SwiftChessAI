@@ -15,19 +15,19 @@ func == (lhs: GamePiece, rhs: GamePiece) -> Bool {
 
 class GamePiece: CustomStringConvertible, Equatable {
     
-    enum Kind: String {
-        case KING = "k"
-        case QUEEN = "q"
-        case ROOK = "r"
-        case KNIGHT = "n"
-        case BISHOP = "b"
-        case PAWN = "p"
-    }
-    
-    enum Side {
-        case WHITE
-        case BLACK
-    }
+//    enum Kind: String {
+//        case KING = "k"
+//        case QUEEN = "q"
+//        case ROOK = "r"
+//        case KNIGHT = "n"
+//        case BISHOP = "b"
+//        case PAWN = "p"
+//    }
+//    
+//    enum Side {
+//        case WHITE
+//        case BLACK
+//    }
     
     var side: Side
     var kind: Kind
@@ -46,41 +46,41 @@ class GamePiece: CustomStringConvertible, Equatable {
     }
     
     init(str: String) {
-        self.side = (str < "a") ? GamePiece.Side.WHITE : GamePiece.Side.BLACK
+        self.side = (str < "a") ? Side.WHITE : Side.BLACK
         
         switch str.lowercaseString {
             case "r":
-                self.kind = GamePiece.Kind.ROOK
+                kind = Kind.ROOK
             case "b":
-                self.kind = GamePiece.Kind.BISHOP
+                kind = Kind.BISHOP
             case "k":
-                self.kind = GamePiece.Kind.KING
+                kind = Kind.KING
             case "q":
-                self.kind = GamePiece.Kind.QUEEN
+                kind = Kind.QUEEN
             case "n":
-                self.kind = GamePiece.Kind.KNIGHT
+                kind = Kind.KNIGHT
             default:
-                self.kind = GamePiece.Kind.PAWN
+                kind = Kind.PAWN
         }
     }
     
-    func getOffsetArray() -> [Int]{
-        switch self.kind {
-        case Kind.PAWN:
+    func getOffsetArray() -> [Int] {
+        switch kind {
+        case .PAWN:
             if self.side == Side.WHITE {
                 return [-16, -32, -17, -15]
             } else {
                 return [16, 32, 17, 15]
             }
-        case Kind.KNIGHT:
+        case .KNIGHT:
             return [-18, -33, -31, -14,  18, 33, 31,  14]
-        case Kind.BISHOP:
+        case .BISHOP:
             return [-17, -15,  17,  15]
-        case Kind.ROOK:
+        case .ROOK:
             return [-16,   1,  16,  -1]
-        case Kind.QUEEN:
+        case .QUEEN:
             return [-17, -16, -15,   1,  17, 16, 15,  -1]
-        case Kind.KING:
+        case .KING:
             return [-17, -16, -15,   1,  17, 16, 15,  -1]
         }
     }

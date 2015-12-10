@@ -8,19 +8,16 @@
 
 import Foundation
 
-
-
-
 class Evaluate {
     
     // Claude Shannon(1949) values
-    let PIECE_VALUES: [GamePiece.Kind:Int] = [
-        GamePiece.Kind.PAWN   : 100,
-        GamePiece.Kind.KNIGHT : 300,
-        GamePiece.Kind.BISHOP : 300,
-        GamePiece.Kind.ROOK   : 500,
-        GamePiece.Kind.QUEEN  : 900,
-        GamePiece.Kind.KING: 999999,
+    let PIECE_VALUES: [Kind:Int] = [
+        Kind.PAWN   : 100,
+        Kind.KNIGHT : 300,
+        Kind.BISHOP : 300,
+        Kind.ROOK   : 500,
+        Kind.QUEEN  : 900,
+        Kind.KING: 999999,
     ]
     
     // Larry Kaufman(2012) values
@@ -49,13 +46,13 @@ class Evaluate {
         
         for var i = first_sq!; i <= last_sq!; i++ {
             if let piece = board.get(i) {
-                if piece.side == GamePiece.Side.BLACK {
-                    if piece.kind == GamePiece.Kind.BISHOP {
+                if piece.side == Side.BLACK {
+                    if piece.kind == Kind.BISHOP {
                         blackBishops += 1
                     }
                     blackScore += self.PIECE_VALUES[piece.kind]!
                 } else {
-                    if piece.kind == GamePiece.Kind.BISHOP {
+                    if piece.kind == Kind.BISHOP {
                         whiteBishops += 1
                     }
                     whiteScore += self.PIECE_VALUES[piece.kind]!
@@ -70,7 +67,7 @@ class Evaluate {
             blackScore += 50
         }
         
-        if node.game.turn == GamePiece.Side.BLACK {
+        if node.game.turn == Side.BLACK {
             return (blackScore - whiteScore) / 100
         } else {
             return (whiteScore - blackScore) / 100
@@ -82,52 +79,231 @@ class Evaluate {
         node.overallScore = node.material
     }
     
+    func evaluateGamePST(game: Game) -> Int {
+        var whiteScore = 0
+        var blackScore = 0
+        
+        let board = game.board
+        let first_sq = board.SQUARES["a8"]
+        let last_sq = board.SQUARES["h1"]
+        
+        for var i = first_sq!; i <= last_sq!; i++ {
+            if let piece = board.get(i) {
+                let num = self.convertPSTToInt(i)
+                switch piece.kind {
+                case Kind.PAWN:
+                    if piece.side == Side.WHITE {
+                        whiteScore += Evaluate.whitePawnPST[num]
+                    } else {
+                        blackScore += Evaluate.blackPawnPST[num]
+                    }
+                case Kind.KNIGHT:
+                    if piece.side == Side.WHITE {
+                        whiteScore += Evaluate.whiteKnightPST[num]
+                    } else {
+                        blackScore += Evaluate.blackKnightPST[num]
+                    }
+                case Kind.BISHOP:
+                    if piece.side == Side.WHITE {
+                        whiteScore += Evaluate.whiteBishopPST[num]
+                    } else {
+                        blackScore += Evaluate.blackBishopPST[num]
+                    }
+                case Kind.ROOK:
+                    if piece.side == Side.WHITE {
+                        whiteScore += Evaluate.whiteRookPST[num]
+                    } else {
+                        blackScore += Evaluate.blackRookPST[num]
+                    }
+                case Kind.QUEEN:
+                    if piece.side == Side.WHITE {
+                        whiteScore += Evaluate.whiteQueenPST[num]
+                    } else {
+                        blackScore += Evaluate.blackQueenPST[num]
+                    }
+                case Kind.KING:
+                    if piece.side == Side.WHITE {
+                        whiteScore += Evaluate.whiteKingPST[num]
+                    } else {
+                        blackScore += Evaluate.blackKingPST[num]
+                    }
+                }
+            }
+        }
+        return whiteScore - blackScore
+    }
     
-//    func search() -> GameMove {
-//         var bestMove: GameNode? = nil
-//         var bestScore: Int = -1
-//         for c in root.children {
-//             var bestOpponentMove: GameNode? = nil
-//             var bestOpponentScore: Int = -1
-//             for cc in c.children {
-//                 if bestOpponentMove == nil || (cc.game.turn == GamePiece.Side.BLACK && cc.overallScore > bestOpponentMove!.overallScore) {
-//                     bestOpponentMove = cc
-//                     bestOpponentScore = bestOpponentMove!.overallScore!
-//                 } else if bestOpponentMove == nil || (cc.game.turn == GamePiece.Side.WHITE && cc.overallScore < bestOpponentMove!.overallScore) {
-//                     bestOpponentMove = cc
-//                     bestOpponentScore = bestOpponentMove!.overallScore!
-//                 }
-//             }
-//             
-//             if bestMove == nil || (c.game.turn == GamePiece.Side.BLACK && c.overallScore! - bestOpponentScore > bestScore) {
-//                 bestMove = c
-//                 bestScore = bestMove!.overallScore! - bestOpponentScore
-//             } else if bestMove == nil || (c.game.turn == GamePiece.Side.WHITE && c.overallScore! - bestOpponentScore < bestScore) {
-//                 bestMove = c
-//                 bestScore = bestMove!.overallScore! - bestOpponentScore
-//             }
-//         }
-//         root = bestMove!
-//         return bestMove!.move!
-//     }
-//    func search() -> GameMove {
-//        var bestMove: GameNode? = nil
-//        var bestScore: Int = -1
-//        for c in root.children {
-//            
-//            var bestOpponentMove: GameNode? = nil
-//            for cc in c.children {
-//                if bestOpponentMove == nil || cc.material > bestOpponentMove!.material {
-//                    bestOpponentMove = cc
-//                }
-//            }
-//            
-//            if bestMove == nil || c.material! - bestScore > bestMove!.material! {
-//                bestMove = c
-//                bestScore = bestMove!.material! - bestOpponentMove!.material!
-//            }
-//        }
-//        root = bestMove!
-//        return bestMove!.move!
-//    }
+    func evaluateGameMaterial(game: Game) -> Int {
+        var whiteScore = 0
+        var blackScore = 0
+        var whiteBishops = 0
+        var blackBishops = 0
+        
+        let board = game.board
+        let first_sq = board.SQUARES["a8"]
+        let last_sq = board.SQUARES["h1"]
+        
+        for var i = first_sq!; i <= last_sq!; i++ {
+            if let piece = board.get(i) {
+                if piece.side == Side.BLACK {
+                    if piece.kind == .BISHOP {
+                        blackBishops += 1
+                    }
+                    blackScore += self.PIECE_VALUES[piece.kind]!
+                } else {
+                    if piece.kind == .BISHOP {
+                        whiteBishops += 1
+                    }
+                    whiteScore += self.PIECE_VALUES[piece.kind]!
+                }
+            }
+            if i % 8 == 7 { i += 8 }
+        }
+        if whiteBishops == 2 {
+            whiteScore += 50
+        }
+        if blackBishops == 2 {
+            blackScore += 50
+        }
+        
+        return (whiteScore - blackScore)
+        
+    }
+    func evaluateGame(game: Game) -> Int {
+        let material = self.evaluateGameMaterial(game)
+        let pst = self.evaluateGamePST(game)
+        return material + pst
+    }
+    
+    
+    func convertPSTToInt(num: Int) -> Int {
+        return ((num / 16) / 8) + (num % 8) // No, you cant simplify to (num/2) because rounding
+    }
+    
+    // Pawn piece-square table
+    static let whitePawnPST = [
+        0, 0, 0, 0, 0, 0, 0, 0,
+        20, 20, 20, 30, 30, 20, 20, 20,
+        10, 10, 20, 30, 30, 20, 10, 10,
+        5, 5, 10, 25, 25, 10, 5, 5,
+        0, 0, 0, 20, 20, 0, 0, 0,
+        5, -5, -10, 0, 0, -10, -5, 5,
+        5, 10, 10, -20, -20, 10, 10, 5,
+        0, 0, 0, 0, 0, 0, 0, 0
+    ]
+    static let blackPawnPST = [
+        0, 0, 0, 0, 0, 0, 0, 0,
+        5, 10, 10, -20, -20, 10, 10, 5,
+        5, -5, -10, 0, 0, -10, -5, 5,
+        0, 0, 0, 20, 20, 0, 0, 0,
+        5, 5, 10, 25, 25, 10, 5, 5,
+        10, 10, 20, 30, 30, 20, 10, 10,
+        20, 20, 20, 30, 30, 20, 20, 20,
+        0, 0, 0, 0, 0, 0, 0, 0
+    ]
+    // Knight piece-square table
+    static let whiteKnightPST = [
+        -50, -40, -30, -30, -30, -30, -40, -50,
+        -40, -20, 0, 0, 0, 0, -20, -40,
+        -30, 0, 10, 15, 15, 10, 0, -30,
+        -30, 5, 15, 20, 20, 15, 5, -30,
+        -30, 0, 15, 20, 20, 15, 0, -30,
+        -30, 5, 10, 15, 15, 10, 5, -30,
+        -40, -20, 0, 5, 5, 0, -20, -40,
+        -50, -40, -30, -30, -30, -30, -40, -50
+    ]
+    static let blackKnightPST = [
+        -50, -40, -30, -30, -30, -30, -40, -50,
+        -40, -20, 0, 5, 5, 0, -20, -40,
+        -30, 5, 10, 15, 15, 10, 5, -30,
+        -30, 0, 15, 20, 20, 15, 0, -30,
+        -30, 5, 15, 20, 20, 15, 5, -30,
+        -30, 0, 10, 15, 15, 10, 0, -30,
+        -40, -20, 0, 0, 0, 0, -20, -40,
+        -50, -40, -30, -30, -30, -30, -40, -50
+    ]
+    // Bishop piece-square table
+    static let whiteBishopPST = [
+        -20, -10, -10, -10, -10, -10, -10, -20,
+        -10, 0, 0, 0, 0, 0, 0, -10,
+        -10, 0, 5, 10, 10, 5, 0, -10,
+        -10, 5, 5, 10, 10, 5, 5, -10,
+        -10, 0, 10, 10, 10, 10, 0, -10,
+        -10, 10, 10, 10, 10, 10, 10, -10,
+        -10, 5, 0, 0, 0, 0, 5, -10,
+        -20, -10, -10, -10, -10, -10, -10, -20
+    ]
+    static let blackBishopPST = [
+        -20, -10, -10, -10, -10, -10, -10, -20,
+        -10, 5, 0, 0, 0, 0, 5, -10,
+        -10, 10, 10, 10, 10, 10, 10, -10,
+        -10, 0, 10, 10, 10, 10, 0, -10,
+        -10, 5, 5, 10, 10, 5, 5, -10,
+        -10, 0, 5, 10, 10, 5, 0, -10,
+        -10, 0, 0, 0, 0, 0, 0, -10,
+        -20, -10, -10, -10, -10, -10, -10, -20,
+    ]
+    // Rook piece-square table
+    static let whiteRookPST = [
+        0, 0, 0, 0, 0, 0, 0, 0,
+        5, 10, 10, 10, 10, 10, 10, 5,
+        -5, 0, 0, 0, 0, 0, 0, -5,
+        -5, 0, 0, 0, 0, 0, 0, -5,
+        -5, 0, 0, 0, 0, 0, 0, -5,
+        -5, 0, 0, 0, 0, 0, 0, -5,
+        -5, 0, 0, 0, 0, 0, 0, -5,
+        0, 0, 0, 5, 5, 0, 0, 0
+    ]
+    static let blackRookPST = [
+        0, 0, 0, 5, 5, 0, 0, 0,
+        -5, 0, 0, 0, 0, 0, 0, -5,
+        -5, 0, 0, 0, 0, 0, 0, -5,
+        -5, 0, 0, 0, 0, 0, 0, -5,
+        -5, 0, 0, 0, 0, 0, 0, -5,
+        -5, 0, 0, 0, 0, 0, 0, -5,
+        5, 10, 10, 10, 10, 10, 10, 5,
+        0, 0, 0, 0, 0, 0, 0, 0
+    ]
+    // Queen piece-square tables
+    static let whiteQueenPST = [
+        -20, -10, -10, -5, -5, -10, -10, -20,
+        -10, 0, 0, 0, 0, 0, 0, -10,
+        -10, 0, 5, 5, 5, 5, 0, -10,
+        -5, 0, 5, 5, 5, 5, 0, -5,
+        0, 0, 5, 5, 5, 5, 0, -5,
+        -10, 5, 5, 5, 5, 5, 0, -10,
+        -10, 0, 5, 0, 0, 0, 0, -10,
+        -20, -10, -10, -5, -5, -10, -10, -20
+    ]
+    static let blackQueenPST = [
+        -20, -10, -10, -5, -5, -10, -10, -20,
+        -10, 0, 5, 0, 0, 0, 0, -10,
+        -10, 5, 5, 5, 5, 5, 0, -10,
+        0, 0, 5, 5, 5, 5, 0, -5,
+        -5, 0, 5, 5, 5, 5, 0, -5,
+        -10, 0, 5, 5, 5, 5, 0, -10,
+        -10, 0, 0, 0, 0, 0, 0, -10,
+        -20, -10, -10, -5, -5, -10, -10, -20
+    ]
+    // King piece-square tables
+    static let whiteKingPST = [
+        -30, -40, -40, -50, -50, -40, -40, -30,
+        -30, -40, -40, -50, -50, -40, -40, -30,
+        -30, -40, -40, -50, -50, -40, -40, -30,
+        -30, -40, -40, -50, -50, -40, -40, -30,
+        -20, -30, -30, -40, -40, -30, -30, -20,
+        -10, -20, -20, -20, -20, -20, -20, -10,
+        20, 20, 0, 0, 0, 0, 20, 20,
+        10, 10, 10, 0, 0, 10, 10, 10
+    ]
+    static let blackKingPST = [
+        10, 10, 10, 0, 0, 10, 10, 10,
+        20, 20, 0, 0, 0, 0, 20, 20,
+        -10, -20, -20, -20, -20, -20, -20, -10,
+        -20, -30, -30, -40, -40, -30, -30, -20,
+        -30, -40, -40, -50, -50, -40, -40, -30,
+        -30, -40, -40, -50, -50, -40, -40, -30,
+        -30, -40, -40, -50, -50, -40, -40, -30,
+        -30, -40, -40, -50, -50, -40, -40, -30
+    ]
 }
