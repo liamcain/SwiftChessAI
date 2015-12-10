@@ -10,21 +10,32 @@ import Foundation
 
 class Bencarle {
     
-    var search: Search
+    // var search: Search
+    var search: SingleThreadedSearch
     var nextMove: GameMove?
+    var side: GamePiece.Side
     
-    init(boardState: Game) {
-        search = Search(game: boardState)
+    init(boardState: Game, side: GamePiece.Side) {
+        self.side = side
+        //search = Search(game: boardState, side: side)
+        //search.start()
+        search = SingleThreadedSearch(game: boardState, side: side)
     }
     
     func handleMove(move: GameMove?) {
         if move != nil {
-            search.updateRoot(move!)
+            search.updateCurrentNode(move!)
         }
-        let timeForTurn = calculateTimeForTurn()
-        delay(timeForTurn) {
-            self.nextMove = self.search.search()
-        }
+//        let timeForTurn = calculateTimeForTurn()
+        
+        self.search.alphaBetaSearch(self.search.game, depth: search.maxDepth, alpha: -999999, beta: 999999)
+        // self.search.alphaBetaSearch(self.search.root, depth: 3, alpha: -999999, beta: 999999)
+        self.nextMove = self.search.getBestMove()
+        
+//        delay(timeForTurn) {
+//            self.search.alphaBetaSearch(self.search.root, depth: 3, alpha: -999999, beta: 999999)
+//            self.nextMove = self.search.getBestMove()
+//        }
     }
     
     func calculateTimeForTurn() -> Double {

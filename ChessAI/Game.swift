@@ -649,4 +649,18 @@ class Game: Equatable {
         print("\n\n")
     }
     
+    func isGameOver() -> Bool {
+        let options = GameOptions()
+        options.legal = true
+    
+        let moves = self.generateMoves(options)
+        if moves.count == 0 {
+            return true
+        }
+        
+        // TODO Add three-fold repetition check and insufficient material check
+        
+        return false
+    }
+    
 }
