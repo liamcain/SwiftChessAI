@@ -42,6 +42,14 @@ class Game: Equatable {
         board = GameBoard()
         kings = [GamePiece.Side.WHITE: -1, GamePiece.Side.BLACK: -1]
         castling = [GamePiece.Side.WHITE: 0, GamePiece.Side.BLACK: 0]
+        ROOKS = [
+            GamePiece.Side.WHITE: [
+                ["square": 112, "flag": GameMove.Flag.QUEENSIDE_CASTLE.rawValue],
+                ["square": 119, "flag": GameMove.Flag.KINGSIDE_CASTLE.rawValue]],
+            GamePiece.Side.BLACK: [
+                ["square": 0, "flag": GameMove.Flag.QUEENSIDE_CASTLE.rawValue],
+                ["square": 7, "flag": GameMove.Flag.KINGSIDE_CASTLE.rawValue]]
+        ]
         turn = GamePiece.Side.WHITE
         epSquare = EMPTY
         halfMoves = 0
@@ -320,27 +328,31 @@ class Game: Equatable {
         /* check for castling if: a) we're generating all moves, or b) we're doing
         * single square move generation on the king's square
         */
-        if /*!single_square*/ false || lastSq == kings[us] {
+//        if /*!single_square*/ false || lastSq == kings[us] {
             /* king-side castling */
-            if castling[us] == GameMove.Flag.KINGSIDE_CASTLE.rawValue {
-                let castlingFrom = kings[us]!
-                let castlingTo = castlingFrom + 2
-                
-                if board.get(castlingFrom + 1) == nil && board.get(castlingTo) == nil && !attacked(them, square: kings[us]!) && !attacked(them, square: castlingFrom + 1) && !attacked(them, square: castlingTo) {
-                    addMove(kings[us]! , to: castlingTo)
-                }
-            }
+        if castling[us] == GameMove.Flag.KINGSIDE_CASTLE.rawValue {
+            let castlingFrom = kings[us]!
+            let castlingTo = castlingFrom + 2
             
-            /* queen-side castling */
-            if castling[us]! == GameMove.Flag.QUEENSIDE_CASTLE.rawValue {
-                let castlingFrom = kings[us]
-                let castlingTo = castlingFrom! - 2
-                
-                if board.get(castlingFrom! - 1) == nil && board.get(castlingFrom! - 2) == nil && board.get(castlingFrom! - 3) == nil && !attacked(them, square: kings[us]!) && !attacked(them, square: castlingFrom! - 1) && !attacked(them, square: castlingTo) {
-                    addMove(kings[us]!, to: castlingTo)
-                }
+            if board.get(castlingFrom + 1) == nil
+                && board.get(castlingTo) == nil
+                && !attacked(them, square: kings[us]!)
+                && !attacked(them, square: castlingFrom + 1)
+                && !attacked(them, square: castlingTo) {
+                    addMove(kings[us]! , to: castlingTo)
             }
         }
+        
+        /* queen-side castling */
+        if castling[us]! == GameMove.Flag.QUEENSIDE_CASTLE.rawValue {
+            let castlingFrom = kings[us]
+            let castlingTo = castlingFrom! - 2
+            
+            if board.get(castlingFrom! - 1) == nil && board.get(castlingFrom! - 2) == nil && board.get(castlingFrom! - 3) == nil && !attacked(them, square: kings[us]!) && !attacked(them, square: castlingFrom! - 1) && !attacked(them, square: castlingTo) {
+                addMove(kings[us]!, to: castlingTo)
+            }
+        }
+//        }
         
         /* return all pseudo-legal moves (this includes moves that allow the king
         * to be captured)
@@ -483,9 +495,9 @@ class Game: Equatable {
         turn        = old!.side
         castling    = old!.castling!
         kings       = old!.kings!
-        epSquare   = old!.epSquare!
-        halfMoves  = old!.halfMoves!
-        moveNumber = old!.moveNumber!
+        epSquare    = old!.epSquare!
+        halfMoves   = old!.halfMoves!
+        moveNumber  = old!.moveNumber!
         
         let us = turn
         let them = swapColor(turn)
@@ -576,24 +588,18 @@ class Game: Equatable {
         
         
         /* turn off castling if we move a rook */
-        if castling[us] != nil {
-            for var i = 0, len = ROOKS[us]!.count; i < len; i++ {
-                if move.fromIndex == ROOKS[us]![i]["square"]! &&
-                    castling[us]! & ROOKS[us]![i]["flag"]! > 0 {
-                        castling[us]! ^= ROOKS[us]![i]["flag"]!
-                        break
-                }
+        for var i = 0, len = ROOKS[us]!.count; i < len; i++ {
+            if move.fromIndex == ROOKS[us]![i]["square"]! && ROOKS[us]![i]["flag"]! > 0 {
+                castling[us]! ^= ROOKS[us]![i]["flag"]!
+                break
             }
         }
         
         /* turn off castling if we capture a rook */
-        if castling[them] != nil {
-            for (var i = 0, len = ROOKS[them]!.count; i < len; i++) {
-                if move.toIndex == ROOKS[them]![i]["square"]! &&
-                    castling[them]! & ROOKS[them]![i]["flag"]! > 0 {
-                        castling[them]! ^= ROOKS[them]![i]["flag"]!
-                        break
-                }
+        for (var i = 0, len = ROOKS[them]!.count; i < len; i++) {
+            if move.toIndex == ROOKS[them]![i]["square"]! && ROOKS[them]![i]["flag"]! > 0 {
+                castling[them]! ^= ROOKS[them]![i]["flag"]!
+                break
             }
         }
         

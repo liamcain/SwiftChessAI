@@ -34,7 +34,7 @@ class Space: SKSpriteNode {
         
         if (color == Color.BLACK) {
             self.colorBlendFactor = 1.0
-            self.color = SKColor.redColor()
+            self.color = SKColor(red: 0, green: 0.6, blue: 0.83, alpha: 1.0)
         }
         self.zPosition = ZPOSITION_BOARD_SPACE
         addChild(highlight)

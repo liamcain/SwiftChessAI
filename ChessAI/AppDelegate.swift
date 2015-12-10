@@ -32,7 +32,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         self.skView!.showsFPS = true
         self.skView!.showsNodeCount = true
-        
+
         let menuBar = NSMenu(title:"")
         let app = NSMenu(title: "ChessAI")
         app.addItemWithTitle("About ChessAI", action: nil, keyEquivalent: "")
@@ -46,8 +46,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         edit.addItemWithTitle("Undo", action: Selector("undo"), keyEquivalent: "z")
         edit.addItemWithTitle("Reset", action: Selector("reset"), keyEquivalent: "r")
         
-        let heading = menuBar.addItemWithTitle("", action: nil, keyEquivalent: "")
-        heading?.submenu = edit
+        let editHeading = menuBar.addItemWithTitle("", action: nil, keyEquivalent: "")
+        editHeading?.submenu = edit
         
         NSApp.mainMenu = menuBar
     }

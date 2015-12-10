@@ -15,6 +15,7 @@ class Bencarle {
     
     init(boardState: Game) {
         search = Search(game: boardState)
+        search.start()
     }
     
     func handleMove(move: GameMove?) {

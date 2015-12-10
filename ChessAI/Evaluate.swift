@@ -83,7 +83,6 @@ class Evaluate {
     }
     
     
-    
 //    func search() -> GameMove {
 //         var bestMove: GameNode? = nil
 //         var bestScore: Int = -1
@@ -111,4 +110,24 @@ class Evaluate {
 //         root = bestMove!
 //         return bestMove!.move!
 //     }
+//    func search() -> GameMove {
+//        var bestMove: GameNode? = nil
+//        var bestScore: Int = -1
+//        for c in root.children {
+//            
+//            var bestOpponentMove: GameNode? = nil
+//            for cc in c.children {
+//                if bestOpponentMove == nil || cc.material > bestOpponentMove!.material {
+//                    bestOpponentMove = cc
+//                }
+//            }
+//            
+//            if bestMove == nil || c.material! - bestScore > bestMove!.material! {
+//                bestMove = c
+//                bestScore = bestMove!.material! - bestOpponentMove!.material!
+//            }
+//        }
+//        root = bestMove!
+//        return bestMove!.move!
+//    }
 }

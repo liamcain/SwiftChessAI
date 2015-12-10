@@ -6,7 +6,7 @@
 //  Copyright © 2015 Pillowfort Architects. All rights reserved.
 //
 
-import Foundation
+import Cocoa
 
 class GameStateManager {
     
@@ -21,4 +21,8 @@ class GameStateManager {
 //        moveNumber = 0
 //        turn = GamePiece.Side.WHITE
 //    }
+    
+    func log(str: String) {
+        
+    }
 }

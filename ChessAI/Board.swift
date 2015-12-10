@@ -54,6 +54,12 @@ class Board: SKNode {
         }
     }
     
+    func promotePawn(side: GamePiece.Side, square: Int, promotionPiece: GamePiece.Kind) {
+        let space = locate(square - 16)
+        let piece = pieces[space.0][space.1]
+        piece?.setType(promotionPiece)
+    }
+    
     func locate(index: Int) -> (Int, Int) {
         let x: Int = index % 16
         let y: Int = 7 - (index / 16)
@@ -105,6 +111,9 @@ class Board: SKNode {
         
         if move.flag == GameMove.Flag.EN_PASSANT {
             enPassant(move.side, square: move.epSquare)
+        } else if move.flag == GameMove.Flag.PAWN_PROMOTION
+               && move.flag == GameMove.Flag.PAWN_PROMOTION_CAPTURE {
+                promotePawn(move.side, square:move.toIndex, promotionPiece:move.promotionPiece!)
         }
     }
     
@@ -146,29 +155,29 @@ class Board: SKNode {
             for c in rank.characters {
                 switch c {
                     case "p":
-                        self.pieces[i++][j] = Pawn(side: Piece.Side.BLACK, space: (i, j))
+                        self.pieces[i++][j] = Piece(side: Piece.Side.BLACK, type: Piece.Type.PAWN, space: (i, j))
                     case "P":
-                        self.pieces[i++][j] = Pawn(side: Piece.Side.WHITE, space: (i, j))
+                        self.pieces[i++][j] = Piece(side: Piece.Side.WHITE, type:Piece.Type.PAWN, space: (i, j))
                     case "r":
-                        self.pieces[i++][j] = Rook(side: Piece.Side.BLACK, space: (i, j))
+                        self.pieces[i++][j] = Piece(side: Piece.Side.BLACK, type: Piece.Type.ROOK, space: (i, j))
                     case "R":
-                        self.pieces[i++][j] = Rook(side: Piece.Side.WHITE, space: (i, j))
+                        self.pieces[i++][j] = Piece(side: Piece.Side.WHITE, type:Piece.Type.ROOK, space: (i, j))
                     case "n":
-                        self.pieces[i++][j] = Knight(side: Piece.Side.BLACK, space: (i, j))
+                        self.pieces[i++][j] = Piece(side: Piece.Side.BLACK, type:Piece.Type.KNIGHT, space: (i, j))
                     case "N":
-                        self.pieces[i++][j] = Knight(side: Piece.Side.WHITE, space: (i, j))
+                        self.pieces[i++][j] = Piece(side: Piece.Side.WHITE, type:Piece.Type.KNIGHT, space: (i, j))
                     case "b":
-                        self.pieces[i++][j] = Bishop(side: Piece.Side.BLACK, space: (i, j))
+                        self.pieces[i++][j] = Piece(side: Piece.Side.BLACK, type:Piece.Type.BISHOP, space: (i, j))
                     case "B":
-                        self.pieces[i++][j] = Bishop(side: Piece.Side.WHITE, space: (i, j))
+                        self.pieces[i++][j] = Piece(side: Piece.Side.WHITE, type:Piece.Type.BISHOP, space: (i, j))
                     case "k":
-                        self.pieces[i++][j] = King(side: Piece.Side.BLACK, space: (i, j))
+                        self.pieces[i++][j] = Piece(side: Piece.Side.BLACK, type:Piece.Type.KING, space: (i, j))
                     case "K":
-                        self.pieces[i++][j] = King(side: Piece.Side.WHITE, space: (i, j))
+                        self.pieces[i++][j] = Piece(side: Piece.Side.WHITE, type:Piece.Type.KING, space: (i, j))
                     case "q":
-                        self.pieces[i++][j] = Queen(side: Piece.Side.BLACK, space: (i, j))
+                        self.pieces[i++][j] = Piece(side: Piece.Side.BLACK, type:Piece.Type.QUEEN, space: (i, j))
                     case "Q":
-                        self.pieces[i++][j] = Queen(side: Piece.Side.WHITE, space: (i, j))
+                        self.pieces[i++][j] = Piece(side: Piece.Side.WHITE, type: Piece.Type.QUEEN, space: (i, j))
                     default:
                         let tempString = String(c)
                         if let numOfBlankSpaces = Int(tempString) {
