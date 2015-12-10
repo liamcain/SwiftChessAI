@@ -82,6 +82,60 @@ class Evaluate {
         node.overallScore = node.material
     }
     
+    func evaluateGamePST(game: Game) -> Int {
+        var whiteScore = 0
+        var blackScore = 0
+        
+        let board = game.board
+        let first_sq = board.SQUARES["a8"]
+        let last_sq = board.SQUARES["h1"]
+        
+        for var i = first_sq!; i <= last_sq!; i++ {
+            if let piece = board.get(i) {
+                let num = self.convertPSTToInt(i)
+                switch piece.kind {
+                case GamePiece.Kind.PAWN:
+                    if piece.side == GamePiece.Side.WHITE {
+                        whiteScore += Evaluate.whitePawnPST[num]
+                    } else {
+                        blackScore += Evaluate.blackPawnPST[num]
+                    }
+                case GamePiece.Kind.KNIGHT:
+                    if piece.side == GamePiece.Side.WHITE {
+                        whiteScore += Evaluate.whiteKnightPST[num]
+                    } else {
+                        blackScore += Evaluate.blackKnightPST[num]
+                    }
+                case GamePiece.Kind.BISHOP:
+                    if piece.side == GamePiece.Side.WHITE {
+                        whiteScore += Evaluate.whiteBishopPST[num]
+                    } else {
+                        blackScore += Evaluate.blackBishopPST[num]
+                    }
+                case GamePiece.Kind.ROOK:
+                    if piece.side == GamePiece.Side.WHITE {
+                        whiteScore += Evaluate.whiteRookPST[num]
+                    } else {
+                        blackScore += Evaluate.blackRookPST[num]
+                    }
+                case GamePiece.Kind.QUEEN:
+                    if piece.side == GamePiece.Side.WHITE {
+                        whiteScore += Evaluate.whiteQueenPST[num]
+                    } else {
+                        blackScore += Evaluate.blackQueenPST[num]
+                    }
+                case GamePiece.Kind.KING:
+                    if piece.side == GamePiece.Side.WHITE {
+                        whiteScore += Evaluate.whiteKingPST[num]
+                    } else {
+                        blackScore += Evaluate.blackKingPST[num]
+                    }
+                }
+            }
+        }
+        return whiteScore - blackScore
+    }
+    
     func evaluateGameMaterial(game: Game) -> Int {
         var whiteScore = 0
         var blackScore = 0
@@ -115,14 +169,19 @@ class Evaluate {
             blackScore += 50
         }
         
-        return (whiteScore - blackScore) / 100
+        return (whiteScore - blackScore)
         
     }
     func evaluateGame(game: Game) -> Int {
         let material = self.evaluateGameMaterial(game)
-        return material
+        let pst = self.evaluateGamePST(game)
+        return material + pst
     }
     
+    
+    func convertPSTToInt(num: Int) -> Int {
+        return ((num / 16) / 8) + (num % 8) // No, you cant simplify to (num/2) because rounding
+    }
     
     // Pawn piece-square table
     static let whitePawnPST = [

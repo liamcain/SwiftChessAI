@@ -21,7 +21,7 @@ class SingleThreadedSearch {
         bestMove = nil
         self.side = side
         self.game = game
-        self.maxDepth = 3
+        self.maxDepth = 5
     }
     
     func getBestMove() -> GameMove {
@@ -35,14 +35,14 @@ class SingleThreadedSearch {
         let minimize = game.turn == GamePiece.Side.BLACK
         var value: Int = minimize ? 999999 : -999999
         let options = GameOptions()
-        options.legal = true // false // for efficiency
+        options.legal = false // false // for efficiency
         
         for move in game.generateMoves(options) {
             game.makeMove(move)
-            // if game.kingAttacked(game.turn == GamePiece.Side.WHITE ? GamePiece.Side.BLACK : GamePiece.Side.WHITE) {
-            //     game.undoMove()
-            //     continue
-            // }
+            if game.kingAttacked(game.turn == GamePiece.Side.WHITE ? GamePiece.Side.BLACK : GamePiece.Side.WHITE) {
+                game.undoMove()
+                continue
+            }
             let current = alphaBetaSearch(game, depth: depth-1, alpha: alpha, beta: beta)
             game.undoMove()
             if minimize {
