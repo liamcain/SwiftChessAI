@@ -35,7 +35,7 @@ class Human: Player {
         // Deselect all spaces
         for row in board.spaces {
             for space in row {
-                space.invalid()
+                space.invalidMove()
             }
         }
         
@@ -64,7 +64,7 @@ class Human: Player {
         
         for move in legalMoves {
             if move.fromIndex == activePiece?.boardIndex() {
-                board.get(move.toIndex).valid()
+                board.get(move.toIndex).validMove()
             }
         }
     }

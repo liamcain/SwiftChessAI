@@ -24,12 +24,10 @@ class GameScene: SKScene {
         game.reset()
         let human = Human(side: .WHITE, board: board, game: game)
         let ai    =    AI(side: .BLACK, board: board, game: game)
+        players   = [.WHITE: human, .BLACK: ai]
         
         human.opponent = ai
         ai.opponent = human
-        
-        players = [.WHITE: human, .BLACK: ai]
-        
         reset()
     }
     

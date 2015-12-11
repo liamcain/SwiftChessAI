@@ -39,7 +39,7 @@ class SingleThreadedSearch {
         
         for move in game.generateMoves(options) {
             game.makeMove(move)
-            if game.kingAttacked(game.turn == .WHITE ? .BLACK : .WHITE) {
+            if game.inCheck(game.turn == .WHITE ? .BLACK : .WHITE) {
                 game.undoMove()
                 continue
             }

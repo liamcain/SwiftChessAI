@@ -10,16 +10,11 @@ import SpriteKit
 
 class Space: SKSpriteNode {
     
-    enum Color {
-        case WHITE
-        case BLACK
-    }
-    
-    var bColor: Color
+    var bColor: Side
     var space: (Int, Int)
     let highlight: SKSpriteNode
     
-    init(color: Color, space: (Int, Int)) {
+    init(color: Side, space: (Int, Int)) {
         self.bColor = color
         self.space = space
         
@@ -32,9 +27,11 @@ class Space: SKSpriteNode {
         let texture = SKTexture(imageNamed: "board-space")
         super.init(texture: texture, color: SKColor.clearColor(), size: texture.size())
         
-        if (color == Color.BLACK) {
-            self.colorBlendFactor = 1.0
+        self.colorBlendFactor = 1.0
+        if bColor == .BLACK {
             self.color = SKColor(red: 0, green: 0.6, blue: 0.83, alpha: 1.0)
+        } else {
+            self.color = SKColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
         }
         self.zPosition = ZPOSITION_BOARD_SPACE
         addChild(highlight)
@@ -44,11 +41,27 @@ class Space: SKSpriteNode {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func valid(){
+    func prevMove() {
+        if bColor == .BLACK {
+            self.color = SKColor(red: 0, green: 0.46, blue: 0.68, alpha: 1.0)
+        } else {
+            self.color = SKColor(red: 0.86, green: 0.92, blue: 1.0, alpha: 1.0)
+        }
+    }
+    
+    func clearPrevMove() {
+        if bColor == .BLACK {
+            self.color = SKColor(red: 0, green: 0.6, blue: 0.83, alpha: 1.0)
+        } else {
+            self.color = SKColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+        }
+    }
+    
+    func validMove(){
         highlight.hidden = false
     }
     
-    func invalid(){
+    func invalidMove(){
         highlight.hidden = true
     }
 

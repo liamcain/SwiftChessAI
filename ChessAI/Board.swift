@@ -14,6 +14,7 @@ class Board: SKNode {
     
     var spaces: [[Space]] = [[Space]]()
     var pieces: [[Piece?]] = [[Piece?]]()
+    var lastMoveSpace: Space?
     
     override init() {
         super.init()
@@ -26,9 +27,9 @@ class Board: SKNode {
                 
                 var space: Space
                 if (i + j) % 2 == 0 {
-                    space = Space(color: Space.Color.BLACK, space: (j, i))
+                    space = Space(color: .BLACK, space: (j, i))
                 } else {
-                    space = Space(color: Space.Color.WHITE, space: (j, i))
+                    space = Space(color: .WHITE, space: (j, i))
                 }
                 space.position = positionOnBoard(j, y: i)
                 addChild(space)
@@ -110,12 +111,18 @@ class Board: SKNode {
         // remove piece from pieces array
         pieces[piece.boardSpace.0][piece.boardSpace.1] = nil
         
+        lastMoveSpace?.clearPrevMove()
+        lastMoveSpace = spaces[piece.boardSpace.1][piece.boardSpace.0]
+        print(piece.boardSpace)
+        lastMoveSpace?.prevMove()
+        
         // Check for capture
         let toIndex = (move.toIndex % 16, 7 - move.toIndex / 16)
         let pieceAtSpace = pieces[toIndex.0][toIndex.1]
         if pieceAtSpace != nil && pieceAtSpace != piece {
+            let value = pieceAtSpace!.getValue()
             pieceAtSpace!.removeFromParent()
-            screenShake(25)
+            screenShake(value)
         }
         
         // set piece at new location

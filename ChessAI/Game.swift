@@ -149,7 +149,7 @@ class Game: Equatable {
     func buildMove(from: Int, to: Int, promotionPiece: Kind?) -> GameMove {
         assert(board.get(from) != nil)
         
-        var flag = GameMove.Flag.NORMAL
+        var flag: GameMove.Flag = GameMove.Flag.NORMAL
 //        print("Building Move: from \(algebraic(from)) to \(algebraic(to))")
         let movingPiece = board.get(from)!
         let capturedPiece = board.get(to)
@@ -158,30 +158,30 @@ class Game: Equatable {
             if movingPiece.kind == Kind.PAWN {
                 if rank(to) == 1 || rank(to) == 8 {
                     // Pawn captured and needs to be promoted
-                    flag = GameMove.Flag.PAWN_PROMOTION_CAPTURE
+                    flag = .PAWN_PROMOTION_CAPTURE
                 } else {
                     // Pawn only captures
-                    flag = GameMove.Flag.CAPTURE
+                    flag = .CAPTURE
                 }
             } else {
-                flag = GameMove.Flag.CAPTURE
+                flag = .CAPTURE
             }
-        } else if movingPiece.kind == Kind.KING { // Handle castling
+        } else if movingPiece.kind == .KING { // Handle castling
             if file(from) == 5 && file(to) == 7 {
-                flag = GameMove.Flag.KINGSIDE_CASTLE
+                flag = .KINGSIDE_CASTLE
             } else if file(from) == 5 && file(to) == 3 {
-                flag = GameMove.Flag.QUEENSIDE_CASTLE
+                flag = .QUEENSIDE_CASTLE
             } else {
-                flag = GameMove.Flag.NORMAL
+                flag = .NORMAL
             }
             board.disableCastling(turn)
         } else if movingPiece.kind == .PAWN { // Handle PAWN_PROMOTION, PAWN_PUSH, and EN_PASSANT
             if rank(to) == 1 || rank(to) == 8 {
-                flag = GameMove.Flag.PAWN_PROMOTION
+                flag = .PAWN_PROMOTION
             } else if rank(to) == rank(from) + 2 || rank(to) == rank(from) - 2 {
-                flag = GameMove.Flag.PAWN_PUSH
+                flag = .PAWN_PUSH
             } else if file(to) != file(from) {
-                flag = GameMove.Flag.EN_PASSANT
+                flag = .EN_PASSANT
             }
         }
         let move = GameMove(side: turn, fromIndex: from, toIndex: to, flag: flag, promotionPiece: promotionPiece, capturedPiece: capturedPiece)
@@ -376,7 +376,7 @@ class Game: Equatable {
         var legalMoves = Array<GameMove>()
         for var i = 0; i < moves.count; i++ {
             makeMove(moves[i])
-            if !kingAttacked(us) {
+            if !inCheck(us) {
                 legalMoves.append(moves[i])
             }
             undoMove()
@@ -434,7 +434,7 @@ class Game: Equatable {
         return [fen, String(turn), cflags, epflags, halfMoves, moveNumber].componentsJoinedByString(" ")
     }
     
-    func kingAttacked(side: Side) -> Bool {
+    func inCheck(side: Side) -> Bool {
         return attacked(swapColor(side), square: kings[side]!)
     }
     
@@ -666,18 +666,14 @@ class Game: Equatable {
         print("\n\n")
     }
     
-    func isGameOver() -> Bool {
-        let options = GameOptions()
-        options.legal = true
+    func inStatemate() -> Bool {
+        let moves = self.generateMoves(GameOptions())
+        return !inCheck(turn) && moves.count == 0
+    }
     
-        let moves = self.generateMoves(options)
-        if moves.count == 0 {
-            return true
-        }
-        
-        // TODO Add three-fold repetition check and insufficient material check
-        
-        return false
+    func inCheckmate() -> Bool {
+        let moves = self.generateMoves(GameOptions())
+        return inCheck(turn) && moves.count == 0
     }
     
 }

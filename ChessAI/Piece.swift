@@ -42,11 +42,22 @@ class Piece: SKSpriteNode {
             case .BISHOP: typeName = "B"
             case .PAWN:   typeName = "P"
         }
-        var color = "w"
-        if side == Side.BLACK { color = "b" }
+        let color = side == .BLACK ?"b" :"w"
         let texture = SKTexture(imageNamed: color + typeName)
         super.init(texture: texture, color: SKColor.clearColor(), size: texture.size())
         self.zPosition = ZPOSITION_INACTIVE_PIECE
+    }
+    
+    func getValue() -> Int {
+        switch kind {
+            case .KING:   return 120
+            case .QUEEN:  return 80
+            case .ROOK:   return 40
+            case .KNIGHT: return 25
+            case .BISHOP: return 25
+            case .PAWN:   return 15
+        }
+        
     }
     
     func setKind(kind: Kind) -> SKTexture {
@@ -59,8 +70,7 @@ class Piece: SKSpriteNode {
             case .BISHOP: typeName = "B"
             case .PAWN:   typeName = "P"
         }
-        var color = "w"
-        if side == .BLACK { color = "b" }
+        let color = side == .BLACK ?"b" :"w"
         self.kind = kind
         let texture = SKTexture(imageNamed: color + typeName)
         self.texture = texture
@@ -68,8 +78,10 @@ class Piece: SKSpriteNode {
     }
     
     func setSpace(x: Int, y: Int) {
-        position = CGPoint(x: CGFloat(x) * SPACE_WIDTH + HALF_SPACE_WIDTH,
+        
+        let position = CGPoint(x: CGFloat(x) * SPACE_WIDTH + HALF_SPACE_WIDTH,
                            y: CGFloat(y) * SPACE_WIDTH + HALF_SPACE_WIDTH)
+        runAction(SKAction.moveTo(position, duration: 0.2))
         boardSpace = (x, y)
     }
 

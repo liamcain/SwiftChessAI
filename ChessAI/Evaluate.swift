@@ -12,12 +12,12 @@ class Evaluate {
     
     // Claude Shannon(1949) values
     let PIECE_VALUES: [Kind:Int] = [
-        Kind.PAWN   : 100,
-        Kind.KNIGHT : 300,
-        Kind.BISHOP : 300,
-        Kind.ROOK   : 500,
-        Kind.QUEEN  : 900,
-        Kind.KING: 999999,
+        .PAWN   : 100,
+        .KNIGHT : 300,
+        .BISHOP : 300,
+        .ROOK   : 500,
+        .QUEEN  : 900,
+        .KING: 999999,
     ]
     
     // Larry Kaufman(2012) values

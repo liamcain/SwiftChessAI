@@ -86,7 +86,7 @@ class Search {
             for m in moves {
                 let child = node.game.copy()
                 child.makeMove(m)
-                if !child.kingAttacked(child.turn) {
+                if !child.inCheck(child.turn) {
                     let childNode = node.add(child, move: m)
                     eval.evaluateNode(childNode)
                     leafQueue.enqueue(childNode)
