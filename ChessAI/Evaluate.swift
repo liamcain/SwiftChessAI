@@ -79,105 +79,102 @@ class Evaluate {
         node.overallScore = node.material
     }
     
-    func evaluateGamePST(game: Game) -> Int {
-        var whiteScore = 0
-        var blackScore = 0
-        
-        let board = game.board
-        let first_sq = board.SQUARES["a8"]
-        let last_sq = board.SQUARES["h1"]
-        
-        for var i = first_sq!; i <= last_sq!; i++ {
-            if let piece = board.get(i) {
-                let num = self.convertPSTToInt(i)
-                switch piece.kind {
-                case Kind.PAWN:
-                    if piece.side == Side.WHITE {
-                        whiteScore += Evaluate.whitePawnPST[num]
-                    } else {
-                        blackScore += Evaluate.blackPawnPST[num]
-                    }
-                case Kind.KNIGHT:
-                    if piece.side == Side.WHITE {
-                        whiteScore += Evaluate.whiteKnightPST[num]
-                    } else {
-                        blackScore += Evaluate.blackKnightPST[num]
-                    }
-                case Kind.BISHOP:
-                    if piece.side == Side.WHITE {
-                        whiteScore += Evaluate.whiteBishopPST[num]
-                    } else {
-                        blackScore += Evaluate.blackBishopPST[num]
-                    }
-                case Kind.ROOK:
-                    if piece.side == Side.WHITE {
-                        whiteScore += Evaluate.whiteRookPST[num]
-                    } else {
-                        blackScore += Evaluate.blackRookPST[num]
-                    }
-                case Kind.QUEEN:
-                    if piece.side == Side.WHITE {
-                        whiteScore += Evaluate.whiteQueenPST[num]
-                    } else {
-                        blackScore += Evaluate.blackQueenPST[num]
-                    }
-                case Kind.KING:
-                    if piece.side == Side.WHITE {
-                        whiteScore += Evaluate.whiteKingPST[num]
-                    } else {
-                        blackScore += Evaluate.blackKingPST[num]
-                    }
-                }
+    func evaluatePiecePST(piece: GamePiece, num: Int) -> Int {
+        if piece.side == Side.WHITE {
+            switch piece.kind {
+            case Kind.PAWN:
+                return Evaluate.whitePawnPST[num]
+            case Kind.KNIGHT:
+                return Evaluate.whiteKnightPST[num]
+            case Kind.BISHOP:
+                return Evaluate.whiteBishopPST[num]
+            case Kind.ROOK:
+                return Evaluate.whiteRookPST[num]
+            case Kind.QUEEN:
+                return Evaluate.whiteQueenPST[num]
+            case Kind.KING:
+                return Evaluate.whiteKingPST[num]
+            }
+        } else {
+            switch piece.kind {
+            case Kind.PAWN:
+                return Evaluate.blackPawnPST[num]
+            case Kind.KNIGHT:
+                return Evaluate.blackKnightPST[num]
+            case Kind.BISHOP:
+                return Evaluate.blackBishopPST[num]
+            case Kind.ROOK:
+                return Evaluate.blackRookPST[num]
+            case Kind.QUEEN:
+                return Evaluate.blackQueenPST[num]
+            case Kind.KING:
+                return Evaluate.blackKingPST[num]
             }
         }
-        return whiteScore - blackScore
     }
     
-    func evaluateGameMaterial(game: Game) -> Int {
-        var whiteScore = 0
-        var blackScore = 0
-        var whiteBishops = 0
-        var blackBishops = 0
+    
+    func evaluateGame(game: Game) -> Int {
+        
+        // Score array layout:
+        // 0: Material sum
+        // 1: Piece-square tables (PST) sum
+        // 2: Number of bishops
+        // 3: Mobility Score
+        var whiteScore: [Int] = [0,0,0,0]
+        var blackScore: [Int] = [0,0,0,0]
         
         let board = game.board
-        let first_sq = board.SQUARES["a8"]
-        let last_sq = board.SQUARES["h1"]
         
-        for var i = first_sq!; i <= last_sq!; i++ {
+        // Loop through all of the pieces on the board
+        for var i = 0; i <= 119; i++ {
             if let piece = board.get(i) {
-                if piece.side == Side.BLACK {
-                    if piece.kind == .BISHOP {
-                        blackBishops += 1
-                    }
-                    blackScore += self.PIECE_VALUES[piece.kind]!
+                if piece.side == Side.WHITE {
+                    whiteScore[0] += self.PIECE_VALUES[piece.kind]! // Material
+                    whiteScore[1] += self.evaluatePiecePST(piece, num: self.convertBoardToPST(i)) // PST
                 } else {
-                    if piece.kind == .BISHOP {
-                        whiteBishops += 1
-                    }
-                    whiteScore += self.PIECE_VALUES[piece.kind]!
+                    blackScore[0] += self.PIECE_VALUES[piece.kind]! // Material
+                    blackScore[1] += self.evaluatePiecePST(piece, num: self.convertBoardToPST(i)) // PST
                 }
             }
             if i % 8 == 7 { i += 8 }
         }
-        if whiteBishops == 2 {
-            whiteScore += 50
-        }
-        if blackBishops == 2 {
-            blackScore += 50
-        }
         
-        return (whiteScore - blackScore)
         
-    }
-    func evaluateGame(game: Game) -> Int {
-        let material = self.evaluateGameMaterial(game)
-        let pst = self.evaluateGamePST(game)
-        return material + pst
+        // Add weight to PST
+        whiteScore[1] *= 3
+        blackScore[1] *= 3
+        
+        // Award points for having both bishops
+        whiteScore[2] = whiteScore[2] >= 2 ? 50 : 0
+        blackScore[2] = blackScore[2] >= 2 ? 50 : 0
+        
+        // Account for mobility
+        //let options = GameOptions()
+        //options.legal = false
+        //if game.turn == .WHITE {
+        //    whiteScore[3] = game.generateMoves(options).count * 5
+        //    game.turn = .BLACK
+        //    blackScore[3] = game.generateMoves(options).count * 5
+        //    game.turn = .WHITE
+        //} else {
+        //    blackScore[3] = game.generateMoves(options).count * 5
+        //    game.turn = .WHITE
+        //    whiteScore[3] = game.generateMoves(options).count * 5
+        //    game.turn = .BLACK
+        //
+        //}
+        
+        // Take the array and calculate the final score
+        let whiteFinalScore = whiteScore.reduce(0, combine: +)
+        let blackFinalScore = blackScore.reduce(0, combine: +)
+        
+        // Return the final scores
+        return whiteFinalScore - blackFinalScore
     }
     
-    
-    func convertPSTToInt(num: Int) -> Int {
-        return ((num / 16) / 8) + (num % 8) // No, you cant simplify to (num/2) because rounding
+    func convertBoardToPST(num: Int) -> Int {
+        return ((num / 16) * 8) + (num % 8) // No, you cant simplify to (num/2) because rounding
     }
     
     // Pawn piece-square table
