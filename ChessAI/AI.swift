@@ -21,8 +21,6 @@ class AI: Player {
         if let move = brain.nextMove {
             makeMove(move)
             brain.nextMove = nil
-        } else {
-            print("No next move")
         }
     }
     

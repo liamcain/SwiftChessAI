@@ -53,10 +53,22 @@ class Board: SKNode {
     func inCheck(enable: Bool) {
         for row in spaces {
             for s in row {
-                if enable {
-                    s.lightFlash()
-                } else {
-                    s.resetColor()
+                if s != lastMoveFrom && s != lastMoveTo {
+                    if enable {
+                        s.lightFlash()
+                    } else {
+                        s.resetColor()
+                    }
+                }
+            }
+        }
+    }
+    
+    func inStalemate() {
+        for row in spaces {
+            for s in row {
+                if s.bColor == .BLACK {
+                    s.color = BOARD_GREY
                 }
             }
         }
@@ -155,10 +167,10 @@ class Board: SKNode {
         piece.setSpace(toIndex.0, y: toIndex.1)
         
         
-        if move.flag == GameMove.Flag.EN_PASSANT {
+        if move.flag == .EN_PASSANT {
             enPassant(move.side, square: move.epSquare)
-        } else if move.flag == GameMove.Flag.PAWN_PROMOTION
-               && move.flag == GameMove.Flag.PAWN_PROMOTION_CAPTURE {
+        } else if move.flag == .PAWN_PROMOTION
+               || move.flag == .PAWN_PROMOTION_CAPTURE {
                 promotePawn(move.side, square:move.toIndex, promotionPiece:move.promotionPiece!)
         }
     }

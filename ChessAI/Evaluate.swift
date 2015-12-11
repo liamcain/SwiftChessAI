@@ -128,6 +128,10 @@ class Evaluate {
         
         // Loop through all of the pieces on the board
         for var i = 0; i <= 119; i++ {
+            if (i & 0x88 > 0) {
+                i += 7
+                continue
+            }
             if let piece = board.get(i) {
                 if piece.side == Side.WHITE {
                     whiteScore[0] += self.PIECE_VALUES[piece.kind]! // Material
@@ -137,7 +141,7 @@ class Evaluate {
                     blackScore[1] += self.evaluatePiecePST(piece, num: self.convertBoardToPST(i)) // PST
                 }
             }
-            if i % 8 == 7 { i += 8 }
+//            if i % 8 == 7 { i += 8 }
         }
         
         

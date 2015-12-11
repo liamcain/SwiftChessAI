@@ -28,7 +28,7 @@ class Bencarle {
         }
 //        let timeForTurn = calculateTimeForTurn()
         
-        let priority = DISPATCH_QUEUE_PRIORITY_DEFAULT
+        let priority = DISPATCH_QUEUE_PRIORITY_HIGH
         dispatch_async(dispatch_get_global_queue(priority, 0)) {
             self.search.alphaBetaSearch(self.search.game.copy(), depth: self.search.maxDepth, alpha: -999999, beta: 999999)
             // self.search.alphaBetaSearch(self.search.root, depth: 3, alpha: -999999, beta: 999999)

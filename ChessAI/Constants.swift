@@ -23,6 +23,7 @@ let BOARD_BLACK = SKColor(red: 0, green: 0.6, blue: 0.83, alpha: 1.0)
 let BOARD_BLACK_HIGHLIGHT = SKColor(red: 0, green: 0.46, blue: 0.68, alpha: 1.0)
 let BOARD_WHITE = SKColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
 let BOARD_WHITE_HIGHLIGHT = SKColor(red: 0.86, green: 0.92, blue: 1.0, alpha: 1.0)
+let BOARD_GREY = SKColor(red: 0.6, green: 0.6, blue: 0.6, alpha: 1.0)
 
 enum Kind {
     case KING

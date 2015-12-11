@@ -241,26 +241,9 @@ class Game: Equatable {
         let them = (us == Side.WHITE) ? Side.BLACK : Side.WHITE
         let secondRank = [Side.BLACK: RANK_7, Side.WHITE: RANK_2]
         
-//        let firstSq = board.SQUARES["a8"]
-//        let lastSq = board.SQUARES["h1"]
-//        var single_square = false
-        
         /* do we want legal moves? */
         let legal = options.legal != nil ?options.legal! :true
         
-        /* are we generating moves for a single square? */
-//        if options.legal != nil {
-//            if options.square != nil {
-//                first_sq = board.SQUARES[options.square!]!
-//                last_sq = board.SQUARES[options.square!]!
-//                single_square = true
-//            } else {
-//                /* invalid square */
-//                return []
-//            }
-//        }
-        
-//        for var i = firstSq!; i <= lastSq!; i++ {
         for var i = 0; i < 120; i++ {
             /* did we run off the end of the board */
             if i & 0x88 > 0 {
@@ -393,7 +376,6 @@ class Game: Equatable {
         var empty = 0
         var fen = ""
         
-//        for var i = board.SQUARES["a8"]!; i <= board.SQUARES["h1"]!; i++ {
         for var i = 0; i < 120; i++ {
             if (board.get(i) == nil) {
                 empty++
@@ -442,7 +424,6 @@ class Game: Equatable {
     }
     
     func attacked(color: Side, square: Int) -> Bool {
-//        for var i = board.SQUARES["a8"]!; i <= board.SQUARES["h1"]!; i++ {
         for var i = 0; i < 120; i++ {
             
             /* did we run off the end of the board */

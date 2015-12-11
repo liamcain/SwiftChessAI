@@ -29,6 +29,10 @@ class Player {
         return isTurn && game.copy().inCheckmate()
     }
     
+    func stalemate() -> Bool {
+        return isTurn && game.copy().inStatemate()
+    }
+    
     func inCheck() -> Bool {
         return isTurn && game.copy().inCheck(game.turn)
     }
@@ -43,6 +47,8 @@ class Player {
         
         if lost() {
             board.inCheckmate()
+        } else if stalemate() {
+            board.inStalemate()
         } else {
             board.inCheck(inCheck())
         }
