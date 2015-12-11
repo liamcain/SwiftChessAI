@@ -126,7 +126,7 @@ class Search {
             print("leaf score: " + String(node.overallScore!))
             return node.overallScore!
         }
-        var score: Int = self.side == .WHITE ? -999999 : 999999
+        var score: Int = self.side == .WHITE ? -INFINITY: INFINITY
         for child in node.children {
             let current = alphaBetaSearch(child, depth: depth-1, alpha: alpha, beta: beta)
             

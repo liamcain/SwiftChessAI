@@ -31,7 +31,7 @@ class SingleThreadedSearch {
             return eval.evaluateGame(game)
         }
         let minimize = game.turn == .BLACK
-        var value: Int = minimize ? 999999 : -999999
+        var value: Int = minimize ? INFINITY : -INFINITY
         let options = GameOptions()
         options.legal = false // false // for efficiency
         
