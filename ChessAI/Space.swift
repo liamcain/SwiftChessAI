@@ -29,9 +29,9 @@ class Space: SKSpriteNode {
         
         self.colorBlendFactor = 1.0
         if bColor == .BLACK {
-            self.color = SKColor(red: 0, green: 0.6, blue: 0.83, alpha: 1.0)
+            self.color = BOARD_BLACK
         } else {
-            self.color = SKColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+            self.color = BOARD_WHITE
         }
         self.zPosition = ZPOSITION_BOARD_SPACE
         addChild(highlight)
@@ -43,26 +43,45 @@ class Space: SKSpriteNode {
     
     func prevMove() {
         if bColor == .BLACK {
-            self.color = SKColor(red: 0, green: 0.46, blue: 0.68, alpha: 1.0)
+            self.color = BOARD_BLACK_HIGHLIGHT
         } else {
-            self.color = SKColor(red: 0.86, green: 0.92, blue: 1.0, alpha: 1.0)
+            self.color = BOARD_WHITE_HIGHLIGHT
         }
     }
     
     func clearPrevMove() {
         if bColor == .BLACK {
-            self.color = SKColor(red: 0, green: 0.6, blue: 0.83, alpha: 1.0)
+            self.color = BOARD_BLACK
         } else {
-            self.color = SKColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+            self.color = BOARD_WHITE
         }
     }
     
-    func validMove(){
+    func validMove() {
         highlight.hidden = false
     }
     
-    func invalidMove(){
+    func invalidMove() {
         highlight.hidden = true
+    }
+    
+    func flash() {
+        let speed = 0.2
+        let waitTime = 0.2
+        
+        if bColor == .BLACK {
+            let on = SKAction.colorizeWithColor(BOARD_WHITE, colorBlendFactor: 1.0, duration: speed)
+            let off = SKAction.colorizeWithColor(BOARD_BLACK,   colorBlendFactor: 1.0, duration: speed)
+            let wait = SKAction.waitForDuration(waitTime)
+            let seq = SKAction.sequence([on, wait, off, wait])
+            runAction(SKAction.repeatActionForever(seq))
+        } else {
+            let on = SKAction.colorizeWithColor(BOARD_BLACK,   colorBlendFactor: 1.0, duration: speed)
+            let off = SKAction.colorizeWithColor(BOARD_WHITE, colorBlendFactor: 1.0, duration: speed)
+            let wait = SKAction.waitForDuration(waitTime)
+            let seq = SKAction.sequence([on, wait, off, wait])
+            runAction(SKAction.repeatActionForever(seq))
+        }
     }
 
 }

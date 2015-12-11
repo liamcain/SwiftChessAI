@@ -25,6 +25,10 @@ class Player {
         isTurn = false
     }
     
+    func lost() -> Bool {
+        return isTurn && game.inCheckmate()
+    }
+    
     func makeMove(move: GameMove) {
         opponent?.handleMove(move)
         isTurn = false
@@ -32,6 +36,10 @@ class Player {
     
     func handleMove(move: GameMove?) {
         isTurn = true
+        
+//        if lost() {
+//            board.inCheckmate()
+//        }
     }
     
     func update() { }

@@ -41,6 +41,14 @@ class Board: SKNode {
         reset()
     }
     
+    func inCheckmate() {
+        for row in spaces {
+            for s in row {
+                s.flash()
+            }
+        }
+    }
+    
     func enPassant(turn: Side, square: Int?) {
         if square != nil && square > -1 {
             var piece: Piece
@@ -225,7 +233,7 @@ class Board: SKNode {
         for i in 0...7 {
             for j in 0...7 {
                 if let piece = pieces[i][j] {
-                    piece.setSpace(i, y: j)
+                    piece.setSpace(i, y: j, animated: false)
                     addChild(piece)
                 }
             }

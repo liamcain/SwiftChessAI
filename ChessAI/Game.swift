@@ -341,6 +341,7 @@ class Game: Equatable {
         */
 //        if /*!single_square*/ false || lastSq == kings[us] {
             /* king-side castling */
+        
         if castling[us] == GameMove.Flag.KINGSIDE_CASTLE.rawValue {
             let castlingFrom = kings[us]!
             let castlingTo = castlingFrom + 2
@@ -359,12 +360,15 @@ class Game: Equatable {
             let castlingFrom = kings[us]
             let castlingTo = castlingFrom! - 2
             
-            if board.get(castlingFrom! - 1) == nil && board.get(castlingFrom! - 2) == nil && board.get(castlingFrom! - 3) == nil && !attacked(them, square: kings[us]!) && !attacked(them, square: castlingFrom! - 1) && !attacked(them, square: castlingTo) {
+            if board.get(castlingFrom! - 1) == nil && board.get(castlingFrom! - 2) == nil
+                && board.get(castlingFrom! - 3) == nil
+                && !attacked(them, square: kings[us]!)
+                && !attacked(them, square: castlingFrom! - 1)
+                && !attacked(them, square: castlingTo) {
                 addMove(kings[us]!, to: castlingTo)
             }
         }
-//        }
-        
+    
         /* return all pseudo-legal moves (this includes moves that allow the king
         * to be captured)
         */
@@ -439,7 +443,9 @@ class Game: Equatable {
     }
     
     func attacked(color: Side, square: Int) -> Bool {
-        for var i = board.SQUARES["a8"]!; i <= board.SQUARES["h1"]!; i++ {
+//        for var i = board.SQUARES["a8"]!; i <= board.SQUARES["h1"]!; i++ {
+        for var i = 0; i < 120; i++ {
+            
             /* did we run off the end of the board */
             if (i & 0x88 > 0) {
                 i += 7

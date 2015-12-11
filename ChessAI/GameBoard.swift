@@ -47,7 +47,7 @@ class GameBoard {
         20, 0, 0, 0, 0, 0, 0,24,  0, 0, 0, 0, 0, 0,20
     ];
     
-    var RAYS = [
+    let RAYS = [
         17,  0,  0,  0,  0,  0,  0, 16,  0,  0,  0,  0,  0,  0, 15, 0,
         0,  17,  0,  0,  0,  0,  0, 16,  0,  0,  0,  0,  0, 15,  0, 0,
         0,   0, 17,  0,  0,  0,  0, 16,  0,  0,  0,  0, 15,  0,  0, 0,
@@ -65,12 +65,13 @@ class GameBoard {
         -15,  0, 0,  0,  0,  0, 0, -16,  0,  0,  0,  0,  0,  0, -17
     ];
     
-    var SHIFTS = [ Kind.PAWN:   0,
-                   Kind.KNIGHT: 1,
-                   Kind.BISHOP: 2,
-                   Kind.ROOK:   3,
-                   Kind.QUEEN:  4,
-                   Kind.KING:   5 ]
+    let SHIFTS = [
+        Kind.PAWN:   0,
+        Kind.KNIGHT: 1,
+        Kind.BISHOP: 2,
+        Kind.ROOK:   3,
+        Kind.QUEEN:  4,
+        Kind.KING:   5 ]
     
     init(){
         whiteQueensideCastle = true

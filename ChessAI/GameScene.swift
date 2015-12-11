@@ -12,7 +12,12 @@ func == (left:(Int, Int), right: (Int, Int)) -> Bool {
     return left.0 == right.0 && left.1 == right.1
 }
 
-class GameScene: SKScene {
+protocol ChessGameDelegate {
+    func gameDidCheckmate()
+    func gameDidStatemate()
+}
+
+class GameScene: SKScene, ChessGameDelegate {
     
     var board: Board = Board()
     var game: Game = Game()
@@ -72,4 +77,8 @@ class GameScene: SKScene {
     override func update(currentTime: CFTimeInterval) {
         currentPlayer().update()
     }
+    
+    func gameDidCheckmate() { }
+    
+    func gameDidStatemate() { }
 }

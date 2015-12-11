@@ -14,20 +14,6 @@ class Piece: SKSpriteNode {
     var kind: Kind
     var boardSpace: (Int, Int)
     
-//    enum Type {
-//        case KING
-//        case QUEEN
-//        case ROOK
-//        case KNIGHT
-//        case BISHOP
-//        case PAWN
-//    }
-//    
-//    enum Side {
-//        case WHITE
-//        case BLACK
-//    }
-    
     init(side: Side, kind: Kind, space: (Int, Int)) {
         self.side = side
         self.kind = kind
@@ -57,7 +43,6 @@ class Piece: SKSpriteNode {
             case .BISHOP: return 25
             case .PAWN:   return 15
         }
-        
     }
     
     func setKind(kind: Kind) -> SKTexture {
@@ -77,11 +62,14 @@ class Piece: SKSpriteNode {
         return texture
     }
     
-    func setSpace(x: Int, y: Int) {
-        
-        let position = CGPoint(x: CGFloat(x) * SPACE_WIDTH + HALF_SPACE_WIDTH,
-                           y: CGFloat(y) * SPACE_WIDTH + HALF_SPACE_WIDTH)
-        runAction(SKAction.moveTo(position, duration: 0.2))
+    func setSpace(x: Int, y: Int, animated:Bool?=true) {
+            let position = CGPoint(x: CGFloat(x) * SPACE_WIDTH + HALF_SPACE_WIDTH,
+                y: CGFloat(y) * SPACE_WIDTH + HALF_SPACE_WIDTH)
+        if animated == nil || animated! {
+            runAction(SKAction.moveTo(position, duration: 0.2))
+        } else {
+            self.position = position
+        }
         boardSpace = (x, y)
     }
 
