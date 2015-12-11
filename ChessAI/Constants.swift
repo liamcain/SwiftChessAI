@@ -9,8 +9,8 @@
 import SpriteKit
 
 let MAX_SEARCH_DEPTH  = 3
-let MOBILITY_WEIGHT   = 3
-let PST_WEIGHT        = 2
+let MOBILITY_WEIGHT   = 5
+let PST_WEIGHT        = 3
 let BISHOP_PAIR_VALUE = 2
 let INFINITY          = 999999
 

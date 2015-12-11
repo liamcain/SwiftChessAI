@@ -126,6 +126,15 @@ class Evaluate {
         
         let board = game.board
         
+        
+        if game.inCheckmate() {
+            if game.turn == .WHITE {
+                return -INFINITY
+            } else {
+                return INFINITY
+            }
+        }
+        
         // Loop through all of the pieces on the board
         for var i = 0; i <= 119; i++ {
             if (i & 0x88 > 0) {

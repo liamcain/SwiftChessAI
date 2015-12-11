@@ -28,8 +28,8 @@ class GameScene: SKScene, ChessGameDelegate {
         
         game.reset()
         let human = Human(side: .WHITE, board: board, game: game)
-//        let ai    =    AI(side: .BLACK, board: board, game: game)
-        let ai    =    Human(side: .BLACK, board: board, game: game)
+        let ai    =    AI(side: .BLACK, board: board, game: game)
+//        let ai    =    Human(side: .BLACK, board: board, game: game)
         players   = [.WHITE: human, .BLACK: ai]
         
         human.opponent = ai
