@@ -17,7 +17,7 @@ class Evaluate {
         .BISHOP : 300,
         .ROOK   : 500,
         .QUEEN  : 900,
-        .KING: 999999,
+        .KING   : 0,
     ]
     
     // Larry Kaufman(2012) values
@@ -119,7 +119,7 @@ class Evaluate {
         // Score array layout:
         // 0: Material sum
         // 1: Piece-square tables (PST) sum
-        // 2: Number of bishops
+        // 2: Number of bishops (to calculate bishop pair)
         // 3: Mobility Score
         var whiteScore: [Int] = [0,0,0,0]
         var blackScore: [Int] = [0,0,0,0]
@@ -136,9 +136,15 @@ class Evaluate {
                 if piece.side == Side.WHITE {
                     whiteScore[0] += self.PIECE_VALUES[piece.kind]! // Material
                     whiteScore[1] += self.evaluatePiecePST(piece, num: self.convertBoardToPST(i)) // PST
+                    if piece.kind == .BISHOP {
+                        whiteScore[2] += 1
+                    }
                 } else {
                     blackScore[0] += self.PIECE_VALUES[piece.kind]! // Material
                     blackScore[1] += self.evaluatePiecePST(piece, num: self.convertBoardToPST(i)) // PST
+                    if piece.kind == .BISHOP {
+                        blackScore[2] += 1
+                    }
                 }
             }
         }
@@ -149,8 +155,8 @@ class Evaluate {
         blackScore[1] *= PST_WEIGHT
         
         // Award points for having both bishops
-        whiteScore[2] = whiteScore[2] >= 2 ? 50 : 0
-        blackScore[2] = blackScore[2] >= 2 ? 50 : 0
+        whiteScore[2] = whiteScore[2] >= 2 ? BISHOP_PAIR_VALUE : 0
+        blackScore[2] = blackScore[2] >= 2 ? BISHOP_PAIR_VALUE : 0
         
 //         Account for mobility
         let options = GameOptions()

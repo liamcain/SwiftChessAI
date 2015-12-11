@@ -8,9 +8,10 @@
 
 import SpriteKit
 
-let MAX_SEARCH_DEPTH = 3
-let MOBILITY_WEIGHT  = 3
-let PST_WEIGHT       = 2
+let MAX_SEARCH_DEPTH       = 3
+let MOBILITY_WEIGHT        = 3
+let PST_WEIGHT             = 2
+let BISHOP_PAIR_VALUE      = 2
 
 let SPACE_WIDTH      = CGFloat(100)
 let HALF_SPACE_WIDTH = CGFloat(50)

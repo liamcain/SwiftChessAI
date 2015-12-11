@@ -14,14 +14,12 @@ class SingleThreadedSearch {
     var game: Game
     var bestMove: GameMove?
     var side: Side
-    var maxDepth: Int
     
     init(game: Game, side: Side){
         eval = Evaluate()
         bestMove = nil
         self.side = side
         self.game = game
-        self.maxDepth = MAX_SEARCH_DEPTH
     }
     
     func getBestMove() -> GameMove {
@@ -52,7 +50,7 @@ class SingleThreadedSearch {
                 }
                 if value < beta {
                     beta = value
-                    if depth == maxDepth {
+                    if depth == MAX_SEARCH_DEPTH {
                         bestMove = move
                     }
                 }
@@ -67,7 +65,7 @@ class SingleThreadedSearch {
                 }
                 if value > alpha {
                     alpha = value
-                    if depth == maxDepth {
+                    if depth == MAX_SEARCH_DEPTH {
                         bestMove = move
                     }
                 }
