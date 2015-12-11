@@ -99,13 +99,13 @@ class Space: SKSpriteNode {
         
         if bColor == .BLACK {
             let on   = SKAction.colorizeWithColor(BOARD_BLACK_HIGHLIGHT, colorBlendFactor: 1.0, duration: speed)
-            let off  = SKAction.colorizeWithColor(BOARD_BLACK, colorBlendFactor: 1.0, duration: speed)
+            let off  = SKAction.colorizeWithColor(BOARD_BLACK,           colorBlendFactor: 1.0, duration: speed)
             let wait = SKAction.waitForDuration(waitTime)
             let seq  = SKAction.sequence([on, wait, off, wait])
             runAction(SKAction.repeatActionForever(seq))
         } else {
             let on   = SKAction.colorizeWithColor(BOARD_WHITE_HIGHLIGHT, colorBlendFactor: 1.0, duration: speed)
-            let off  = SKAction.colorizeWithColor(BOARD_WHITE, colorBlendFactor: 1.0, duration: speed)
+            let off  = SKAction.colorizeWithColor(BOARD_WHITE,           colorBlendFactor: 1.0, duration: speed)
             let wait = SKAction.waitForDuration(waitTime)
             let seq  = SKAction.sequence([on, wait, off, wait])
             runAction(SKAction.repeatActionForever(seq))

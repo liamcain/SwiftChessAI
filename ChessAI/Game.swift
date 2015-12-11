@@ -156,7 +156,8 @@ class Game: Equatable {
         
         if capturedPiece != nil {
             if movingPiece.kind == Kind.PAWN {
-                if rank(to) == 1 || rank(to) == 8 {
+//                if rank(to) == 1 || rank(to) == 8 {
+                if rank(to) == 0 || rank(to) == 7 {
                     // Pawn captured and needs to be promoted
                     flag = .PAWN_PROMOTION_CAPTURE
                 } else {
@@ -176,7 +177,8 @@ class Game: Equatable {
             }
             board.disableCastling(turn)
         } else if movingPiece.kind == .PAWN { // Handle PAWN_PROMOTION, PAWN_PUSH, and EN_PASSANT
-            if rank(to) == 1 || rank(to) == 8 {
+//            if rank(to) == 1 || rank(to) == 8 {
+            if rank(to) == 0 || rank(to) == 7 {
                 flag = .PAWN_PROMOTION
             } else if rank(to) == rank(from) + 2 || rank(to) == rank(from) - 2 {
                 flag = .PAWN_PUSH
@@ -229,9 +231,9 @@ class Game: Equatable {
             /* if pawn promotion */
             if board.get(from)?.kind == .PAWN && (rank(to) == RANK_8 || rank(to) == RANK_1) {
                 moves.append(buildMove(from, to: to, promotionPiece: .QUEEN));
-                moves.append(buildMove(from, to: to, promotionPiece: .ROOK));
-                moves.append(buildMove(from, to: to, promotionPiece: .KNIGHT));
-                moves.append(buildMove(from, to: to, promotionPiece: .BISHOP));
+//                moves.append(buildMove(from, to: to, promotionPiece: .ROOK));
+//                moves.append(buildMove(from, to: to, promotionPiece: .KNIGHT));
+//                moves.append(buildMove(from, to: to, promotionPiece: .BISHOP));
             } else {
                 moves.append(buildMove(from, to: to, promotionPiece: nil))
             }
@@ -505,7 +507,7 @@ class Game: Equatable {
         }
         board.set(move.toIndex, piece: nil)
         
-        if move.flag == GameMove.Flag.CAPTURE {
+        if move.flag == .CAPTURE {
             board.set(move.toIndex, piece: GamePiece(side: them, kind: move.capturedPiece!.kind))
         } else if move.flag == GameMove.Flag.EN_PASSANT {
             var index: Int
@@ -518,13 +520,13 @@ class Game: Equatable {
         }
         
         
-        if move.flag == GameMove.Flag.KINGSIDE_CASTLE || move.flag == GameMove.Flag.QUEENSIDE_CASTLE {
+        if move.flag == .KINGSIDE_CASTLE || move.flag == .QUEENSIDE_CASTLE {
             var castlingTo: Int?
             var castlingFrom: Int?
-            if move.flag == GameMove.Flag.KINGSIDE_CASTLE {
+            if move.flag == .KINGSIDE_CASTLE {
                 castlingTo = move.toIndex + 1
                 castlingFrom = move.toIndex - 1
-            } else if move.flag == GameMove.Flag.QUEENSIDE_CASTLE {
+            } else if move.flag == .QUEENSIDE_CASTLE {
                 castlingTo = move.toIndex - 2
                 castlingFrom = move.toIndex + 1
             }
@@ -558,8 +560,8 @@ class Game: Equatable {
         let piece = board.get(move.toIndex)
         
         /* if pawn promotion, replace with new piece */
-        if move.flag == GameMove.Flag.PAWN_PROMOTION {
-            board.set(move.toIndex, piece: GamePiece(side: us, kind: piece!.kind))
+        if move.flag == .PAWN_PROMOTION || move.flag == .PAWN_PROMOTION_CAPTURE {
+            board.set(move.toIndex, piece: GamePiece(side: us, kind: move.promotionPiece!))
         }
         
         /* if we moved the king */
@@ -567,12 +569,12 @@ class Game: Equatable {
             kings[piece!.side] = move.toIndex
             
             /* if we castled, move the rook next to the king */
-            if move.flag == GameMove.Flag.KINGSIDE_CASTLE {
+            if move.flag == .KINGSIDE_CASTLE {
                 let castlingTo = move.toIndex - 1
                 let castlingFrom = move.toIndex + 1
                 board.set(castlingTo, piece: board.get(castlingFrom))
                 board.set(castlingFrom, piece: nil)
-            } else if move.flag == GameMove.Flag.QUEENSIDE_CASTLE {
+            } else if move.flag == .QUEENSIDE_CASTLE {
                 let castlingTo = move.toIndex + 1
                 let castlingFrom = move.toIndex - 2
                 board.set(castlingTo, piece: board.get(castlingFrom))

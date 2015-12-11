@@ -102,7 +102,7 @@ class Board: SKNode {
     }
     
     func promotePawn(side: Side, square: Int, promotionPiece: Kind) {
-        let space = locate(square - 16)
+        let space = locate(square)
         let piece = pieces[space.0][space.1]
         piece?.setKind(promotionPiece)
     }

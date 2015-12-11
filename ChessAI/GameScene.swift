@@ -28,7 +28,8 @@ class GameScene: SKScene, ChessGameDelegate {
         
         game.reset()
         let human = Human(side: .WHITE, board: board, game: game)
-        let ai    =    AI(side: .BLACK, board: board, game: game)
+//        let ai    =    AI(side: .BLACK, board: board, game: game)
+        let ai    =    Human(side: .BLACK, board: board, game: game)
         players   = [.WHITE: human, .BLACK: ai]
         
         human.opponent = ai
@@ -38,8 +39,7 @@ class GameScene: SKScene, ChessGameDelegate {
     
     func undo() {
         game.undoMove()
-        board.clearBoard()
-        board.updateFromFEN(game.generateFen())
+        loadFEN(game.generateFen())
     }
     
     func reset(){
@@ -48,6 +48,19 @@ class GameScene: SKScene, ChessGameDelegate {
         players![.WHITE]?.isTurn = true
         players![.WHITE]?.handleMove(nil)
         
+    }
+    
+    func loadFEN(fen: String) {
+        game.loadFromFen(fen)
+        board.clearBoard()
+        board.updateFromFEN(game.generateFen())
+        if game.turn == .BLACK {
+            players![.BLACK]?.handleMove(nil)
+            players![.WHITE]?.isTurn = false
+        } else {
+            players![.WHITE]?.handleMove(nil)
+            players![.BLACK]?.isTurn = false
+        }
     }
     
     func currentPlayer() -> Player {

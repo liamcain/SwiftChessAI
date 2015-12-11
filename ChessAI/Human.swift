@@ -29,6 +29,15 @@ class Human: Player {
         super.makeMove(move)
     }
     
+    func correspondingMove(move: GameMove) -> GameMove? {
+        for legalMove in legalMoves {
+            if move == legalMove {
+                return legalMove
+            }
+        }
+        return nil
+    }
+    
     override func mouseUp() {
         if activePiece == nil { return }
         
@@ -49,8 +58,8 @@ class Human: Player {
         }
         
         let move = game.buildMove(currentSpace, toPosition:nextSpace, promotionPiece: nil)
-        if legalMoves.contains(move) {
-            makeMove(move)
+        if let correspondingMove = correspondingMove(move) {
+            makeMove(correspondingMove)
         } else {
             board.snapback(activePiece!)
         }

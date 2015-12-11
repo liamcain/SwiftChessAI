@@ -45,11 +45,31 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let edit = NSMenu.init(title: "Edit")
         edit.addItemWithTitle("Undo", action: Selector("undo"), keyEquivalent: "z")
         edit.addItemWithTitle("Reset", action: Selector("reset"), keyEquivalent: "r")
+        edit.addItemWithTitle("Copy FEN", action: Selector("copyfen"), keyEquivalent: "c")
+        edit.addItemWithTitle("Paste FEN", action: Selector("pastefen"), keyEquivalent: "v")
         
         let editHeading = menuBar.addItemWithTitle("", action: nil, keyEquivalent: "")
         editHeading?.submenu = edit
         
         NSApp.mainMenu = menuBar
+    }
+    
+    func pastefen() {
+        let pasteboard = NSPasteboard.generalPasteboard()
+        if pasteboard.canReadObjectForClasses([NSString.self], options:nil) {
+            if let strings = pasteboard.readObjectsForClasses([NSString.self], options:nil) as? Array<String> {
+                for s in strings {
+                    currentScene?.loadFEN(s)
+                    break
+                }
+            }
+        }
+    }
+    
+    func copyfen() {
+        let pasteboard = NSPasteboard.generalPasteboard()
+        pasteboard.clearContents()
+        pasteboard.setString(currentScene!.game.generateFen(), forType: NSPasteboardTypeString)
     }
     
     func undo() {
