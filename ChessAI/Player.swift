@@ -26,7 +26,11 @@ class Player {
     }
     
     func lost() -> Bool {
-        return isTurn && game.inCheckmate()
+        return isTurn && game.copy().inCheckmate()
+    }
+    
+    func inCheck() -> Bool {
+        return isTurn && game.copy().inCheck(game.turn)
     }
     
     func makeMove(move: GameMove) {
@@ -37,9 +41,11 @@ class Player {
     func handleMove(move: GameMove?) {
         isTurn = true
         
-//        if lost() {
-//            board.inCheckmate()
-//        }
+        if lost() {
+            board.inCheckmate()
+        } else {
+            board.inCheck(inCheck())
+        }
     }
     
     func update() { }

@@ -15,20 +15,6 @@ func == (lhs: GamePiece, rhs: GamePiece) -> Bool {
 
 class GamePiece: CustomStringConvertible, Equatable {
     
-//    enum Kind: String {
-//        case KING = "k"
-//        case QUEEN = "q"
-//        case ROOK = "r"
-//        case KNIGHT = "n"
-//        case BISHOP = "b"
-//        case PAWN = "p"
-//    }
-//    
-//    enum Side {
-//        case WHITE
-//        case BLACK
-//    }
-    
     var side: Side
     var kind: Kind
     var description: String {

@@ -8,6 +8,8 @@
 
 import SpriteKit
 
+let MAX_SEARCH_DEPTH = 3
+
 let SPACE_WIDTH = CGFloat(100)
 let HALF_SPACE_WIDTH = CGFloat(50)
 let FULL_BOARD_WIDTH = CGFloat(800)

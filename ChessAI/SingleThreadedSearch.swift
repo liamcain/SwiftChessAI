@@ -21,7 +21,7 @@ class SingleThreadedSearch {
         bestMove = nil
         self.side = side
         self.game = game
-        self.maxDepth = 5
+        self.maxDepth = MAX_SEARCH_DEPTH
     }
     
     func getBestMove() -> GameMove {

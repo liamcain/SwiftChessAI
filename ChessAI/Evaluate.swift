@@ -142,28 +142,28 @@ class Evaluate {
         
         
         // Add weight to PST
-        whiteScore[1] *= 3
-        blackScore[1] *= 3
+//        whiteScore[1] *= 3
+//        blackScore[1] *= 3
         
         // Award points for having both bishops
         whiteScore[2] = whiteScore[2] >= 2 ? 50 : 0
         blackScore[2] = blackScore[2] >= 2 ? 50 : 0
         
-        // Account for mobility
-        //let options = GameOptions()
-        //options.legal = false
-        //if game.turn == .WHITE {
-        //    whiteScore[3] = game.generateMoves(options).count * 5
-        //    game.turn = .BLACK
-        //    blackScore[3] = game.generateMoves(options).count * 5
-        //    game.turn = .WHITE
-        //} else {
-        //    blackScore[3] = game.generateMoves(options).count * 5
-        //    game.turn = .WHITE
-        //    whiteScore[3] = game.generateMoves(options).count * 5
-        //    game.turn = .BLACK
-        //
-        //}
+//         Account for mobility
+        let options = GameOptions()
+        options.legal = false
+        if game.turn == .WHITE {
+            whiteScore[3] = game.generateMoves(options).count * 5
+            game.turn = .BLACK
+            blackScore[3] = game.generateMoves(options).count * 5
+            game.turn = .WHITE
+        } else {
+            blackScore[3] = game.generateMoves(options).count * 5
+            game.turn = .WHITE
+            whiteScore[3] = game.generateMoves(options).count * 5
+            game.turn = .BLACK
+        
+        }
         
         // Take the array and calculate the final score
         let whiteFinalScore = whiteScore.reduce(0, combine: +)

@@ -14,7 +14,8 @@ class Board: SKNode {
     
     var spaces: [[Space]] = [[Space]]()
     var pieces: [[Piece?]] = [[Piece?]]()
-    var lastMoveSpace: Space?
+    var lastMoveFrom: Space?
+    var lastMoveTo: Space?
     
     override init() {
         super.init()
@@ -45,6 +46,18 @@ class Board: SKNode {
         for row in spaces {
             for s in row {
                 s.flash()
+            }
+        }
+    }
+    
+    func inCheck(enable: Bool) {
+        for row in spaces {
+            for s in row {
+                if enable {
+                    s.lightFlash()
+                } else {
+                    s.resetColor()
+                }
             }
         }
     }
@@ -119,13 +132,17 @@ class Board: SKNode {
         // remove piece from pieces array
         pieces[piece.boardSpace.0][piece.boardSpace.1] = nil
         
-        lastMoveSpace?.clearPrevMove()
-        lastMoveSpace = spaces[piece.boardSpace.1][piece.boardSpace.0]
-        print(piece.boardSpace)
-        lastMoveSpace?.prevMove()
+        lastMoveFrom?.clearPrevMove()
+        lastMoveFrom = spaces[piece.boardSpace.1][piece.boardSpace.0]
+        lastMoveFrom?.prevMove()
+        
+        let toIndex = (move.toIndex % 16, 7 - move.toIndex / 16)
+        
+        lastMoveTo?.clearPrevMove()
+        lastMoveTo = spaces[toIndex.1][toIndex.0]
+        lastMoveTo?.prevMove()
         
         // Check for capture
-        let toIndex = (move.toIndex % 16, 7 - move.toIndex / 16)
         let pieceAtSpace = pieces[toIndex.0][toIndex.1]
         if pieceAtSpace != nil && pieceAtSpace != piece {
             let value = pieceAtSpace!.getValue()
