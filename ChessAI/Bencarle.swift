@@ -26,7 +26,6 @@ class Bencarle {
         if move != nil {
             search.updateCurrentNode(move!)
         }
-//        let timeForTurn = calculateTimeForTurn()
         
         let priority = DISPATCH_QUEUE_PRIORITY_HIGH
         dispatch_async(dispatch_get_global_queue(priority, 0)) {

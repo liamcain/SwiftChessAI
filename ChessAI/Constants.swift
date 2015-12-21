@@ -8,7 +8,7 @@
 
 import SpriteKit
 
-let MAX_SEARCH_DEPTH = 3
+let MAX_SEARCH_DEPTH = 4
 let MOBILITY_WEIGHT  = 3
 let PST_WEIGHT       = 2
 

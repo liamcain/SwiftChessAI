@@ -74,6 +74,36 @@ class Board: SKNode {
         }
     }
     
+    func castle(move: GameMove) {
+        let kingPos = (move.toIndex % 16, 7 - move.toIndex / 16)
+        var rook: Piece?
+        if kingPos.0 == 6 {
+            if move.side == .WHITE {
+                rook = pieces[7][0]
+                pieces[7][0] = nil
+                pieces[5][0] = rook
+                rook?.setSpace(5, y: 0)
+            } else {
+                rook = pieces[7][7]
+                pieces[7][7] = nil
+                pieces[5][7] = rook
+                rook?.setSpace(5, y: 7)
+            }
+        } else if kingPos.0 == 2 {
+            if move.side == .WHITE {
+                rook = pieces[0][0]
+                pieces[0][0] = nil
+                pieces[3][0] = rook
+                rook?.setSpace(3, y: 0)
+            } else {
+                rook = pieces[0][7]
+                pieces[0][7] = nil
+                pieces[3][7] = rook
+                rook?.setSpace(3, y: 7)
+            }
+        }
+    }
+    
     func enPassant(turn: Side, square: Int?) {
         if square != nil && square > -1 {
             var piece: Piece
@@ -172,6 +202,10 @@ class Board: SKNode {
         } else if move.flag == .PAWN_PROMOTION
                || move.flag == .PAWN_PROMOTION_CAPTURE {
                 promotePawn(move.side, square:move.toIndex, promotionPiece:move.promotionPiece!)
+        } else if move.flag == GameMove.Flag.KINGSIDE_CASTLE {
+            castle(move)
+        } else if move.flag == GameMove.Flag.QUEENSIDE_CASTLE {
+            castle(move)
         }
     }
     

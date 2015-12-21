@@ -71,5 +71,16 @@ class GamePiece: CustomStringConvertible, Equatable {
         }
     }
     
+    func getShift() -> Int {
+        switch kind {
+        case .PAWN:   return 0
+        case .KNIGHT: return 1
+        case .BISHOP: return 2
+        case .ROOK:   return 3
+        case .QUEEN:  return 4
+        case .KING:   return 5
+        }
+    }
+    
     
 }
