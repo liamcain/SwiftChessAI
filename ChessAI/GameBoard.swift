@@ -10,12 +10,6 @@ import Foundation
 
 class GameBoard {
     let DEFAULT_POSITION = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-    
-    var whiteQueensideCastle: Bool
-    var whiteKingsideCastle: Bool
-    var blackQueensideCastle: Bool
-    var blackKingsideCastle: Bool
-    
     var pieceLocations: [Int: GamePiece?]
     
     let SQUARES = [
@@ -65,19 +59,7 @@ class GameBoard {
         -15,  0, 0,  0,  0,  0, 0, -16,  0,  0,  0,  0,  0,  0, -17
     ];
     
-    let SHIFTS = [
-        Kind.PAWN:   0,
-        Kind.KNIGHT: 1,
-        Kind.BISHOP: 2,
-        Kind.ROOK:   3,
-        Kind.QUEEN:  4,
-        Kind.KING:   5 ]
-    
     init(){
-        whiteQueensideCastle = true
-        whiteKingsideCastle = true
-        blackQueensideCastle = true
-        blackKingsideCastle = true
         pieceLocations = [:]
     }
     
@@ -102,16 +84,6 @@ class GameBoard {
     
     func set(location: Int, piece: GamePiece?) {
         pieceLocations[location] = piece
-    }
-    
-    func disableCastling(side: Side){
-        if side == .WHITE {
-            self.whiteQueensideCastle = false
-            self.whiteKingsideCastle = false
-        } else {
-            self.blackQueensideCastle = false
-            self.blackKingsideCastle = false
-        }
     }
     
         // Castling rules:

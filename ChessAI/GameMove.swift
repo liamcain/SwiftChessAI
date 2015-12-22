@@ -27,13 +27,16 @@ class GameMove: Equatable {
     }
     
     var side: Side
+    var epSquare: Int = -1
+    var halfMoves: Int = 0
+    var moveNumber: Int = 1
     
-    var castling: Dictionary<Side, Int>?
-    var ROOKS: Dictionary<Side, Int>?
-    var kings: Dictionary<Side, Int>?
-    var epSquare: Int?
-    var halfMoves: Int?
-    var moveNumber: Int?
+    var bKing: Int             =    4
+    var bKingsideCastle:  Bool = true
+    var bQueensideCastle: Bool = true
+    var wKing: Int             =  116
+    var wKingsideCastle:  Bool = true
+    var wQueensideCastle: Bool = true
     
     var fromIndex: Int
     var toIndex: Int

@@ -50,13 +50,6 @@ class Human: Player {
         
         let nextSpace = board.closestSpace(activePiece!)
         let currentSpace = activePiece!.boardSpace
-        
-        // If we haven't moved the piece
-        if nextSpace == currentSpace {
-            board.snapback(activePiece!)
-            return
-        }
-        
         let move = game.buildMove(currentSpace, toPosition:nextSpace, promotionPiece: nil)
         if let correspondingMove = correspondingMove(move) {
             makeMove(correspondingMove)
